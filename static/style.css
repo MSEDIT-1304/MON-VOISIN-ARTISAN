@@ -1,0 +1,1034 @@
+/* ==========================================================
+   MON VOISIN ARTISAN
+   STYLE PRINCIPAL
+   ========================================================== */
+
+
+/* ==========================================================
+   RÉINITIALISATION
+   ========================================================== */
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: #f7f8fa;
+    color: #222;
+    line-height: 1.6;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+button,
+input,
+select,
+textarea {
+    font-family: inherit;
+}
+
+
+/* ==========================================================
+   EN-TÊTE
+   ========================================================== */
+
+.site-header {
+    width: 100%;
+    background: #ffffff;
+    border-top: 5px solid #1d5fa7;
+    border-bottom: 1px solid #e5e7eb;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.header-inner {
+    width: min(1180px, 94%);
+    min-height: 72px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 30px;
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: 700;
+    color: #1d5fa7;
+    white-space: nowrap;
+}
+
+.main-nav {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 24px;
+}
+
+.main-nav a {
+    font-size: 15px;
+    font-weight: 600;
+    color: #333;
+    transition: 0.2s ease;
+}
+
+.main-nav a:hover {
+    color: #1d5fa7;
+}
+
+
+/* ==========================================================
+   MENU MOBILE
+   ========================================================== */
+
+.menu-toggle {
+    display: none;
+    border: 0;
+    background: transparent;
+    font-size: 28px;
+    color: #1d5fa7;
+    cursor: pointer;
+}
+
+.mobile-nav {
+    display: none;
+}
+
+
+/* ==========================================================
+   CONTENEUR PRINCIPAL
+   ========================================================== */
+
+.page-container {
+    width: min(1180px, 94%);
+    margin: 0 auto;
+    padding: 35px 0 60px;
+    min-height: calc(100vh - 150px);
+}
+
+
+/* ==========================================================
+   MESSAGES
+   ========================================================== */
+
+.flash-container {
+    width: 100%;
+    margin-bottom: 25px;
+}
+
+.flash-message {
+    background: #eaf3ff;
+    border: 1px solid #b8d5f5;
+    color: #174a7c;
+    border-radius: 8px;
+    padding: 13px 16px;
+    margin-bottom: 10px;
+    text-align: center;
+    font-weight: 600;
+}
+
+
+/* ==========================================================
+   TITRES
+   ========================================================== */
+
+h1,
+h2,
+h3 {
+    color: #1f2937;
+    line-height: 1.25;
+}
+
+h1 {
+    font-size: 38px;
+    margin-bottom: 18px;
+}
+
+h2 {
+    font-size: 28px;
+    margin-bottom: 15px;
+}
+
+h3 {
+    font-size: 21px;
+    margin-bottom: 10px;
+}
+
+p {
+    margin-bottom: 12px;
+}
+
+
+/* ==========================================================
+   BOUTONS
+   ========================================================== */
+
+.btn {
+    display: inline-block;
+    border: 0;
+    border-radius: 7px;
+    padding: 11px 22px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.2s ease;
+    text-align: center;
+}
+
+.btn-primary {
+    background: #1d5fa7;
+    color: #ffffff;
+}
+
+.btn-primary:hover {
+    background: #164d89;
+}
+
+.btn-secondary {
+    background: #eef1f5;
+    color: #29313d;
+}
+
+.btn-secondary:hover {
+    background: #dfe4ea;
+}
+
+.btn-success {
+    background: #238636;
+    color: #ffffff;
+}
+
+.btn-success:hover {
+    background: #1b6d2b;
+}
+
+.btn-danger {
+    background: #c62828;
+    color: #ffffff;
+}
+
+.btn-danger:hover {
+    background: #a91f1f;
+}
+
+
+/* ==========================================================
+   ACCUEIL / BLOCS
+   ========================================================== */
+
+.hero {
+    background: #ffffff;
+    border-radius: 14px;
+    padding: 60px 45px;
+    text-align: center;
+    border: 1px solid #e5e7eb;
+    margin-bottom: 30px;
+}
+
+.hero h1 {
+    color: #1d5fa7;
+    margin-bottom: 15px;
+}
+
+.hero p {
+    max-width: 750px;
+    margin: 0 auto 25px;
+    color: #555;
+    font-size: 17px;
+}
+
+.section {
+    margin-bottom: 35px;
+}
+
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 22px;
+}
+
+.card {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 25px;
+}
+
+.card h3 {
+    color: #1d5fa7;
+}
+
+
+/* ==========================================================
+   FORMULAIRES
+   ========================================================== */
+
+.form-container {
+    max-width: 760px;
+    margin: 0 auto;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 30px;
+}
+
+.form-group {
+    margin-bottom: 18px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 7px;
+    font-weight: 700;
+    color: #333;
+}
+
+input,
+select,
+textarea {
+    width: 100%;
+    border: 1px solid #cfd5dc;
+    border-radius: 7px;
+    padding: 11px 13px;
+    font-size: 15px;
+    background: #ffffff;
+    color: #222;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    outline: none;
+    border-color: #1d5fa7;
+    box-shadow: 0 0 0 2px rgba(29, 95, 167, 0.12);
+}
+
+textarea {
+    min-height: 130px;
+    resize: vertical;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.form-actions {
+    margin-top: 25px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+
+/* ==========================================================
+   CASES / SÉLECTIONS
+   ========================================================== */
+
+.checkbox-group {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+}
+
+.checkbox-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #f7f8fa;
+    border: 1px solid #e1e5ea;
+    border-radius: 7px;
+    padding: 9px 11px;
+}
+
+.checkbox-item input {
+    width: auto;
+}
+
+.checkbox-item label {
+    margin: 0;
+    font-weight: 500;
+}
+
+
+/* ==========================================================
+   DEMANDES
+   ========================================================== */
+
+.demande-list {
+    display: grid;
+    gap: 18px;
+}
+
+.demande-card {
+    background: #ffffff;
+    border: 1px solid #e1e5ea;
+    border-radius: 12px;
+    padding: 22px;
+}
+
+.demande-card h3 {
+    color: #1d5fa7;
+}
+
+.demande-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 18px;
+    margin: 12px 0;
+    color: #555;
+    font-size: 14px;
+}
+
+.demande-description {
+    margin: 15px 0;
+    color: #333;
+}
+
+.contact-box {
+    background: #f3f7fb;
+    border-left: 4px solid #1d5fa7;
+    padding: 15px;
+    margin-top: 18px;
+    border-radius: 5px;
+}
+
+.contact-box strong {
+    color: #1d5fa7;
+}
+
+
+/* ==========================================================
+   PROFIL
+   ========================================================== */
+
+.profile-header {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 25px;
+    margin-bottom: 25px;
+}
+
+.profile-header h1 {
+    font-size: 30px;
+    margin-bottom: 5px;
+}
+
+.profile-section {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 25px;
+    margin-bottom: 22px;
+}
+
+
+/* ==========================================================
+   PAIEMENT / ACCÈS
+   ========================================================== */
+
+.access-box {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 30px;
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.access-box h2 {
+    color: #1d5fa7;
+}
+
+.pricing {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+    max-width: 850px;
+    margin: 25px auto;
+}
+
+.price-card {
+    background: #ffffff;
+    border: 1px solid #e1e5ea;
+    border-radius: 12px;
+    padding: 25px;
+    text-align: center;
+}
+
+.price {
+    font-size: 30px;
+    font-weight: 700;
+    color: #1d5fa7;
+    margin: 12px 0;
+}
+
+
+/* ==========================================================
+   PHOTOS
+   ========================================================== */
+
+.photo-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 15px;
+}
+
+.photo-card {
+    border: 1px solid #e1e5ea;
+    border-radius: 10px;
+    overflow: hidden;
+    background: #ffffff;
+}
+
+.photo-card img {
+    display: block;
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+}
+
+
+/* ==========================================================
+   PIED DE PAGE
+   ========================================================== */
+
+.site-footer {
+    width: 100%;
+    border-top: 1px solid #e5e7eb;
+    background: #ffffff;
+    text-align: center;
+    padding: 22px 15px;
+    color: #666;
+    font-size: 13px;
+}
+
+.site-footer p {
+    margin: 0;
+}
+
+
+/* ==========================================================
+   RESPONSIVE MOBILE
+   ========================================================== */
+
+@media (max-width: 800px) {
+
+    .header-inner {
+        min-height: 64px;
+    }
+
+    .logo {
+        font-size: 20px;
+    }
+
+    .main-nav {
+        display: none;
+    }
+
+    .menu-toggle {
+        display: block;
+    }
+
+    .mobile-nav {
+        display: none;
+        flex-direction: column;
+        width: 100%;
+        background: #ffffff;
+        border-top: 1px solid #e5e7eb;
+    }
+
+    .mobile-nav.open {
+        display: flex;
+    }
+
+    .mobile-nav a {
+        padding: 13px 5%;
+        border-bottom: 1px solid #edf0f3;
+        font-weight: 600;
+        color: #333;
+    }
+
+    .mobile-nav a:hover {
+        color: #1d5fa7;
+        background: #f7f8fa;
+    }
+
+    .page-container {
+        width: 92%;
+        padding-top: 25px;
+    }
+
+    h1 {
+        font-size: 30px;
+    }
+
+    h2 {
+        font-size: 24px;
+    }
+
+    .hero {
+        padding: 40px 20px;
+    }
+
+    .card-grid,
+    .pricing,
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+
+    .checkbox-group {
+        grid-template-columns: 1fr;
+    }
+
+    .photo-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .photo-card img {
+        height: 220px;
+    }
+
+    .form-container,
+    .profile-section,
+    .access-box {
+        padding: 22px 18px;
+    }
+
+    .btn {
+        width: 100%;
+    }
+
+    .form-actions {
+        flex-direction: column;
+    }
+
+}
+
+
+/* ==========================================================
+   PETITS ÉCRANS
+   ========================================================== */
+
+@media (max-width: 450px) {
+
+    .logo {
+        font-size: 18px;
+    }
+
+    .page-container {
+        width: 94%;
+    }
+
+    h1 {
+        font-size: 27px;
+    }
+
+    .hero {
+        padding: 30px 16px;
+    }
+
+    .demande-card {
+        padding: 18px;
+    }
+
+}
+
+/* ==========================================================
+   TABLEAUX DE BORD ET INFORMATIONS ARTISAN
+   ========================================================== */
+
+.artisan-header {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 28px;
+    margin-bottom: 25px;
+}
+
+.artisan-header h1 {
+    margin-bottom: 8px;
+}
+
+.artisan-header p {
+    color: #666;
+}
+
+
+/* ==========================================================
+   INFORMATIONS ENTREPRISE
+   ========================================================== */
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+    margin-bottom: 25px;
+}
+
+.info-box {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 20px;
+}
+
+.info-box h3 {
+    font-size: 18px;
+    color: #1d5fa7;
+    margin-bottom: 8px;
+}
+
+.info-box p {
+    margin-bottom: 5px;
+}
+
+
+/* ==========================================================
+   FILTRES / CRITÈRES ARTISAN
+   ========================================================== */
+
+.criteria-box {
+    background: #f3f7fb;
+    border: 1px solid #dce7f2;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 25px;
+}
+
+.criteria-box h3 {
+    color: #1d5fa7;
+    margin-bottom: 12px;
+}
+
+.criteria-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.criteria-item {
+    background: #ffffff;
+    border: 1px solid #dce1e7;
+    border-radius: 20px;
+    padding: 6px 12px;
+    font-size: 14px;
+}
+
+
+/* ==========================================================
+   STATUT D'ACCÈS
+   ========================================================== */
+
+.status {
+    display: inline-block;
+    border-radius: 20px;
+    padding: 6px 14px;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.status-active {
+    background: #e7f5ea;
+    color: #216e39;
+}
+
+.status-trial {
+    background: #eaf3ff;
+    color: #1d5fa7;
+}
+
+.status-expired {
+    background: #fff0f0;
+    color: #a52323;
+}
+
+
+/* ==========================================================
+   ACTIONS RAPIDES
+   ========================================================== */
+
+.action-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.action-card {
+    display: block;
+    background: #ffffff;
+    border: 1px solid #e1e5ea;
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+    transition: 0.2s ease;
+}
+
+.action-card:hover {
+    border-color: #1d5fa7;
+    transform: translateY(-2px);
+}
+
+.action-card h3 {
+    color: #1d5fa7;
+    font-size: 18px;
+}
+
+.action-card p {
+    color: #666;
+    font-size: 14px;
+    margin: 0;
+}
+
+
+/* ==========================================================
+   PAGE DÉTAIL DEMANDE
+   ========================================================== */
+
+.detail-container {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.detail-card {
+    background: #ffffff;
+    border: 1px solid #e1e5ea;
+    border-radius: 12px;
+    padding: 30px;
+}
+
+.detail-card h1 {
+    color: #1d5fa7;
+}
+
+.detail-section {
+    border-top: 1px solid #e9edf1;
+    margin-top: 22px;
+    padding-top: 22px;
+}
+
+.detail-section:first-child {
+    border-top: 0;
+    margin-top: 0;
+    padding-top: 0;
+}
+
+.detail-section h3 {
+    color: #1d5fa7;
+}
+
+
+/* ==========================================================
+   CONTACT DIRECT
+   ========================================================== */
+
+.direct-contact {
+    background: #f3f7fb;
+    border: 1px solid #d8e5f1;
+    border-radius: 10px;
+    padding: 22px;
+    margin-top: 25px;
+}
+
+.direct-contact h3 {
+    color: #1d5fa7;
+    margin-bottom: 12px;
+}
+
+.contact-line {
+    margin-bottom: 7px;
+}
+
+.contact-line:last-child {
+    margin-bottom: 0;
+}
+
+
+/* ==========================================================
+   RÉPONSE ARTISAN
+   ========================================================== */
+
+.reply-box {
+    margin-top: 25px;
+    background: #ffffff;
+    border: 1px solid #e1e5ea;
+    border-radius: 10px;
+    padding: 22px;
+}
+
+.reply-box h3 {
+    color: #1d5fa7;
+}
+
+.reply-box textarea {
+    min-height: 120px;
+}
+
+
+/* ==========================================================
+   PHOTOS DE RÉALISATIONS
+   ========================================================== */
+
+.realisation-photos {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.realisation-photos img {
+    width: 100%;
+    height: 190px;
+    object-fit: cover;
+    border-radius: 9px;
+    border: 1px solid #e1e5ea;
+}
+
+
+/* ==========================================================
+   MESSAGE AUCUNE DEMANDE
+   ========================================================== */
+
+.empty-state {
+    background: #ffffff;
+    border: 1px solid #e1e5ea;
+    border-radius: 12px;
+    padding: 35px 25px;
+    text-align: center;
+    color: #666;
+}
+
+.empty-state h3 {
+    color: #1d5fa7;
+}
+
+
+/* ==========================================================
+   ZONE DOCUMENTS PROFESSIONNELS
+   ========================================================== */
+
+.documents-box {
+    background: #ffffff;
+    border: 1px solid #e1e5ea;
+    border-radius: 12px;
+    padding: 25px;
+    margin-bottom: 25px;
+}
+
+.documents-box h2 {
+    color: #1d5fa7;
+}
+
+.documents-box p {
+    color: #666;
+}
+
+.file-input {
+    margin-bottom: 15px;
+}
+
+.file-input label {
+    display: block;
+    font-weight: 700;
+    margin-bottom: 7px;
+}
+
+.file-input input[type="file"] {
+    padding: 9px;
+}
+
+
+/* ==========================================================
+   RAYON / LOCALISATION
+   ========================================================== */
+
+.location-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 15px;
+}
+
+
+/* ==========================================================
+   DISPONIBILITÉS
+   ========================================================== */
+
+.availability-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+
+.availability-table th,
+.availability-table td {
+    border: 1px solid #e1e5ea;
+    padding: 10px;
+    text-align: left;
+}
+
+.availability-table th {
+    background: #f3f7fb;
+    color: #1d5fa7;
+    font-weight: 700;
+}
+
+
+/* ==========================================================
+   MOBILE
+   ========================================================== */
+
+@media (max-width: 800px) {
+
+    .info-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .action-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .realisation-photos {
+        grid-template-columns: 1fr;
+    }
+
+    .location-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .detail-card {
+        padding: 20px 16px;
+    }
+
+    .artisan-header {
+        padding: 22px 18px;
+    }
+
+    .documents-box {
+        padding: 20px 16px;
+    }
+
+    .availability-table {
+        font-size: 14px;
+    }
+
+    .availability-table th,
+    .availability-table td {
+        padding: 7px;
+    }
+
+}
+
