@@ -2156,40 +2156,40 @@ def modifier_photos():
 
     conn = get_connection()
 
-# Conserver les anciennes photos si aucune nouvelle photo
-# n'a été sélectionnée.
-
-photo1 = fichiers[0] if fichiers[0] is not None else artisan_user["photo1"]
-photo2 = fichiers[1] if fichiers[1] is not None else artisan_user["photo2"]
-photo3 = fichiers[2] if fichiers[2] is not None else artisan_user["photo3"]
-
-conn.execute(
-    """
-    UPDATE artisans
-    SET
-        photo1 = ?,
-        photo2 = ?,
-        photo3 = ?
-    WHERE id = ?
-    """,
-    (
-        photo1,
-        photo2,
-        photo3,
-        artisan_user["id"]
+    # Conserver les anciennes photos si aucune nouvelle photo
+    # n'a été sélectionnée.
+    
+    photo1 = fichiers[0] if fichiers[0] is not None else artisan_user["photo1"]
+    photo2 = fichiers[1] if fichiers[1] is not None else artisan_user["photo2"]
+    photo3 = fichiers[2] if fichiers[2] is not None else artisan_user["photo3"]
+    
+    conn.execute(
+        """
+        UPDATE artisans
+        SET
+            photo1 = ?,
+            photo2 = ?,
+            photo3 = ?
+        WHERE id = ?
+        """,
+        (
+            photo1,
+            photo2,
+            photo3,
+            artisan_user["id"]
+        )
     )
-)
-
-conn.commit()
-conn.close()
-
-flash(
-    "Vos photos ont été enregistrées."
-)
-
-return redirect(
-    url_for("profil")
-)
+    
+    conn.commit()
+    conn.close()
+    
+    flash(
+        "Vos photos ont été enregistrées."
+    )
+    
+    return redirect(
+        url_for("profil")
+    )
 
 
 # ==========================================================
