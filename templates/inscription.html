@@ -1,0 +1,241 @@
+{% extends "base.html" %}
+
+{% block title %}Inscription - Mon Voisin Artisan{% endblock %}
+
+{% block content %}
+
+<h1>Créer votre compte</h1>
+
+<p>
+    Choisissez votre profil pour rejoindre Mon Voisin Artisan.
+</p>
+
+
+<div class="cards">
+
+    <!-- ======================================================
+         PARTICULIER
+         ====================================================== -->
+
+    <div class="card">
+
+        <h2>Vous êtes particulier</h2>
+
+        <p>
+            Créez votre compte pour déposer une demande de travaux
+            et être mis en relation avec les artisans correspondant
+            à votre recherche.
+        </p>
+
+        <form method="POST" action="/inscription/particulier">
+
+            <label for="nom">Nom</label>
+            <input
+                type="text"
+                id="nom"
+                name="nom"
+                required
+            >
+
+            <label for="email_particulier">Adresse e-mail</label>
+            <input
+                type="email"
+                id="email_particulier"
+                name="email"
+                required
+            >
+
+            <label for="telephone_particulier">Téléphone</label>
+            <input
+                type="tel"
+                id="telephone_particulier"
+                name="telephone"
+                required
+            >
+
+            <label for="password_particulier">Mot de passe</label>
+            <input
+                type="password"
+                id="password_particulier"
+                name="password"
+                required
+            >
+
+            <button type="submit" class="btn">
+                Créer mon compte
+            </button>
+
+        </form>
+
+    </div>
+
+
+    <!-- ======================================================
+         ARTISAN
+         ====================================================== -->
+
+    <div class="card">
+
+        <h2>Vous êtes artisan</h2>
+
+        <p>
+            Présentez votre entreprise et sélectionnez les activités
+            et régions pour lesquelles vous souhaitez recevoir
+            des demandes.
+        </p>
+
+        <form
+            method="POST"
+            action="/inscription/artisan"
+        >
+
+            <label for="entreprise">Nom de l'entreprise</label>
+            <input
+                type="text"
+                id="entreprise"
+                name="entreprise"
+                required
+            >
+
+            <label for="responsable">Responsable</label>
+            <input
+                type="text"
+                id="responsable"
+                name="responsable"
+            >
+
+            <label for="email_artisan">Adresse e-mail</label>
+            <input
+                type="email"
+                id="email_artisan"
+                name="email"
+                required
+            >
+
+            <label for="telephone_artisan">Téléphone</label>
+            <input
+                type="tel"
+                id="telephone_artisan"
+                name="telephone"
+                required
+            >
+
+            <label for="password_artisan">Mot de passe</label>
+            <input
+                type="password"
+                id="password_artisan"
+                name="password"
+                required
+            >
+
+            <label for="adresse">Adresse</label>
+            <input
+                type="text"
+                id="adresse"
+                name="adresse"
+            >
+
+            <label for="code_postal">Code postal</label>
+            <input
+                type="text"
+                id="code_postal"
+                name="code_postal"
+            >
+
+            <label for="ville">Ville</label>
+            <input
+                type="text"
+                id="ville"
+                name="ville"
+            >
+
+            <label for="description">Présentation de votre activité</label>
+            <textarea
+                id="description"
+                name="description"
+            ></textarea>
+
+
+            <h3>Activités proposées</h3>
+
+            {% for activite, sous_categories in activites.items() %}
+
+                <label>
+                    <input
+                        type="checkbox"
+                        name="activites"
+                        value="{{ activite }}"
+                    >
+                    {{ activite }}
+                </label>
+
+                {% for sous_categorie in sous_categories %}
+
+                    <label>
+                        <input
+                            type="checkbox"
+                            name="sous_categories"
+                            value="{{ sous_categorie }}"
+                        >
+                        {{ sous_categorie }}
+                    </label>
+
+                {% endfor %}
+
+            {% endfor %}
+
+
+            <h3>Régions d'intervention</h3>
+
+            {% for region in regions %}
+
+                <label>
+                    <input
+                        type="checkbox"
+                        name="regions"
+                        value="{{ region }}"
+                    >
+                    {{ region }}
+                </label>
+
+            {% endfor %}
+
+
+            <label for="rayon">
+                Rayon d'intervention
+            </label>
+
+            <input
+                type="text"
+                id="rayon"
+                name="rayon"
+                placeholder="Ex. 30 km"
+            >
+
+
+            <button type="submit" class="btn">
+                Créer mon compte artisan
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<div class="section">
+
+    <h2>Déjà inscrit ?</h2>
+
+    <p>
+        Connectez-vous pour accéder à votre espace.
+    </p>
+
+    <a href="/connexion" class="btn">
+        Se connecter
+    </a>
+
+</div>
+
+{% endblock %}
