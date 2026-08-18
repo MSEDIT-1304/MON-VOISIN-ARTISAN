@@ -16,7 +16,7 @@
 
     {% if access == "error" %}
 
-        <div class="notice">
+        <div class="notice-box">
             Votre accès artisan n'est pas encore activé.
         </div>
 
@@ -26,7 +26,7 @@
 
     {% elif access == "trial_expired" %}
 
-        <div class="notice">
+        <div class="notice-box">
             Votre essai gratuit de 7 jours est terminé.
         </div>
 
@@ -36,7 +36,7 @@
 
     {% elif access == "paid_expired" %}
 
-        <div class="notice">
+        <div class="notice-box">
             Votre accès d'un mois est arrivé à expiration.
         </div>
 
