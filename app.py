@@ -2180,12 +2180,12 @@ conn.execute(
     )
 )
 
-    conn.commit()
-    conn.close()
+conn.commit()
+conn.close()
 
-    flash(
-        "Vos photos ont été enregistrées."
-    )
+flash(
+    "Vos photos ont été enregistrées."
+)
 
     return redirect(
         url_for("profil")
