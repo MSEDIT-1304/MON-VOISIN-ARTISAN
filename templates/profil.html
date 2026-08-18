@@ -15,9 +15,7 @@
 
     <form method="POST" action="/profil/particulier">
 
-        <label for="nom">
-            Nom
-        </label>
+        <label for="nom">Nom</label>
 
         <input
             type="text"
@@ -27,10 +25,7 @@
             required
         >
 
-
-        <label for="email">
-            Adresse e-mail
-        </label>
+        <label for="email">Adresse e-mail</label>
 
         <input
             type="email"
@@ -40,10 +35,7 @@
             required
         >
 
-
-        <label for="telephone">
-            Téléphone
-        </label>
+        <label for="telephone">Téléphone</label>
 
         <input
             type="tel"
@@ -52,7 +44,6 @@
             value="{{ user['telephone'] }}"
             required
         >
-
 
         <button type="submit" class="btn">
             Enregistrer mes modifications
@@ -71,9 +62,7 @@
 
     <form method="POST" action="/profil/artisan">
 
-        <label for="entreprise">
-            Nom de l'entreprise
-        </label>
+        <label for="entreprise">Nom de l'entreprise</label>
 
         <input
             type="text"
@@ -83,10 +72,7 @@
             required
         >
 
-
-        <label for="responsable">
-            Responsable
-        </label>
+        <label for="responsable">Responsable</label>
 
         <input
             type="text"
@@ -95,10 +81,7 @@
             value="{{ user['responsable'] }}"
         >
 
-
-        <label for="email">
-            Adresse e-mail
-        </label>
+        <label for="email">Adresse e-mail</label>
 
         <input
             type="email"
@@ -108,10 +91,7 @@
             required
         >
 
-
-        <label for="telephone">
-            Téléphone
-        </label>
+        <label for="telephone">Téléphone</label>
 
         <input
             type="tel"
@@ -121,10 +101,7 @@
             required
         >
 
-
-        <label for="adresse">
-            Adresse
-        </label>
+        <label for="adresse">Adresse</label>
 
         <input
             type="text"
@@ -133,10 +110,7 @@
             value="{{ user['adresse'] }}"
         >
 
-
-        <label for="code_postal">
-            Code postal
-        </label>
+        <label for="code_postal">Code postal</label>
 
         <input
             type="text"
@@ -145,10 +119,7 @@
             value="{{ user['code_postal'] }}"
         >
 
-
-        <label for="ville">
-            Ville
-        </label>
+        <label for="ville">Ville</label>
 
         <input
             type="text"
@@ -156,7 +127,6 @@
             name="ville"
             value="{{ user['ville'] }}"
         >
-
 
         <label for="description">
             Présentation de votre activité
@@ -173,23 +143,36 @@
         {% for activite, sous_categories in activites.items() %}
 
             <label>
+
                 <input
                     type="checkbox"
                     name="activites"
                     value="{{ activite }}"
+                    {% if activite in user_activites %}
+                        checked
+                    {% endif %}
                 >
+
                 {{ activite }}
+
             </label>
+
 
             {% for sous_categorie in sous_categories %}
 
                 <label>
+
                     <input
                         type="checkbox"
                         name="sous_categories"
                         value="{{ sous_categorie }}"
+                        {% if sous_categorie in user_sous_categories %}
+                            checked
+                        {% endif %}
                     >
+
                     {{ sous_categorie }}
+
                 </label>
 
             {% endfor %}
@@ -202,12 +185,18 @@
         {% for region in regions %}
 
             <label>
+
                 <input
                     type="checkbox"
                     name="regions"
                     value="{{ region }}"
+                    {% if region in user_regions %}
+                        checked
+                    {% endif %}
                 >
+
                 {{ region }}
+
             </label>
 
         {% endfor %}
