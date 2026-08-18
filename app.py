@@ -1710,14 +1710,36 @@ def profil():
             url_for("connexion")
         )
 
+    user_type = session.get("user_type")
+
+    user_activites = []
+    user_sous_categories = []
+    user_regions = []
+
+    if user_type == "artisan":
+
+        user_activites = load_list(
+            user["activites"]
+        )
+
+        user_sous_categories = load_list(
+            user["sous_categories"]
+        )
+
+        user_regions = load_list(
+            user["regions"]
+        )
+
     return render_template(
         "profil.html",
         user=user,
-        user_type=session.get("user_type"),
+        user_type=user_type,
         activites=ACTIVITES,
-        regions=REGIONS
+        regions=REGIONS,
+        user_activites=user_activites,
+        user_sous_categories=user_sous_categories,
+        user_regions=user_regions
     )
-
 
 # ==========================================================
 # MODIFICATION DU PROFIL ARTISAN
