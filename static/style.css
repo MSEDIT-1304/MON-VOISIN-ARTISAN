@@ -1,40 +1,95 @@
 /* ==========================================================
-   MON VOISIN ARTISAN
+   MON VOISIN ARTISAN - STYLE GLOBAL
    ========================================================== */
 
-body {
+* { box-sizing: border-box; }
+
+html, body {
     margin: 0;
     padding: 0;
+    min-height: 100%;
+}
+
+body {
+    background: #F3E9D2;
     color: #3F3124;
     font-family: Arial, sans-serif;
     font-size: 14px;
-    background-color: #F3E9D2;
+    line-height: 1.5;
 }
 
-* {
-    box-sizing: border-box;
-}
-
-img {
-    max-width: 100%;
-    height: auto;
-}
+img { max-width: 100%; height: auto; }
 
 a {
     color: #B08A62;
     text-decoration: none;
 }
 
-a:hover {
-    color: #D4AF37;
+a:hover { color: #D4AF37; }
+
+/* HEADER */
+
+.site-header {
+    width: 100%;
+    background: #FAF7F2;
+    border-bottom: 1px solid #DED3BD;
 }
 
+.header-inner {
+    max-width: 1100px;
+    min-height: 76px;
+    margin: 0 auto;
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 25px;
+}
 
-/* ==========================================================
-   CONTENU
-   ========================================================== */
+.logo {
+    display: block;
+    max-width: 180px;
+    flex-shrink: 0;
+}
 
-.content {
+.logo-image {
+    display: block;
+    max-width: 180px;
+    height: auto;
+}
+
+/* NAVIGATION */
+
+.main-nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+}
+
+.main-nav a {
+    color: #3F3124;
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+.menu-toggle {
+    display: none;
+    background: #D4AF37;
+    color: #111111;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 7px;
+    font-size: 20px;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.mobile-nav { display: none; }
+
+/* CONTENU */
+
+.page-container {
     width: 100%;
     max-width: 1100px;
     margin: 0 auto;
@@ -42,60 +97,18 @@ a:hover {
     text-align: center;
 }
 
-
-/* ==========================================================
-   HEADER
-   ========================================================== */
-
-.header {
-    width: 100%;
-    background: #FAF7F2;
-    border-bottom: 1px solid #DED3BD;
-    padding: 12px 20px;
-}
-
-.header-inner {
-    max-width: 1100px;
-    margin: 0 auto;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.logo {
-    max-width: 180px;
-    height: auto;
-}
-
-.navigation {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 20px;
-}
-
-.navigation a {
-    color: #3F3124;
-    font-weight: bold;
-}
-
-
-/* ==========================================================
-   TITRES ET TEXTES
-   ========================================================== */
-
 h1 {
+    margin: 25px 0;
     text-align: center;
     color: #D4AF37;
     font-size: 28px;
-    margin: 25px 0;
 }
 
 h2 {
+    margin: 25px 0 12px;
     text-align: center;
     color: #D4AF37;
     font-size: 21px;
-    margin: 25px 0 12px;
 }
 
 h3 {
@@ -104,24 +117,12 @@ h3 {
 }
 
 p {
+    margin-top: 0;
     line-height: 1.5;
     font-size: 14px;
 }
 
-
-/* ==========================================================
-   BLOCS
-   ========================================================== */
-
-.card,
-.form,
-.section {
-    background: #FAF7F2;
-    border: 1px solid #DED3BD;
-    border-radius: 10px;
-    padding: 20px;
-    margin: 20px auto;
-}
+/* BLOCS */
 
 .cards {
     display: grid;
@@ -129,13 +130,27 @@ p {
     gap: 20px;
 }
 
+.card,
+.form,
+.section,
+.profile-photos,
+.professional-documents {
+    width: 100%;
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+    background: #FAF7F2;
+    border: 1px solid #DED3BD;
+    border-radius: 10px;
+}
 
-/* ==========================================================
-   BOUTONS
-   ========================================================== */
+.cards .card { max-width: none; }
+
+/* BOUTONS */
 
 button,
 .btn {
+    display: inline-block;
     background: #D4AF37;
     color: #111111;
     border: none;
@@ -149,17 +164,12 @@ button,
 button:hover,
 .btn:hover {
     background: #F0C94A;
+    color: #111111;
 }
 
+/* FORMULAIRES */
 
-/* ==========================================================
-   FORMULAIRES
-   ========================================================== */
-
-.form {
-    max-width: 800px;
-    text-align: left;
-}
+.form { text-align: left; }
 
 label {
     display: block;
@@ -178,6 +188,7 @@ textarea {
     border-radius: 7px;
     background: #FFFFFF;
     color: #3F3124;
+    font-family: inherit;
     font-size: 14px;
 }
 
@@ -196,12 +207,25 @@ textarea:focus {
 input[type="checkbox"],
 input[type="radio"] {
     width: auto;
+    margin-right: 6px;
 }
 
+/* PHOTOS */
 
-/* ==========================================================
-   IMAGES
-   ========================================================== */
+.photos-preview {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    margin: 20px 0;
+}
+
+.photos-preview img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 10px;
+    border: 1px solid #DED3BD;
+}
 
 .galerie {
     display: grid;
@@ -219,75 +243,99 @@ input[type="radio"] {
     border-radius: 12px;
 }
 
+/* MESSAGES */
 
-/* ==========================================================
-   FOOTER
-   ========================================================== */
-
-.footer {
+.flash-container {
     width: 100%;
+    max-width: 800px;
+    margin: 0 auto 20px;
+}
+
+.flash-message {
+    padding: 12px 15px;
+    margin-bottom: 10px;
+    background: #FAF7F2;
+    border: 1px solid #D4AF37;
+    border-radius: 8px;
+    text-align: center;
+    font-weight: bold;
+}
+
+/* FOOTER */
+
+.site-footer {
+    width: 100%;
+    margin-top: 35px;
+    padding: 20px;
     background: #FAF7F2;
     border-top: 1px solid #DED3BD;
-    padding: 20px;
-    margin-top: 35px;
     text-align: center;
 }
 
-.footer p {
+.site-footer p {
     margin: 0;
     color: #7D8364;
     font-size: 13px;
 }
 
-
-/* ==========================================================
-   MOBILE
-   ========================================================== */
+/* MOBILE */
 
 @media screen and (max-width: 768px) {
 
-    body {
-        background-color: #F3E9D2 !important;
-    }
-
-    .content {
-        width: 100%;
-        margin: 0;
-        padding: 15px;
-    }
-
-    .header {
-        padding: 10px 15px;
-    }
+    body { background: #F3E9D2; }
 
     .header-inner {
-        width: 100%;
-        flex-direction: column;
+        min-height: 60px;
+        padding: 10px 15px;
         gap: 10px;
     }
 
-    .navigation {
-        width: 100%;
-        flex-wrap: wrap;
-        gap: 8px;
+    .logo,
+    .logo-image {
+        max-width: 145px;
     }
 
-    .navigation a {
-        padding: 6px 8px;
-        font-size: 14px;
+    .main-nav { display: none; }
+
+    .menu-toggle {
+        display: block;
+        margin-left: auto;
+    }
+
+    .mobile-nav {
+        width: 100%;
+        padding: 0 15px;
+        background: #FAF7F2;
+        border-top: 1px solid #DED3BD;
+    }
+
+    .mobile-nav.open {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+    }
+
+    .mobile-nav a {
+        display: block;
+        padding: 9px 5px;
+        border-bottom: 1px solid #DED3BD;
+        color: #3F3124;
+        font-weight: bold;
+        text-align: center;
+    }
+
+    .page-container {
+        width: 100%;
+        padding: 15px;
     }
 
     h1 {
         font-size: 23px;
+        margin: 20px 0;
     }
 
-    h2 {
-        font-size: 19px;
-    }
-
-    h3 {
-        font-size: 17px;
-    }
+    h2 { font-size: 19px; }
+    h3 { font-size: 17px; }
 
     p {
         font-size: 16px;
@@ -296,28 +344,31 @@ input[type="radio"] {
 
     .cards {
         grid-template-columns: 1fr;
+        gap: 15px;
     }
 
     .card,
     .form,
-    .section {
+    .section,
+    .profile-photos,
+    .professional-documents {
         width: 100%;
         padding: 18px 15px;
     }
 
+    .photos-preview,
     .galerie {
         grid-template-columns: 1fr;
         gap: 15px;
     }
 
+    .photos-preview img,
     .galerie img {
         height: 220px;
     }
 
     button,
-    .btn {
-        max-width: 100%;
-    }
+    .btn { max-width: 100%; }
 
     input,
     select,
@@ -325,5 +376,4 @@ input[type="radio"] {
         font-size: 16px;
         max-width: 100%;
     }
-
 }
