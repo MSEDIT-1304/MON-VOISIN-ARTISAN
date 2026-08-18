@@ -2187,9 +2187,9 @@ flash(
     "Vos photos ont été enregistrées."
 )
 
-    return redirect(
-        url_for("profil")
-    )
+return redirect(
+    url_for("profil")
+)
 
 
 # ==========================================================
