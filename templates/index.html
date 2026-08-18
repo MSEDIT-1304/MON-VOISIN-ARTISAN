@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+
+{% block title %}Mon Voisin Artisan{% endblock %}
+
+{% block content %}
+
+<h1>Mon Voisin Artisan</h1>
+
+<p>
+    Trouvez simplement un artisan correspondant à vos besoins,
+    ou recevez directement les demandes qui correspondent à votre activité.
+</p>
+
+
+<div class="cards">
+
+    <div class="card">
+
+        <h2>Vous êtes particulier</h2>
+
+        <p>
+            Vous recherchez un artisan pour réaliser des travaux ?
+        </p>
+
+        <p>
+            Décrivez votre projet, indiquez votre ville ou votre code postal
+            et sélectionnez l'activité recherchée.
+        </p>
+
+        <a href="/demande" class="btn">
+            Déposer une demande
+        </a>
+
+    </div>
+
+
+    <div class="card">
+
+        <h2>Vous êtes artisan</h2>
+
+        <p>
+            Présentez votre entreprise et choisissez les activités
+            et les régions dans lesquelles vous souhaitez travailler.
+        </p>
+
+        <p>
+            Vous recevrez uniquement les demandes correspondant
+            à vos critères.
+        </p>
+
+        <a href="/artisan/inscription" class="btn">
+            Inscrire mon entreprise
+        </a>
+
+    </div>
+
+</div>
+
+
+<div class="section">
+
+    <h2>Comment ça fonctionne ?</h2>
+
+    <p>
+        Le particulier publie sa demande en indiquant les travaux
+        souhaités, son secteur géographique et ses coordonnées.
+    </p>
+
+    <p>
+        Les artisans reçoivent uniquement les demandes correspondant
+        aux activités et aux régions qu'ils ont sélectionnées.
+    </p>
+
+    <p>
+        L'artisan peut alors prendre directement contact avec le particulier.
+    </p>
+
+</div>
+
+
+<div class="section">
+
+    <h2>Une mise en relation simple</h2>
+
+    <p>
+        Pas de recherche compliquée et pas de tableau de bord inutile
+        pour le particulier.
+    </p>
+
+    <p>
+        Une demande, les artisans concernés la reçoivent,
+        puis chacun peut prendre contact directement.
+    </p>
+
+</div>
+
+{% endblock %}
