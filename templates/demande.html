@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+
+{% block title %}Déposer une demande - Mon Voisin Artisan{% endblock %}
+
+{% block content %}
+
+<h1>Déposer une demande</h1>
+
+<p>
+    Décrivez les travaux que vous recherchez afin que les artisans
+    correspondant à votre demande puissent vous contacter.
+</p>
+
+<div class="form">
+
+    <form method="POST" action="/demande">
+
+        <label for="activite">
+            Activité recherchée
+        </label>
+
+        <select id="activite" name="activite" required>
+
+            <option value="">
+                Sélectionnez une activité
+            </option>
+
+            {% for activite, sous_categories in activites.items() %}
+
+                <option value="{{ activite }}">
+                    {{ activite }}
+                </option>
+
+            {% endfor %}
+
+        </select>
+
+
+        <label for="sous_categorie">
+            Sous-catégorie
+        </label>
+
+        <select id="sous_categorie" name="sous_categorie">
+
+            <option value="">
+                Sélectionnez une sous-catégorie
+            </option>
+
+            {% for activite, sous_categories in activites.items() %}
+
+                <optgroup label="{{ activite }}">
+
+                    {% for sous_categorie in sous_categories %}
+
+                        <option value="{{ sous_categorie }}">
+                            {{ sous_categorie }}
+                        </option>
+
+                    {% endfor %}
+
+                </optgroup>
+
+            {% endfor %}
+
+        </select>
+
+
+        <label for="region">
+            Région
+        </label>
+
+        <select id="region" name="region" required>
+
+            <option value="">
+                Sélectionnez une région
+            </option>
+
+            {% for region in regions %}
+
+                <option value="{{ region }}">
+                    {{ region }}
+                </option>
+
+            {% endfor %}
+
+        </select>
+
+
+        <label for="code_postal">
+            Code postal
+        </label>
+
+        <input
+            type="text"
+            id="code_postal"
+            name="code_postal"
+        >
+
+
+        <label for="ville">
+            Ville
+        </label>
+
+        <input
+            type="text"
+            id="ville"
+            name="ville"
+        >
+
+
+        <label for="description">
+            Décrivez les travaux à réaliser
+        </label>
+
+        <textarea
+            id="description"
+            name="description"
+            required
+            placeholder="Décrivez votre projet, les travaux souhaités et les informations utiles pour l'artisan."
+        ></textarea>
+
+
+        <button type="submit" class="btn">
+            Publier ma demande
+        </button>
+
+    </form>
+
+</div>
+
+{% endblock %}
