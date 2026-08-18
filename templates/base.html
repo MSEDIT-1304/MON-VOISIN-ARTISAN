@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="description"
+        content="Mon Voisin Artisan - Mise en relation entre artisans et particuliers."
+    >
+
+    <title>
+        {% block title %}
+        Mon Voisin Artisan
+        {% endblock %}
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}"
+    >
+
+</head>
+
+
+<body>
+
+    <!-- ==================================================
+         EN-TÊTE
+         ================================================== -->
+
+    <header class="site-header">
+
+        <div class="header-inner">
+
+            <a
+                href="{{ url_for('home') }}"
+                class="logo"
+            >
+                Mon Voisin Artisan
+            </a>
+
+
+            <!-- MENU DESKTOP -->
+
+            <nav class="main-nav">
+
+                <a href="{{ url_for('home') }}">
+                    Accueil
+                </a>
+
+                {% if session.get("user_type") == "artisan" %}
+
+                    <a href="{{ url_for('artisan') }}">
+                        Mes demandes
+                    </a>
+
+                    <a href="{{ url_for('profil') }}">
+                        Mon profil
+                    </a>
+
+                    <a href="{{ url_for('deconnexion') }}">
+                        Déconnexion
+                    </a>
+
+                {% elif session.get("user_type") == "particulier" %}
+
+                    <a href="{{ url_for('demande') }}">
+                        Déposer une demande
+                    </a>
+
+                    <a href="{{ url_for('profil') }}">
+                        Mes coordonnées
+                    </a>
+
+                    <a href="{{ url_for('deconnexion') }}">
+                        Déconnexion
+                    </a>
+
+                {% else %}
+
+                    <a href="{{ url_for('inscription') }}">
+                        Inscription
+                    </a>
+
+                    <a href="{{ url_for('connexion') }}">
+                        Connexion
+                    </a>
+
+                {% endif %}
+
+            </nav>
+
+
+            <!-- BOUTON MENU MOBILE -->
+
+            <button
+                class="menu-toggle"
+                type="button"
+                aria-label="Ouvrir le menu"
+                onclick="toggleMenu()"
+            >
+                ☰
+            </button>
+
+        </div>
+
+
+        <!-- MENU MOBILE -->
+
+        <nav
+            id="mobile-menu"
+            class="mobile-nav"
+        >
+
+            <a href="{{ url_for('home') }}">
+                Accueil
+            </a>
+
+            {% if session.get("user_type") == "artisan" %}
+
+                <a href="{{ url_for('artisan') }}">
+                    Mes demandes
+                </a>
+
+                <a href="{{ url_for('profil') }}">
+                    Mon profil
+                </a>
+
+                <a href="{{ url_for('deconnexion') }}">
+                    Déconnexion
+                </a>
+
+            {% elif session.get("user_type") == "particulier" %}
+
+                <a href="{{ url_for('demande') }}">
+                    Déposer une demande
+                </a>
+
+                <a href="{{ url_for('profil') }}">
+                    Mes coordonnées
+                </a>
+
+                <a href="{{ url_for('deconnexion') }}">
+                    Déconnexion
+                </a>
+
+            {% else %}
+
+                <a href="{{ url_for('inscription') }}">
+                    Inscription
+                </a>
+
+                <a href="{{ url_for('connexion') }}">
+                    Connexion
+                </a>
+
+            {% endif %}
+
+        </nav>
+
+    </header>
+
+
+    <!-- ==================================================
+         MESSAGES
+         ================================================== -->
+
+    <main class="page-container">
+
+        {% with messages = get_flashed_messages() %}
+
+            {% if messages %}
+
+                <div class="flash-container">
+
+                    {% for message in messages %}
+
+                        <div class="flash-message">
+                            {{ message }}
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+            {% endif %}
+
+        {% endwith %}
+
+
+        <!-- ==================================================
+             CONTENU DE LA PAGE
+             ================================================== -->
+
+        {% block content %}
+
+        {% endblock %}
+
+    </main>
+
+
+    <!-- ==================================================
+         PIED DE PAGE
+         ================================================== -->
+
+    <footer class="site-footer">
+
+        <p>
+            © 2026 Mon Voisin Artisan - Studio Web & Application - Tous droits réservés.
+        </p>
+
+    </footer>
+
+
+    <!-- ==================================================
+         MENU MOBILE
+         ================================================== -->
+
+    <script>
+
+        function toggleMenu() {
+
+            const menu =
+                document.getElementById("mobile-menu");
+
+            menu.classList.toggle("open");
+
+        }
+
+    </script>
+
+
+</body>
+
+</html>
