@@ -2232,9 +2232,18 @@ def afficher_photo(
 
     from flask import Response
 
+    if image.startswith(b"\x89PNG"):
+        mimetype = "image/png"
+    
+    elif image.startswith(b"RIFF") and image[8:12] == b"WEBP":
+        mimetype = "image/webp"
+    
+    else:
+        mimetype = "image/jpeg"
+    
     return Response(
         image,
-        mimetype="image/jpeg"
+        mimetype=mimetype
     )
 
 
