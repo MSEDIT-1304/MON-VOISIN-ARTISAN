@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+
+{% block title %}Détail de la demande - Mon Voisin Artisan{% endblock %}
+
+{% block content %}
+
+<h1>Détail de la demande</h1>
+
+
+<div class="card">
+
+    <h2>{{ demande["activite"] }}</h2>
+
+
+    {% if demande["sous_categorie"] %}
+
+        <p>
+            <strong>Sous-catégorie :</strong>
+            {{ demande["sous_categorie"] }}
+        </p>
+
+    {% endif %}
+
+
+    <p>
+        <strong>Région :</strong>
+        {{ demande["region"] }}
+    </p>
+
+
+    {% if demande["code_postal"] %}
+
+        <p>
+            <strong>Code postal :</strong>
+            {{ demande["code_postal"] }}
+        </p>
+
+    {% endif %}
+
+
+    {% if demande["ville"] %}
+
+        <p>
+            <strong>Ville :</strong>
+            {{ demande["ville"] }}
+        </p>
+
+    {% endif %}
+
+
+    <p>
+        <strong>Description des travaux :</strong>
+    </p>
+
+    <p>
+        {{ demande["description"] }}
+    </p>
+
+</div>
+
+
+<div class="card">
+
+    <h2>Contacter le particulier</h2>
+
+    <p>
+        <strong>Nom :</strong>
+        {{ demande["particulier_nom"] }}
+    </p>
+
+    <p>
+        <strong>Téléphone :</strong>
+        {{ demande["particulier_telephone"] }}
+    </p>
+
+    <p>
+        <strong>E-mail :</strong>
+        {{ demande["particulier_email"] }}
+    </p>
+
+</div>
+
+
+<div class="form">
+
+    <h2>Répondre à cette demande</h2>
+
+    <form
+        method="POST"
+        action="/demande/{{ demande['id'] }}/repondre"
+    >
+
+        <label for="message">
+            Votre message
+        </label>
+
+        <textarea
+            id="message"
+            name="message"
+            required
+            placeholder="Présentez votre entreprise et indiquez au particulier comment vous souhaitez échanger avec lui."
+        ></textarea>
+
+
+        <button type="submit" class="btn">
+            Envoyer ma réponse
+        </button>
+
+    </form>
+
+</div>
+
+
+<div class="section">
+
+    <a href="/demandes" class="btn">
+        Retour aux demandes
+    </a>
+
+    <a href="/artisan" class="btn">
+        Retour à mon espace artisan
+    </a>
+
+</div>
+
+{% endblock %}
