@@ -1,0 +1,194 @@
+{% extends "base.html" %}
+
+{% block title %}Espace artisan - Mon Voisin Artisan{% endblock %}
+
+{% block content %}
+
+<h1>Espace artisan</h1>
+
+<p>
+    Bienvenue {{ artisan["entreprise"] }}.
+</p>
+
+
+{% if access == "error" %}
+
+    <div class="section">
+
+        <h2>Accès non activé</h2>
+
+        <p>
+            Votre accès artisan n'est pas encore activé.
+        </p>
+
+    </div>
+
+
+{% elif access == "trial_expired" %}
+
+    <div class="section">
+
+        <h2>Votre essai est terminé</h2>
+
+        <p>
+            Votre essai gratuit est arrivé à expiration.
+        </p>
+
+        <a href="{{ trial_link }}" class="btn">
+            Prolonger mon accès
+        </a>
+
+        <a href="{{ stripe_link }}" class="btn">
+            Souscrire
+        </a>
+
+    </div>
+
+
+{% elif access == "paid_expired" %}
+
+    <div class="section">
+
+        <h2>Votre accès est arrivé à expiration</h2>
+
+        <p>
+            Votre accès payant n'est plus actif.
+        </p>
+
+        <a href="{{ stripe_link }}" class="btn">
+            Renouveler mon accès
+        </a>
+
+    </div>
+
+
+{% else %}
+
+    <div class="section">
+
+        <h2>Vos critères</h2>
+
+        <p>
+            <strong>Activités :</strong>
+            {{ activites | join(", ") }}
+        </p>
+
+        <p>
+            <strong>Sous-catégories :</strong>
+            {{ sous_categories | join(", ") if sous_categories else "Toutes" }}
+        </p>
+
+        <p>
+            <strong>Régions :</strong>
+            {{ regions | join(", ") }}
+        </p>
+
+    </div>
+
+
+    <div class="section">
+
+        <h2>Demandes correspondant à votre activité</h2>
+
+        {% if demandes %}
+
+            {% for demande in demandes %}
+
+                <div class="card">
+
+                    <h3>
+                        {{ demande["activite"] }}
+                    </h3>
+
+                    {% if demande["sous_categorie"] %}
+
+                        <p>
+                            <strong>Sous-catégorie :</strong>
+                            {{ demande["sous_categorie"] }}
+                        </p>
+
+                    {% endif %}
+
+                    <p>
+                        <strong>Région :</strong>
+                        {{ demande["region"] }}
+                    </p>
+
+                    {% if demande["code_postal"] %}
+
+                        <p>
+                            <strong>Code postal :</strong>
+                            {{ demande["code_postal"] }}
+                        </p>
+
+                    {% endif %}
+
+                    {% if demande["ville"] %}
+
+                        <p>
+                            <strong>Ville :</strong>
+                            {{ demande["ville"] }}
+                        </p>
+
+                    {% endif %}
+
+                    <p>
+                        <strong>Description :</strong>
+                    </p>
+
+                    <p>
+                        {{ demande["description"] }}
+                    </p>
+
+
+                    <div class="section">
+
+                        <h3>Contacter le particulier</h3>
+
+                        <p>
+                            <strong>Nom :</strong>
+                            {{ demande["particulier_nom"] }}
+                        </p>
+
+                        <p>
+                            <strong>Téléphone :</strong>
+                            {{ demande["particulier_telephone"] }}
+                        </p>
+
+                        <p>
+                            <strong>E-mail :</strong>
+                            {{ demande["particulier_email"] }}
+                        </p>
+
+                    </div>
+
+                </div>
+
+            {% endfor %}
+
+        {% else %}
+
+            <p>
+                Aucune demande ne correspond actuellement à vos critères.
+            </p>
+
+        {% endif %}
+
+    </div>
+
+
+    <div class="section">
+
+        <a href="/profil" class="btn">
+            Modifier mon profil
+        </a>
+
+        <a href="/deconnexion" class="btn">
+            Se déconnecter
+        </a>
+
+    </div>
+
+{% endif %}
+
+{% endblock %}
