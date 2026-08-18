@@ -370,6 +370,140 @@
 
 {% endif %}
 
+<!-- PHOTOS DES RÉALISATIONS -->
+
+<div class="profile-photos">
+
+    <h2>Mes réalisations</h2>
+
+    <p>
+        Ajoutez jusqu'à 3 photos de vos réalisations.
+    </p>
+
+    {% if user_type == "artisan" and (user['photo1'] or user['photo2'] or user['photo3']) %}
+
+        <div class="photos-preview">
+
+            {% if user['photo1'] %}
+                <img
+                    src="/photo/{{ user['id'] }}/1"
+                    alt="Réalisation 1"
+                >
+            {% endif %}
+
+            {% if user['photo2'] %}
+                <img
+                    src="/photo/{{ user['id'] }}/2"
+                    alt="Réalisation 2"
+                >
+            {% endif %}
+
+            {% if user['photo3'] %}
+                <img
+                    src="/photo/{{ user['id'] }}/3"
+                    alt="Réalisation 3"
+                >
+            {% endif %}
+
+        </div>
+
+    {% endif %}
+
+
+    {% if user_type == "artisan" %}
+
+        <form
+            method="POST"
+            action="/profil/photos"
+            enctype="multipart/form-data"
+        >
+
+            <label for="photo1">Photo 1</label>
+
+            <input
+                type="file"
+                id="photo1"
+                name="photo1"
+                accept=".jpg,.jpeg,.png,.webp"
+            >
+
+            <label for="photo2">Photo 2</label>
+
+            <input
+                type="file"
+                id="photo2"
+                name="photo2"
+                accept=".jpg,.jpeg,.png,.webp"
+            >
+
+            <label for="photo3">Photo 3</label>
+
+            <input
+                type="file"
+                id="photo3"
+                name="photo3"
+                accept=".jpg,.jpeg,.png,.webp"
+            >
+
+            <button type="submit" class="btn">
+                Enregistrer mes photos
+            </button>
+
+        </form>
+
+    {% endif %}
+
+</div>
+
+<!-- DOCUMENTS PROFESSIONNELS -->
+
+{% if user_type == "artisan" %}
+
+<div class="professional-documents">
+
+    <h2>Documents professionnels</h2>
+
+    <p>
+        Transmettez vos documents pour vérification.
+    </p>
+
+    <form
+        method="POST"
+        action="/inscription/artisan/documents"
+        enctype="multipart/form-data"
+    >
+
+        <label for="kbis">
+            Kbis
+        </label>
+
+        <input
+            type="file"
+            id="kbis"
+            name="kbis"
+            required
+        >
+
+        <label for="rc">
+            Attestation RC professionnelle
+        </label>
+
+        <input
+            type="file"
+            id="rc"
+            name="rc"
+            required
+        >
+
+        <button type="submit" class="btn">
+            Envoyer mes documents
+        </button>
+
+    </form>
+
+</div>
+
+{% endif %}
 
 <div class="section">
 
