@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+
+{% block title %}Demandes de travaux - Mon Voisin Artisan{% endblock %}
+
+{% block content %}
+
+<h1>Demandes de travaux</h1>
+
+<p>
+    Retrouvez les demandes correspondant à vos activités
+    et à votre secteur d'intervention.
+</p>
+
+
+{% if demandes %}
+
+    <div class="cards">
+
+        {% for demande in demandes %}
+
+            <div class="card">
+
+                <h2>
+                    {{ demande["activite"] }}
+                </h2>
+
+
+                {% if demande["sous_categorie"] %}
+
+                    <p>
+                        <strong>Sous-catégorie :</strong>
+                        {{ demande["sous_categorie"] }}
+                    </p>
+
+                {% endif %}
+
+
+                <p>
+                    <strong>Région :</strong>
+                    {{ demande["region"] }}
+                </p>
+
+
+                {% if demande["code_postal"] %}
+
+                    <p>
+                        <strong>Code postal :</strong>
+                        {{ demande["code_postal"] }}
+                    </p>
+
+                {% endif %}
+
+
+                {% if demande["ville"] %}
+
+                    <p>
+                        <strong>Ville :</strong>
+                        {{ demande["ville"] }}
+                    </p>
+
+                {% endif %}
+
+
+                <p>
+                    <strong>Description :</strong>
+                </p>
+
+                <p>
+                    {{ demande["description"] }}
+                </p>
+
+
+                <a
+                    href="/demande/{{ demande['id'] }}"
+                    class="btn"
+                >
+                    Voir la demande
+                </a>
+
+            </div>
+
+        {% endfor %}
+
+    </div>
+
+
+{% else %}
+
+    <div class="section">
+
+        <h2>Aucune demande disponible</h2>
+
+        <p>
+            Aucune demande ne correspond actuellement à vos activités
+            et à votre secteur d'intervention.
+        </p>
+
+    </div>
+
+{% endif %}
+
+
+<div class="section">
+
+    <a href="/artisan" class="btn">
+        Retour à mon espace artisan
+    </a>
+
+</div>
+
+{% endblock %}
