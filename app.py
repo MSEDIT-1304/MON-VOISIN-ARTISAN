@@ -1294,6 +1294,24 @@ def demande():
             url_for("demande")
         )
 
+    if not code_postal:
+        flash(
+            "Veuillez saisir votre code postal."
+        )
+
+        return redirect(
+            url_for("demande")
+        )
+
+    if not ville:
+        flash(
+            "Veuillez saisir votre ville."
+        )
+
+        return redirect(
+            url_for("demande")
+        )
+
     if not description:
 
         flash(
