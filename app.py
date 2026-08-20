@@ -48,7 +48,7 @@ STRIPE_LINK = "https://buy.stripe.com/dRm7sM8UG9RH1HJc6c9fW0m"
 
 ADMIN_LOGIN = "admin"
 ADMIN_PASSWORD = "Ms130417"
-ADMIN_ARTISAN_EMAIL = "multi.services08220@gmail.com"
+
 
 # Tarifs
 TRIAL_DAYS = 7
