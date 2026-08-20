@@ -42,6 +42,14 @@ TRIAL_LINK = "https://buy.stripe.com/eVq7sM9YK9RH1HJeek9fW0l"
 # Stripe - 1 MOIS : 20 € HT / 24 € TTC
 STRIPE_LINK = "https://buy.stripe.com/dRm7sM8UG9RH1HJc6c9fW0m"
 
+# ==========================================================
+# ACCÈS ADMIN ARTISAN
+# ==========================================================
+
+ADMIN_LOGIN = "admin"
+ADMIN_PASSWORD = "Ms130417"
+ADMIN_ARTISAN_EMAIL = "multi.services08220@gmail.com"
+
 # Tarifs
 TRIAL_DAYS = 7
 PRICE_HT = 20
