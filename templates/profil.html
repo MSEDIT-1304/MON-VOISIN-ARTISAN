@@ -45,6 +45,16 @@
             required
         >
 
+        <label for="code_postal">Code postal</label>
+
+        <input
+            type="text"
+            id="code_postal"
+            name="code_postal"
+            value="{{ user['code_postal'] }}"
+            required
+        >
+
         <button type="submit" class="btn">
             Enregistrer mes modifications
         </button>
@@ -117,6 +127,7 @@
             id="code_postal"
             name="code_postal"
             value="{{ user['code_postal'] }}"
+            required
         >
 
         <label for="ville">Ville</label>
@@ -180,28 +191,6 @@
         {% endfor %}
 
 
-        <h2>Régions d'intervention</h2>
-
-        {% for region in regions %}
-
-            <label>
-
-                <input
-                    type="checkbox"
-                    name="regions"
-                    value="{{ region }}"
-                    {% if region in user_regions %}
-                        checked
-                    {% endif %}
-                >
-
-                {{ region }}
-
-            </label>
-
-        {% endfor %}
-
-
         <label for="rayon">
             Rayon d'intervention
         </label>
@@ -212,6 +201,7 @@
             name="rayon"
             value="{{ user['rayon'] }}"
             placeholder="Ex. 30 km"
+            required
         >
 
 
@@ -236,6 +226,7 @@
 
 {% endif %}
 
+
 <!-- PHOTOS DES RÉALISATIONS -->
 
 <div class="profile-photos">
@@ -251,24 +242,30 @@
         <div class="photos-preview">
 
             {% if user['photo1'] %}
+
                 <img
                     src="/photo/{{ user['id'] }}/1"
                     alt="Réalisation 1"
                 >
+
             {% endif %}
 
             {% if user['photo2'] %}
+
                 <img
                     src="/photo/{{ user['id'] }}/2"
                     alt="Réalisation 2"
                 >
+
             {% endif %}
 
             {% if user['photo3'] %}
+
                 <img
                     src="/photo/{{ user['id'] }}/3"
                     alt="Réalisation 3"
                 >
+
             {% endif %}
 
         </div>
@@ -321,6 +318,7 @@
 
 </div>
 
+
 <!-- DOCUMENTS PROFESSIONNELS -->
 
 {% if user_type == "artisan" %}
@@ -370,6 +368,7 @@
 </div>
 
 {% endif %}
+
 
 <div class="section">
 
