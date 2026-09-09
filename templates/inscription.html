@@ -61,6 +61,14 @@
                 required
             >
 
+            <label for="code_postal_particulier">Code postal</label>
+            <input
+                type="text"
+                id="code_postal_particulier"
+                name="code_postal"
+                required
+            >
+
             <button type="submit" class="btn">
                 Créer mon compte
             </button>
@@ -79,9 +87,9 @@
         <h2>Vous êtes artisan</h2>
 
         <p>
-            Présentez votre entreprise et sélectionnez les activités
-            et régions pour lesquelles vous souhaitez recevoir
-            des demandes.
+            Présentez votre entreprise et indiquez votre zone
+            d'intervention pour recevoir les demandes correspondant
+            à votre activité.
         </p>
 
         <form
@@ -135,11 +143,12 @@
                 name="adresse"
             >
 
-            <label for="code_postal">Code postal</label>
+            <label for="code_postal_artisan">Code postal</label>
             <input
                 type="text"
-                id="code_postal"
+                id="code_postal_artisan"
                 name="code_postal"
+                required
             >
 
             <label for="ville">Ville</label>
@@ -185,22 +194,6 @@
             {% endfor %}
 
 
-            <h3>Régions d'intervention</h3>
-
-            {% for region in regions %}
-
-                <label>
-                    <input
-                        type="checkbox"
-                        name="regions"
-                        value="{{ region }}"
-                    >
-                    {{ region }}
-                </label>
-
-            {% endfor %}
-
-
             <label for="rayon">
                 Rayon d'intervention
             </label>
@@ -210,6 +203,7 @@
                 id="rayon"
                 name="rayon"
                 placeholder="Ex. 30 km"
+                required
             >
 
 
