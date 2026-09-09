@@ -1,0 +1,184 @@
+{% extends "base.html" %}
+
+{% block title %}Mes demandes - Mon Voisin Artisan{% endblock %}
+
+{% block content %}
+
+<h1>Mes demandes</h1>
+
+<p>
+    Retrouvez ici vos demandes de travaux et les réponses des artisans.
+</p>
+
+
+{% if demandes %}
+
+    <div class="cards">
+
+        {% for element in demandes %}
+
+            <div class="card">
+
+                <h2>
+                    {{ element["demande"]["activite"] }}
+                </h2>
+
+
+                {% if element["demande"]["sous_categorie"] %}
+
+                    <p>
+                        <strong>Sous-catégorie :</strong>
+                        {{ element["demande"]["sous_categorie"] }}
+                    </p>
+
+                {% endif %}
+
+
+                <p>
+                    <strong>Région :</strong>
+                    {{ element["demande"]["region"] }}
+                </p>
+
+
+                {% if element["demande"]["code_postal"] %}
+
+                    <p>
+                        <strong>Code postal :</strong>
+                        {{ element["demande"]["code_postal"] }}
+                    </p>
+
+                {% endif %}
+
+
+                {% if element["demande"]["ville"] %}
+
+                    <p>
+                        <strong>Ville :</strong>
+                        {{ element["demande"]["ville"] }}
+                    </p>
+
+                {% endif %}
+
+
+                <p>
+                    <strong>Description :</strong>
+                </p>
+
+                <p>
+                    {{ element["demande"]["description"] }}
+                </p>
+
+
+                {% if element["reponses"] %}
+
+                    <div class="section">
+
+                        <h3>Réponses des artisans</h3>
+
+
+                        {% for reponse in element["reponses"] %}
+
+                            <div class="card">
+
+                                <p>
+                                    <strong>
+                                        {% if reponse["auteur_type"] == "artisan" %}
+                                            {{ reponse["artisan_entreprise"] or "Artisan" }}
+                                        {% else %}
+                                            Vous
+                                        {% endif %}
+                                    </strong>
+                                </p>
+
+
+                                <p>
+                                    {{ reponse["message"] }}
+                                </p>
+
+
+                                {% if reponse["created_at"] %}
+
+                                    <p>
+                                        <small>
+                                            {{ reponse["created_at"] }}
+                                        </small>
+                                    </p>
+
+                                {% endif %}
+
+                            </div>
+
+                        {% endfor %}
+
+                    </div>
+
+                {% else %}
+
+                    <div class="section">
+
+                        <h3>En attente de réponses</h3>
+
+                        <p>
+                            Votre demande a bien été publiée.
+                            Les artisans correspondant à vos critères
+                            pourront vous répondre ici.
+                        </p>
+
+                    </div>
+
+                {% endif %}
+
+
+                {% if element["nouveaux_messages"] > 0 %}
+
+                    <p>
+                        <strong>
+                            {{ element["nouveaux_messages"] }}
+                            nouveau{% if element["nouveaux_messages"] > 1 %}x{% endif %}
+                            message{% if element["nouveaux_messages"] > 1 %}s{% endif %}
+                        </strong>
+                    </p>
+
+                {% endif %}
+
+            </div>
+
+        {% endfor %}
+
+    </div>
+
+
+{% else %}
+
+    <div class="section">
+
+        <h2>Vous n'avez aucune demande</h2>
+
+        <p>
+            Vous n'avez pas encore publié de demande de travaux.
+        </p>
+
+        <a
+            href="{{ url_for('demande') }}"
+            class="btn"
+        >
+            Déposer une demande
+        </a>
+
+    </div>
+
+{% endif %}
+
+
+<div class="section">
+
+    <a
+        href="{{ url_for('demande') }}"
+        class="btn"
+    >
+        Déposer une nouvelle demande
+    </a>
+
+</div>
+
+{% endblock %}
