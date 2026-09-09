@@ -7,7 +7,7 @@
 <h1>Mes demandes</h1>
 
 <p>
-    Retrouvez ici vos demandes de travaux et les réponses des artisans.
+    Retrouvez ici vos demandes de travaux et les échanges avec les artisans.
 </p>
 
 
@@ -73,44 +73,99 @@
 
                     <div class="section">
 
-                        <h3>Réponses des artisans</h3>
+                        <h3>Échanges avec les artisans</h3>
 
 
-                        {% for reponse in element["reponses"] %}
+                        {% for groupe in element["reponses"]|groupby("artisan_id") %}
 
                             <div class="card">
 
-                                <p>
-                                    <strong>
-                                        {% if reponse["auteur_type"] == "artisan" %}
-                                            {{ reponse["artisan_entreprise"] or "Artisan" }}
-                                        {% else %}
-                                            Vous
+                                <h3>
+                                    {{ groupe.list[0]["artisan_entreprise"] or "Artisan" }}
+                                </h3>
+
+
+                                {% for reponse in groupe.list %}
+
+                                    <div class="section">
+
+                                        <p>
+                                            <strong>
+                                                {% if reponse["auteur_type"] == "artisan" %}
+                                                    {{ reponse["artisan_entreprise"] or "Artisan" }}
+                                                {% else %}
+                                                    Vous
+                                                {% endif %}
+                                            </strong>
+                                        </p>
+
+
+                                        <p>
+                                            {{ reponse["message"] }}
+                                        </p>
+
+
+                                        {% if reponse["created_at"] %}
+
+                                            <p>
+                                                <small>
+                                                    {{ reponse["created_at"] }}
+                                                </small>
+                                            </p>
+
                                         {% endif %}
-                                    </strong>
-                                </p>
+
+                                    </div>
+
+                                {% endfor %}
 
 
-                                <p>
-                                    {{ reponse["message"] }}
-                                </p>
+                                <form
+                                    method="POST"
+                                    action="{{ url_for(
+                                        'repondre_artisan',
+                                        demande_id=element['demande']['id']
+                                    ) }}"
+                                >
+
+                                    <input
+                                        type="hidden"
+                                        name="artisan_id"
+                                        value="{{ groupe.list[0]['artisan_id'] }}"
+                                    >
 
 
-                                {% if reponse["created_at"] %}
+                                    <div class="form-group">
 
-                                    <p>
-                                        <small>
-                                            {{ reponse["created_at"] }}
-                                        </small>
-                                    </p>
+                                        <label for="message-{{ element['demande']['id'] }}-{{ groupe.list[0]['artisan_id'] }}">
+                                            Votre réponse
+                                        </label>
 
-                                {% endif %}
+                                        <textarea
+                                            id="message-{{ element['demande']['id'] }}-{{ groupe.list[0]['artisan_id'] }}"
+                                            name="message"
+                                            rows="4"
+                                            required
+                                        ></textarea>
+
+                                    </div>
+
+
+                                    <button
+                                        type="submit"
+                                        class="btn"
+                                    >
+                                        Envoyer
+                                    </button>
+
+                                </form>
 
                             </div>
 
                         {% endfor %}
 
                     </div>
+
 
                 {% else %}
 
