@@ -1649,7 +1649,6 @@ def detail_demande(demande_id):
         artisan=artisan_user
     )
 
-
 # ==========================================================
 # RÉPONDRE À UNE DEMANDE
 # ==========================================================
@@ -1710,6 +1709,10 @@ def repondre_demande(demande_id):
 
     conn = get_connection()
 
+    # ------------------------------------------------------
+    # RÉCUPÉRATION DE LA DEMANDE
+    # ------------------------------------------------------
+
     demande_item = conn.execute(
         """
         SELECT *
@@ -1732,6 +1735,63 @@ def repondre_demande(demande_id):
         )
 
     # ------------------------------------------------------
+    # VÉRIFICATION ACTIVITÉ / SOUS-CATÉGORIE / RÉGION
+    # ------------------------------------------------------
+
+    activites = load_list(
+        artisan_user["activites"]
+    )
+
+    sous_categories = load_list(
+        artisan_user["sous_categories"]
+    )
+
+    regions = load_list(
+        artisan_user["regions"]
+    )
+
+    if demande_item["activite"] not in activites:
+
+        conn.close()
+
+        flash(
+            "Cette demande ne correspond pas à votre activité."
+        )
+
+        return redirect(
+            url_for("demandes")
+        )
+
+    if (
+        sous_categories
+        and demande_item["sous_categorie"]
+        and demande_item["sous_categorie"]
+        not in sous_categories
+    ):
+
+        conn.close()
+
+        flash(
+            "Cette demande ne correspond pas à vos travaux."
+        )
+
+        return redirect(
+            url_for("demandes")
+        )
+
+    if demande_item["region"] not in regions:
+
+        conn.close()
+
+        flash(
+            "Cette demande ne correspond pas à votre secteur."
+        )
+
+        return redirect(
+            url_for("demandes")
+        )
+
+    # ------------------------------------------------------
     # ENREGISTREMENT DE LA RÉPONSE
     # ------------------------------------------------------
 
@@ -1740,16 +1800,24 @@ def repondre_demande(demande_id):
         INSERT INTO reponses (
             demande_id,
             artisan_id,
+            particulier_id,
+            auteur_type,
             message,
-            created_at
+            created_at,
+            lu_artisan,
+            lu_particulier
         )
-        VALUES (?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         """,
         (
             demande_id,
             artisan_user["id"],
+            demande_item["particulier_id"],
+            "artisan",
             message,
-            now_string()
+            now_string(),
+            1,
+            0
         )
     )
 
