@@ -2,37 +2,47 @@
    MON VOISIN ARTISAN - STYLE GLOBAL
    ========================================================== */
 
-* { box-sizing: border-box; }
+* {
+    box-sizing: border-box;
+}
 
-html, body {
+html,
+body {
     margin: 0;
     padding: 0;
     min-height: 100%;
 }
 
 body {
-    background: #F3E9D2;
-    color: #3F3124;
+    background: #DDE3EB;
+    color: #444444;
     font-family: Arial, sans-serif;
     font-size: 14px;
     line-height: 1.5;
 }
 
-img { max-width: 100%; height: auto; }
+img {
+    max-width: 100%;
+    height: auto;
+}
 
 a {
-    color: #B08A62;
+    color: #7E8790;
     text-decoration: none;
 }
 
-a:hover { color: #D4AF37; }
+a:hover {
+    color: #444444;
+}
 
-/* HEADER */
+/* ==========================================================
+   HEADER
+   ========================================================== */
 
 .site-header {
     width: 100%;
-    background: #FAF7F2;
-    border-bottom: 1px solid #DED3BD;
+    background: #FFFFFF;
+    border-bottom: 1px solid #C7CED6;
 }
 
 .header-inner {
@@ -58,7 +68,9 @@ a:hover { color: #D4AF37; }
     height: auto;
 }
 
-/* NAVIGATION */
+/* ==========================================================
+   NAVIGATION
+   ========================================================== */
 
 .main-nav {
     display: flex;
@@ -68,15 +80,19 @@ a:hover { color: #D4AF37; }
 }
 
 .main-nav a {
-    color: #3F3124;
+    color: #444444;
     font-weight: bold;
     white-space: nowrap;
 }
 
+.main-nav a:hover {
+    color: #7E8790;
+}
+
 .menu-toggle {
     display: none;
-    background: #D4AF37;
-    color: #111111;
+    background: #7E8790;
+    color: #FFFFFF;
     border: none;
     padding: 8px 12px;
     border-radius: 7px;
@@ -85,9 +101,13 @@ a:hover { color: #D4AF37; }
     cursor: pointer;
 }
 
-.mobile-nav { display: none; }
+/* ==========================================================
+   CONTENU
+   ========================================================== */
 
-/* CONTENU */
+.mobile-nav {
+    display: none;
+}
 
 .page-container {
     width: 100%;
@@ -100,19 +120,19 @@ a:hover { color: #D4AF37; }
 h1 {
     margin: 25px 0;
     text-align: center;
-    color: #D4AF37;
+    color: #2E2E2E;
     font-size: 28px;
 }
 
 h2 {
     margin: 25px 0 12px;
     text-align: center;
-    color: #D4AF37;
+    color: #2E2E2E;
     font-size: 21px;
 }
 
 h3 {
-    color: #3F3124;
+    color: #2E2E2E;
     font-size: 18px;
 }
 
@@ -122,7 +142,9 @@ p {
     font-size: 14px;
 }
 
-/* BLOCS */
+/* ==========================================================
+   BLOCS
+   ========================================================== */
 
 .cards {
     display: grid;
@@ -139,20 +161,24 @@ p {
     max-width: 800px;
     margin: 20px auto;
     padding: 20px;
-    background: #FAF7F2;
-    border: 1px solid #DED3BD;
+    background: #FFFFFF;
+    border: 1px solid #C7CED6;
     border-radius: 10px;
 }
 
-.cards .card { max-width: none; }
+.cards .card {
+    max-width: none;
+}
 
-/* BOUTONS */
+/* ==========================================================
+   BOUTONS
+   ========================================================== */
 
 button,
 .btn {
     display: inline-block;
-    background: #D4AF37;
-    color: #111111;
+    background: #7E8790;
+    color: #FFFFFF;
     border: none;
     padding: 12px 25px;
     border-radius: 8px;
@@ -163,18 +189,22 @@ button,
 
 button:hover,
 .btn:hover {
-    background: #F0C94A;
-    color: #111111;
+    background: #444444;
+    color: #FFFFFF;
 }
 
-/* FORMULAIRES */
+/* ==========================================================
+   FORMULAIRES
+   ========================================================== */
 
-.form { text-align: left; }
+.form {
+    text-align: left;
+}
 
 label {
     display: block;
     margin-bottom: 6px;
-    color: #3F3124;
+    color: #444444;
     font-weight: bold;
 }
 
@@ -184,10 +214,10 @@ textarea {
     width: 100%;
     padding: 10px;
     margin-bottom: 15px;
-    border: 1px solid #DED3BD;
+    border: 1px solid #C7CED6;
     border-radius: 7px;
     background: #FFFFFF;
-    color: #3F3124;
+    color: #444444;
     font-family: inherit;
     font-size: 14px;
 }
@@ -201,7 +231,7 @@ input:focus,
 select:focus,
 textarea:focus {
     outline: none;
-    border-color: #B08A62;
+    border-color: #7E8790;
 }
 
 input[type="checkbox"],
@@ -210,7 +240,9 @@ input[type="radio"] {
     margin-right: 6px;
 }
 
-/* PHOTOS */
+/* ==========================================================
+   PHOTOS
+   ========================================================== */
 
 .photos-preview {
     display: grid;
@@ -224,7 +256,7 @@ input[type="radio"] {
     height: 180px;
     object-fit: cover;
     border-radius: 10px;
-    border: 1px solid #DED3BD;
+    border: 1px solid #C7CED6;
 }
 
 .galerie {
@@ -243,7 +275,9 @@ input[type="radio"] {
     border-radius: 12px;
 }
 
-/* MESSAGES */
+/* ==========================================================
+   MESSAGES FLASH
+   ========================================================== */
 
 .flash-container {
     width: 100%;
@@ -254,35 +288,95 @@ input[type="radio"] {
 .flash-message {
     padding: 12px 15px;
     margin-bottom: 10px;
-    background: #FAF7F2;
-    border: 1px solid #D4AF37;
+    background: #FFFFFF;
+    border: 1px solid #7E8790;
     border-radius: 8px;
     text-align: center;
     font-weight: bold;
 }
 
-/* FOOTER */
+/* ==========================================================
+   CONVERSATIONS
+   ========================================================== */
+
+.conversation {
+    width: 100%;
+    margin: 20px 0;
+    padding: 15px;
+    background: #F4F6F8;
+    border: 1px solid #C7CED6;
+    border-radius: 8px;
+}
+
+.message {
+    width: 100%;
+    margin-bottom: 12px;
+    padding: 12px 15px;
+    background: #FFFFFF;
+    border: 1px solid #D4D9DF;
+    border-radius: 8px;
+    text-align: left;
+}
+
+.message:last-child {
+    margin-bottom: 0;
+}
+
+.message strong {
+    color: #2E2E2E;
+}
+
+.message p {
+    margin: 6px 0 0;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+.message small {
+    display: block;
+    margin-top: 6px;
+    color: #7E8790;
+    font-size: 12px;
+}
+
+.reply-form {
+    width: 100%;
+    margin-top: 20px;
+    text-align: left;
+}
+
+.reply-form textarea {
+    min-height: 100px;
+}
+
+/* ==========================================================
+   FOOTER
+   ========================================================== */
 
 .site-footer {
     width: 100%;
     margin-top: 35px;
     padding: 20px;
-    background: #FAF7F2;
-    border-top: 1px solid #DED3BD;
+    background: #FFFFFF;
+    border-top: 1px solid #C7CED6;
     text-align: center;
 }
 
 .site-footer p {
     margin: 0;
-    color: #7D8364;
+    color: #7E8790;
     font-size: 13px;
 }
 
-/* MOBILE */
+/* ==========================================================
+   MOBILE
+   ========================================================== */
 
 @media screen and (max-width: 768px) {
 
-    body { background: #F3E9D2; }
+    body {
+        background: #DDE3EB;
+    }
 
     .header-inner {
         min-height: 60px;
@@ -295,7 +389,9 @@ input[type="radio"] {
         max-width: 145px;
     }
 
-    .main-nav { display: none; }
+    .main-nav {
+        display: none;
+    }
 
     .menu-toggle {
         display: block;
@@ -305,8 +401,8 @@ input[type="radio"] {
     .mobile-nav {
         width: 100%;
         padding: 0 15px;
-        background: #FAF7F2;
-        border-top: 1px solid #DED3BD;
+        background: #FFFFFF;
+        border-top: 1px solid #C7CED6;
     }
 
     .mobile-nav.open {
@@ -318,8 +414,8 @@ input[type="radio"] {
     .mobile-nav a {
         display: block;
         padding: 9px 5px;
-        border-bottom: 1px solid #DED3BD;
-        color: #3F3124;
+        border-bottom: 1px solid #C7CED6;
+        color: #444444;
         font-weight: bold;
         text-align: center;
     }
@@ -334,8 +430,13 @@ input[type="radio"] {
         margin: 20px 0;
     }
 
-    h2 { font-size: 19px; }
-    h3 { font-size: 17px; }
+    h2 {
+        font-size: 19px;
+    }
+
+    h3 {
+        font-size: 17px;
+    }
 
     p {
         font-size: 16px;
@@ -368,12 +469,22 @@ input[type="radio"] {
     }
 
     button,
-    .btn { max-width: 100%; }
+    .btn {
+        max-width: 100%;
+    }
 
     input,
     select,
     textarea {
         font-size: 16px;
         max-width: 100%;
+    }
+
+    .conversation {
+        padding: 12px;
+    }
+
+    .message {
+        padding: 10px 12px;
     }
 }
