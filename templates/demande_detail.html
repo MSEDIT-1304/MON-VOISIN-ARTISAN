@@ -6,47 +6,35 @@
 
 <h1>Détail de la demande</h1>
 
-
 <div class="card">
 
     <h2>{{ demande["activite"] }}</h2>
 
-
     {% if demande["sous_categorie"] %}
-
         <p>
             <strong>Sous-catégorie :</strong>
             {{ demande["sous_categorie"] }}
         </p>
-
     {% endif %}
-
 
     <p>
         <strong>Région :</strong>
         {{ demande["region"] }}
     </p>
 
-
     {% if demande["code_postal"] %}
-
         <p>
             <strong>Code postal :</strong>
             {{ demande["code_postal"] }}
         </p>
-
     {% endif %}
 
-
     {% if demande["ville"] %}
-
         <p>
             <strong>Ville :</strong>
             {{ demande["ville"] }}
         </p>
-
     {% endif %}
-
 
     <p>
         <strong>Description des travaux :</strong>
@@ -81,9 +69,54 @@
 </div>
 
 
+{% if reponses %}
+
+<div class="card">
+
+    <h2>Conversation avec le particulier</h2>
+
+    {% for reponse in reponses %}
+
+        <div class="message">
+
+            <p>
+                <strong>
+                    {% if reponse["auteur_type"] == "artisan" %}
+                        Vous
+                    {% else %}
+                        {{ demande["particulier_nom"] }}
+                    {% endif %}
+                </strong>
+            </p>
+
+            <p>
+                {{ reponse["message"] }}
+            </p>
+
+            {% if reponse["created_at"] %}
+                <p>
+                    <small>{{ reponse["created_at"] }}</small>
+                </p>
+            {% endif %}
+
+        </div>
+
+    {% endfor %}
+
+</div>
+
+{% endif %}
+
+
 <div class="form">
 
-    <h2>Répondre à cette demande</h2>
+    <h2>
+        {% if reponses %}
+            Répondre au particulier
+        {% else %}
+            Répondre à cette demande
+        {% endif %}
+    </h2>
 
     <form
         method="POST"
@@ -98,12 +131,11 @@
             id="message"
             name="message"
             required
-            placeholder="Présentez votre entreprise et indiquez au particulier comment vous souhaitez échanger avec lui."
+            placeholder="Écrivez votre message au particulier."
         ></textarea>
 
-
         <button type="submit" class="btn">
-            Envoyer ma réponse
+            Envoyer mon message
         </button>
 
     </form>
