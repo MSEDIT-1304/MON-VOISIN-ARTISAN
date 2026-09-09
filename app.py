@@ -1928,10 +1928,33 @@ def detail_demande(demande_id):
             url_for("demandes")
         )
 
+    conn = get_connection()
+
+    reponses = conn.execute(
+        """
+        SELECT
+            reponses.*,
+            artisans.entreprise AS artisan_entreprise
+        FROM reponses
+        LEFT JOIN artisans
+            ON reponses.artisan_id = artisans.id
+        WHERE reponses.demande_id = ?
+        AND reponses.artisan_id = ?
+        ORDER BY reponses.id ASC
+        """,
+        (
+            demande_id,
+            artisan_user["id"]
+        )
+    ).fetchall()
+
+    conn.close()
+
     return render_template(
         "demande_detail.html",
         demande=demande_item,
-        artisan=artisan_user
+        artisan=artisan_user,
+        reponses=reponses
     )
 
 # ==========================================================
