@@ -2,3 +2,8 @@ Flask
 pandas
 requests
 bcrypt
+Flask
+pandas
+requests
+bcrypt
+gunicorn
