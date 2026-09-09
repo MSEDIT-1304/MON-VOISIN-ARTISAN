@@ -160,17 +160,62 @@ def init_database():
     """)
 
     # ------------------------------------------------------
-    # RÉPONSES DES ARTISANS
+    # MESSAGES ENTRE ARTISANS ET PARTICULIERS
     # ------------------------------------------------------
 
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS reponses (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             demande_id INTEGER NOT NULL,
-            artisan_id INTEGER NOT NULL,
+            artisan_id INTEGER,
+            particulier_id INTEGER,
+            auteur_type TEXT NOT NULL,
             message TEXT,
-            created_at TEXT
+            created_at TEXT,
+            lu_artisan INTEGER DEFAULT 0,
+            lu_particulier INTEGER DEFAULT 0
         )
+    """)
+
+    # ------------------------------------------------------
+    # MISE À JOUR DE LA TABLE EXISTANTE
+    # ------------------------------------------------------
+
+    colonnes = [
+        ("particulier_id", "INTEGER"),
+        ("auteur_type", "TEXT"),
+        ("lu_artisan", "INTEGER DEFAULT 0"),
+        ("lu_particulier", "INTEGER DEFAULT 0")
+    ]
+
+    for colonne, definition in colonnes:
+        try:
+            cursor.execute(
+                f"ALTER TABLE reponses ADD COLUMN {colonne} {definition}"
+            )
+        except sqlite3.OperationalError:
+            pass
+
+    # Les anciennes réponses étaient nécessairement écrites
+    # par un artisan.
+    cursor.execute("""
+        UPDATE reponses
+        SET auteur_type = 'artisan'
+        WHERE auteur_type IS NULL
+    """)
+
+    cursor.execute("""
+        UPDATE reponses
+        SET lu_artisan = 1
+        WHERE auteur_type = 'artisan'
+        AND particulier_id IS NULL
+        AND lu_artisan = 0
+    """)
+
+    cursor.execute("""
+        UPDATE reponses
+        SET lu_particulier = 0
+        WHERE lu_particulier IS NULL
     """)
 
     conn.commit()
