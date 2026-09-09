@@ -1475,13 +1475,13 @@ def demande():
 
     conn = get_connection()
 
-    conn.execute(
+        conn.execute(
         """
         INSERT INTO demandes (
             particulier_id,
             activite,
             sous_categorie,
-            "",
+            region,
             code_postal,
             ville,
             description,
@@ -1493,7 +1493,7 @@ def demande():
             particulier_id,
             activite,
             sous_categorie,
-            region,
+            "",
             code_postal,
             ville,
             description,
