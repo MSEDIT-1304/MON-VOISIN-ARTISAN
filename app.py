@@ -14,12 +14,15 @@ from flask import (
 )
 
 import os
+import re
+import math
 import sqlite3
 import pandas as pd
 import requests
 import bcrypt
 
 from datetime import datetime, timedelta
+from functools import lru_cache
 
 
 # ==========================================================
@@ -31,10 +34,10 @@ APP_NAME = "Mon Voisin Artisan"
 DATABASE = "mon_voisin_artisan.db"
 
 # Google Sheets
-SHEET_ID = ""
+SHEET_ID = "1JWwwLP3IKaG-ELsC3li84eouOFVFnv_C5MxBDQSfz3M"
 
 # Make
-WEBHOOK_URL = ""
+WEBHOOK_URL = "https://hook.eu1.make.com/942mf8fk2jehv637xc3s0tsjsxrad0gu"
 
 # Stripe - ESSAI GRATUIT 7 JOURS
 TRIAL_LINK = "https://buy.stripe.com/eVq7sM9YK9RH1HJeek9fW0l"
@@ -134,6 +137,7 @@ def init_database():
             password TEXT NOT NULL,
             nom TEXT,
             telephone TEXT,
+            code_postal TEXT,
             created_at TEXT
         )
     """)
@@ -217,6 +221,14 @@ def init_database():
         SET lu_particulier = 0
         WHERE lu_particulier IS NULL
     """)
+
+    # Ajout du code postal des particuliers si la base existait déjà
+    try:
+        cursor.execute(
+            "ALTER TABLE particuliers ADD COLUMN code_postal TEXT"
+        )
+    except sqlite3.OperationalError:
+        pass
 
     conn.commit()
     conn.close()
@@ -565,6 +577,99 @@ REGIONS = [
 # FONCTIONS UTILITAIRES
 # ==========================================================
 
+@lru_cache(maxsize=512)
+def get_postal_coordinates(code_postal):
+    code_postal = str(code_postal).strip()
+    if not code_postal:
+        return None
+
+    try:
+        response = requests.get(
+            "https://geo.api.gouv.fr/communes",
+            params={
+                "codePostal": code_postal,
+                "fields": "centre",
+                "format": "json"
+            },
+            timeout=5
+        )
+        response.raise_for_status()
+        communes = response.json()
+
+        if not communes:
+            return None
+
+        centre = communes[0].get("centre")
+        coordinates = centre.get("coordinates") if centre else None
+
+        if not coordinates or len(coordinates) < 2:
+            return None
+
+        return float(coordinates[0]), float(coordinates[1])
+
+    except Exception:
+        return None
+
+
+def parse_rayon_km(rayon):
+    if rayon is None:
+        return None
+
+    value = str(rayon).strip().lower().replace(",", ".")
+    match = re.search(r"[-+]?\\d+(?:\\.\\d+)?", value)
+
+    if not match:
+        return None
+
+    try:
+        return float(match.group())
+    except ValueError:
+        return None
+
+
+def distance_km(code_postal_1, code_postal_2):
+    coord1 = get_postal_coordinates(code_postal_1)
+    coord2 = get_postal_coordinates(code_postal_2)
+
+    if not coord1 or not coord2:
+        return None
+
+    lon1, lat1 = coord1
+    lon2, lat2 = coord2
+
+    radius_terre = 6371.0
+
+    lat1 = math.radians(lat1)
+    lat2 = math.radians(lat2)
+    delta_lat = math.radians(lat2 - lat1)
+    delta_lon = math.radians(lon2 - lon1)
+
+    a = (
+        math.sin(delta_lat / 2) ** 2
+        + math.cos(lat1)
+        * math.cos(lat2)
+        * math.sin(delta_lon / 2) ** 2
+    )
+
+    return radius_terre * 2 * math.asin(math.sqrt(a))
+
+
+def demande_dans_rayon(artisan, demande):
+    artisan_cp = str(artisan["code_postal"] or "").strip()
+    demande_cp = str(demande["code_postal"] or "").strip()
+    rayon_km = parse_rayon_km(artisan["rayon"])
+
+    if not artisan_cp or not demande_cp or rayon_km is None or rayon_km <= 0:
+        return False
+
+    distance = distance_km(artisan_cp, demande_cp)
+
+    if distance is None:
+        return artisan_cp == demande_cp
+
+    return distance <= rayon_km
+
+
 def now_string():
     return datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
@@ -671,8 +776,7 @@ def inscription():
 
     return render_template(
         "inscription.html",
-        activites=ACTIVITES,
-        regions=REGIONS
+        activites=ACTIVITES
     )
 
 
@@ -735,10 +839,6 @@ def inscription_artisan():
         "sous_categories"
     )
 
-    regions = request.form.getlist(
-        "regions"
-    )
-
     rayon = request.form.get(
         "rayon",
         ""
@@ -764,8 +864,16 @@ def inscription_artisan():
         flash("Veuillez sélectionner au moins une activité.")
         return redirect(url_for("inscription"))
 
-    if not regions:
-        flash("Veuillez sélectionner au moins une région.")
+    if not code_postal:
+        flash("Veuillez saisir votre code postal.")
+        return redirect(url_for("inscription"))
+
+    if not rayon:
+        flash("Veuillez saisir votre rayon d'intervention.")
+        return redirect(url_for("inscription"))
+
+    if parse_rayon_km(rayon) is None or parse_rayon_km(rayon) <= 0:
+        flash("Veuillez saisir un rayon d'intervention valide, par exemple 30 km.")
         return redirect(url_for("inscription"))
 
     conn = get_connection()
@@ -823,7 +931,7 @@ def inscription_artisan():
             description,
             save_list(activites),
             save_list(sous_categories),
-            save_list(regions),
+            "",
             rayon,
             now_string()
         )
@@ -874,6 +982,11 @@ def inscription_particulier():
         ""
     ).strip()
 
+    code_postal = request.form.get(
+        "code_postal",
+        ""
+    ).strip()
+
     if not email:
         flash("Veuillez saisir votre adresse e-mail.")
         return redirect(url_for("inscription"))
@@ -888,6 +1001,10 @@ def inscription_particulier():
 
     if not telephone:
         flash("Veuillez saisir votre numéro de téléphone.")
+        return redirect(url_for("inscription"))
+
+    if not code_postal:
+        flash("Veuillez saisir votre code postal.")
         return redirect(url_for("inscription"))
 
     conn = get_connection()
@@ -920,15 +1037,17 @@ def inscription_particulier():
             password,
             nom,
             telephone,
+            code_postal,
             created_at
         )
-        VALUES (?, ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?)
         """,
         (
             email,
             hashed_password,
             nom,
             telephone,
+            code_postal,
             now_string()
         )
     )
@@ -1166,10 +1285,6 @@ def artisan():
         artisan_user["sous_categories"]
     )
 
-    regions = load_list(
-        artisan_user["regions"]
-    )
-
     # ------------------------------------------------------
     # RECHERCHE DES DEMANDES CORRESPONDANTES
     # ------------------------------------------------------
@@ -1216,12 +1331,8 @@ def artisan():
             if not sous_categorie_ok:
                 continue
 
-        # Région
-        region_ok = (
-            demande["region"] in regions
-        )
-
-        if not region_ok:
+        # Code postal + rayon d'intervention
+        if not demande_dans_rayon(artisan_user, demande):
             continue
 
         demandes_filtrees.append(
@@ -1234,7 +1345,6 @@ def artisan():
         access=access,
         activites=activites,
         sous_categories=sous_categories,
-        regions=regions,
         demandes=demandes_filtrees,
         trial_link=TRIAL_LINK,
         stripe_link=STRIPE_LINK
@@ -1289,8 +1399,7 @@ def demande():
 
         return render_template(
             "demande.html",
-            activites=ACTIVITES,
-            regions=REGIONS
+            activites=ACTIVITES
         )
 
     # ------------------------------------------------------
@@ -1304,11 +1413,6 @@ def demande():
 
     sous_categorie = request.form.get(
         "sous_categorie",
-        ""
-    ).strip()
-
-    region = request.form.get(
-        "region",
         ""
     ).strip()
 
@@ -1331,16 +1435,6 @@ def demande():
 
         flash(
             "Veuillez sélectionner une activité."
-        )
-
-        return redirect(
-            url_for("demande")
-        )
-
-    if not region:
-
-        flash(
-            "Veuillez sélectionner une région."
         )
 
         return redirect(
@@ -1387,7 +1481,7 @@ def demande():
             particulier_id,
             activite,
             sous_categorie,
-            region,
+            "",
             code_postal,
             ville,
             description,
@@ -1749,10 +1843,6 @@ def demandes():
         artisan_user["sous_categories"]
     )
 
-    regions = load_list(
-        artisan_user["regions"]
-    )
-
     conn = get_connection()
 
     toutes_demandes = conn.execute(
@@ -1795,10 +1885,10 @@ def demandes():
             continue
 
         # --------------------------------------------------
-        # RÉGION
+        # CODE POSTAL + RAYON
         # --------------------------------------------------
 
-        if demande_item["region"] not in regions:
+        if not demande_dans_rayon(artisan_user, demande_item):
             continue
 
         demandes_filtrees.append(
@@ -1889,10 +1979,6 @@ def detail_demande(demande_id):
         artisan_user["sous_categories"]
     )
 
-    regions = load_list(
-        artisan_user["regions"]
-    )
-
     if demande_item["activite"] not in activites:
 
         flash(
@@ -1918,10 +2004,10 @@ def detail_demande(demande_id):
             url_for("demandes")
         )
 
-    if demande_item["region"] not in regions:
+    if not demande_dans_rayon(artisan_user, demande_item):
 
         flash(
-            "Cette demande ne correspond pas à votre secteur."
+            "Cette demande ne correspond pas à votre zone d'intervention."
         )
 
         return redirect(
@@ -2054,10 +2140,6 @@ def repondre_demande(demande_id):
         artisan_user["sous_categories"]
     )
 
-    regions = load_list(
-        artisan_user["regions"]
-    )
-
     if demande_item["activite"] not in activites:
 
         conn.close()
@@ -2087,12 +2169,12 @@ def repondre_demande(demande_id):
             url_for("demandes")
         )
 
-    if demande_item["region"] not in regions:
+    if not demande_dans_rayon(artisan_user, demande_item):
 
         conn.close()
 
         flash(
-            "Cette demande ne correspond pas à votre secteur."
+            "Cette demande ne correspond pas à votre zone d'intervention."
         )
 
         return redirect(
@@ -2161,8 +2243,6 @@ def profil():
 
     user_activites = []
     user_sous_categories = []
-    user_regions = []
-
     if user_type == "artisan":
 
         user_activites = load_list(
@@ -2173,19 +2253,13 @@ def profil():
             user["sous_categories"]
         )
 
-        user_regions = load_list(
-            user["regions"]
-        )
-
     return render_template(
         "profil.html",
         user=user,
         user_type=user_type,
         activites=ACTIVITES,
-        regions=REGIONS,
         user_activites=user_activites,
-        user_sous_categories=user_sous_categories,
-        user_regions=user_regions
+        user_sous_categories=user_sous_categories
     )
 
 # ==========================================================
@@ -2260,10 +2334,6 @@ def modifier_profil_artisan():
         "sous_categories"
     )
 
-    regions = request.form.getlist(
-        "regions"
-    )
-
     rayon = request.form.get(
         "rayon",
         ""
@@ -2306,9 +2376,17 @@ def modifier_profil_artisan():
             url_for("profil")
         )
 
-    if not regions:
+    if not code_postal:
         flash(
-            "Veuillez sélectionner au moins une région."
+            "Veuillez saisir votre code postal."
+        )
+        return redirect(
+            url_for("profil")
+        )
+
+    if not rayon or parse_rayon_km(rayon) is None or parse_rayon_km(rayon) <= 0:
+        flash(
+            "Veuillez saisir un rayon d'intervention valide, par exemple 30 km."
         )
         return redirect(
             url_for("profil")
@@ -2372,7 +2450,7 @@ def modifier_profil_artisan():
             description,
             save_list(activites),
             save_list(sous_categories),
-            save_list(regions),
+            "",
             rayon,
             disponibilites,
             artisan_user["id"]
