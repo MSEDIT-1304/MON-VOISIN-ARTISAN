@@ -65,27 +65,6 @@
         </select>
 
 
-        <label for="region">
-            Région
-        </label>
-
-        <select id="region" name="region" required>
-
-            <option value="">
-                Sélectionnez une région
-            </option>
-
-            {% for region in regions %}
-
-                <option value="{{ region }}">
-                    {{ region }}
-                </option>
-
-            {% endfor %}
-
-        </select>
-
-
         <label for="code_postal">
             Code postal
         </label>
@@ -96,6 +75,7 @@
             name="code_postal"
             required
         >
+
 
         <label for="ville">
             Ville
@@ -108,10 +88,11 @@
             required
         >
 
+
         <label for="email">
             Adresse e-mail
         </label>
-        
+
         <input
             type="email"
             id="email"
@@ -119,15 +100,17 @@
             required
         >
 
+
         <label for="telephone">
             Téléphone
         </label>
-        
+
         <input
             type="tel"
             id="telephone"
             name="telephone"
         >
+
 
         <label for="description">
             Décrivez les travaux à réaliser
