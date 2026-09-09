@@ -1490,7 +1490,219 @@ def mes_demandes():
         demandes=mes_demandes
     )
 
+# ==========================================================
+# RÉPONDRE À UN ARTISAN - PARTICULIER
+# ==========================================================
 
+@app.route(
+    "/mes-demandes/<int:demande_id>/repondre",
+    methods=["POST"]
+)
+def repondre_artisan(demande_id):
+
+    if not particulier_logged():
+
+        return redirect(
+            url_for("connexion")
+        )
+
+    particulier_id = session.get(
+        "user_id"
+    )
+
+    if not particulier_id:
+
+        return redirect(
+            url_for("connexion")
+        )
+
+    artisan_id = request.form.get(
+        "artisan_id",
+        ""
+    ).strip()
+
+    message = request.form.get(
+        "message",
+        ""
+    ).strip()
+
+    if not artisan_id:
+
+        flash(
+            "Artisan introuvable."
+        )
+
+        return redirect(
+            url_for(
+                "mes_demandes"
+            )
+        )
+
+    if not message:
+
+        flash(
+            "Veuillez saisir un message."
+        )
+
+        return redirect(
+            url_for(
+                "mes_demandes"
+            )
+        )
+
+    try:
+
+        artisan_id = int(
+            artisan_id
+        )
+
+    except ValueError:
+
+        flash(
+            "Artisan introuvable."
+        )
+
+        return redirect(
+            url_for(
+                "mes_demandes"
+            )
+        )
+
+    conn = get_connection()
+
+    # ------------------------------------------------------
+    # VÉRIFICATION DE LA DEMANDE
+    # ------------------------------------------------------
+
+    demande_item = conn.execute(
+        """
+        SELECT *
+        FROM demandes
+        WHERE id = ?
+        AND particulier_id = ?
+        """,
+        (
+            demande_id,
+            particulier_id
+        )
+    ).fetchone()
+
+    if not demande_item:
+
+        conn.close()
+
+        flash(
+            "Cette demande n'existe pas."
+        )
+
+        return redirect(
+            url_for(
+                "mes_demandes"
+            )
+        )
+
+    # ------------------------------------------------------
+    # VÉRIFICATION DE L'ARTISAN
+    # ------------------------------------------------------
+
+    artisan = conn.execute(
+        """
+        SELECT id
+        FROM artisans
+        WHERE id = ?
+        """,
+        (artisan_id,)
+    ).fetchone()
+
+    if not artisan:
+
+        conn.close()
+
+        flash(
+            "Cet artisan n'existe pas."
+        )
+
+        return redirect(
+            url_for(
+                "mes_demandes"
+            )
+        )
+
+    # ------------------------------------------------------
+    # VÉRIFICATION QUE L'ARTISAN A DÉJÀ RÉPONDU
+    # ------------------------------------------------------
+
+    reponse_existante = conn.execute(
+        """
+        SELECT id
+        FROM reponses
+        WHERE demande_id = ?
+        AND artisan_id = ?
+        AND auteur_type = 'artisan'
+        """,
+        (
+            demande_id,
+            artisan_id
+        )
+    ).fetchone()
+
+    if not reponse_existante:
+
+        conn.close()
+
+        flash(
+            "Vous ne pouvez répondre qu'à un artisan "
+            "ayant déjà répondu à votre demande."
+        )
+
+        return redirect(
+            url_for(
+                "mes_demandes"
+            )
+        )
+
+    # ------------------------------------------------------
+    # ENREGISTREMENT DU MESSAGE
+    # ------------------------------------------------------
+
+    conn.execute(
+        """
+        INSERT INTO reponses (
+            demande_id,
+            artisan_id,
+            particulier_id,
+            auteur_type,
+            message,
+            created_at,
+            lu_artisan,
+            lu_particulier
+        )
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        """,
+        (
+            demande_id,
+            artisan_id,
+            particulier_id,
+            "particulier",
+            message,
+            now_string(),
+            0,
+            1
+        )
+    )
+
+    conn.commit()
+    conn.close()
+
+    flash(
+        "Votre message a été envoyé."
+    )
+
+    return redirect(
+        url_for(
+            "mes_demandes"
+        )
+    )
 
 # ==========================================================
 # LISTE DES DEMANDES
