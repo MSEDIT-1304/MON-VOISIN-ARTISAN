@@ -195,17 +195,19 @@
 
 
             <label for="rayon">
-                Rayon d'intervention
+                Rayon d'intervention (km)
             </label>
-
+            
             <input
-                type="text"
+                type="number"
                 id="rayon"
                 name="rayon"
-                placeholder="Ex. 30 km"
+                min="0.1"
+                step="0.1"
+                placeholder="Ex. 30"
+                value="{{ form_data.get('rayon', '') if form_data else '' }}"
                 required
             >
-
 
             <button type="submit" class="btn">
                 Créer mon compte artisan
