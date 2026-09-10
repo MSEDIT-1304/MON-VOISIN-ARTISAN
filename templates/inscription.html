@@ -185,6 +185,7 @@
                         value="{{ activite }}"
                         {% if form_activites and activite in form_activites %}checked{% endif %}
                     >
+                    {{ activite }}
                 </label>
 
                 {% for sous_categorie in sous_categories %}
@@ -196,6 +197,7 @@
                             value="{{ sous_categorie }}"
                             {% if form_sous_categories and sous_categorie in form_sous_categories %}checked{% endif %}
                         >
+                        {{ sous_categorie }}
                     </label>
 
                 {% endfor %}
