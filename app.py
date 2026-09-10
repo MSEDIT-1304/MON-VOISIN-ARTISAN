@@ -1475,7 +1475,7 @@ def demande():
 
     conn = get_connection()
 
-        conn.execute(
+    conn.execute(
         """
         INSERT INTO demandes (
             particulier_id,
@@ -1500,7 +1500,6 @@ def demande():
             now_string()
         )
     )
-
     conn.commit()
     conn.close()
 
