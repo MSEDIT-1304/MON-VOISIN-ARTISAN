@@ -54,11 +54,30 @@
             >
 
             <label for="password_particulier">Mot de passe</label>
+
             <input
                 type="password"
                 id="password_particulier"
                 name="password"
                 required
+            >
+            
+            <label for="password2_particulier">Confirmer le mot de passe</label>
+            
+            <input
+                type="password"
+                id="password2_particulier"
+                name="password2"
+                required
+            >
+            
+            <label>
+                <input
+                    type="checkbox"
+                    onclick="document.getElementById('password_particulier').type = this.checked ? 'text' : 'password'; document.getElementById('password2_particulier').type = this.checked ? 'text' : 'password';"
+                >
+                Afficher le mot de passe
+            </label>
             >
 
             <label for="code_postal_particulier">Code postal</label>
@@ -132,11 +151,30 @@
             >
 
             <label for="password_artisan">Mot de passe</label>
+
             <input
                 type="password"
                 id="password_artisan"
                 name="password"
                 required
+            >
+            
+            <label for="password2_artisan">Confirmer le mot de passe</label>
+            
+            <input
+                type="password"
+                id="password2_artisan"
+                name="password2"
+                required
+            >
+            
+            <label>
+                <input
+                    type="checkbox"
+                    onclick="document.getElementById('password_artisan').type = this.checked ? 'text' : 'password'; document.getElementById('password2_artisan').type = this.checked ? 'text' : 'password';"
+                >
+                Afficher le mot de passe
+            </label>
             >
 
             <label for="adresse">Adresse</label>
