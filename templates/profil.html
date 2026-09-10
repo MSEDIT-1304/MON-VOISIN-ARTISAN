@@ -321,6 +321,8 @@
 
 <!-- DOCUMENTS PROFESSIONNELS -->
 
+<!-- DOCUMENTS PROFESSIONNELS -->
+
 {% if user_type == "artisan" %}
 
 <div class="professional-documents">
@@ -328,47 +330,19 @@
     <h2>Documents professionnels</h2>
 
     <p>
-        Transmettez vos documents pour vérification.
+        Pour vérifier votre activité professionnelle, veuillez nous transmettre votre Kbis et votre attestation d'assurance professionnelle.
     </p>
 
-    <form
-        method="POST"
-        action="/inscription/artisan/documents"
-        enctype="multipart/form-data"
+    <a
+        href="mailto:studio.web.applications@gmail.com?subject=Mon%20Kbis%20et%20mon%20attestation%20assurance%20pro"
+        class="btn"
     >
-
-        <label for="kbis">
-            Kbis
-        </label>
-
-        <input
-            type="file"
-            id="kbis"
-            name="kbis"
-            required
-        >
-
-        <label for="rc">
-            Attestation RC professionnelle
-        </label>
-
-        <input
-            type="file"
-            id="rc"
-            name="rc"
-            required
-        >
-
-        <button type="submit" class="btn">
-            Envoyer mes documents
-        </button>
-
-    </form>
+        Envoyer mon Kbis et attestation assurance pro
+    </a>
 
 </div>
 
 {% endif %}
-
 
 <div class="section">
 
