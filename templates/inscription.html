@@ -102,6 +102,7 @@
                 type="text"
                 id="entreprise"
                 name="entreprise"
+                value="{{ form_data.get('entreprise', '') if form_data else '' }}"
                 required
             >
 
@@ -110,21 +111,23 @@
                 type="text"
                 id="responsable"
                 name="responsable"
+                value="{{ form_data.get('responsable', '') if form_data else '' }}"
             >
-
-            <label for="email_artisan">Adresse e-mail</label>
+            <label for="email">E-mail</label>
             <input
                 type="email"
-                id="email_artisan"
+                id="email"
                 name="email"
+                value="{{ form_data.get('email', '') if form_data else '' }}"
                 required
             >
 
-            <label for="telephone_artisan">Téléphone</label>
+            <label for="telephone">Téléphone</label>
             <input
                 type="tel"
-                id="telephone_artisan"
+                id="telephone"
                 name="telephone"
+                value="{{ form_data.get('telephone', '') if form_data else '' }}"
                 required
             >
 
@@ -141,13 +144,16 @@
                 type="text"
                 id="adresse"
                 name="adresse"
+                value="{{ form_data.get('adresse', '') if form_data else '' }}"
+                required
             >
 
-            <label for="code_postal_artisan">Code postal</label>
+            <label for="code_postal">Code postal</label>
             <input
                 type="text"
-                id="code_postal_artisan"
+                id="code_postal"
                 name="code_postal"
+                value="{{ form_data.get('code_postal', '') if form_data else '' }}"
                 required
             >
 
@@ -156,13 +162,16 @@
                 type="text"
                 id="ville"
                 name="ville"
+                value="{{ form_data.get('ville', '') if form_data else '' }}"
+                required
             >
 
-            <label for="description">Présentation de votre activité</label>
+            <label for="description">Description</label>
             <textarea
                 id="description"
                 name="description"
-            ></textarea>
+                required
+            >{{ form_data.get('description', '') if form_data else '' }}</textarea>
 
 
             <h3>Activités proposées</h3>
@@ -174,8 +183,8 @@
                         type="checkbox"
                         name="activites"
                         value="{{ activite }}"
+                        {% if form_activites and activite in form_activites %}checked{% endif %}
                     >
-                    {{ activite }}
                 </label>
 
                 {% for sous_categorie in sous_categories %}
@@ -185,8 +194,8 @@
                             type="checkbox"
                             name="sous_categories"
                             value="{{ sous_categorie }}"
+                            {% if form_sous_categories and sous_categorie in form_sous_categories %}checked{% endif %}
                         >
-                        {{ sous_categorie }}
                     </label>
 
                 {% endfor %}
