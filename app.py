@@ -615,14 +615,13 @@ def parse_rayon_km(rayon):
     if rayon is None:
         return None
 
-    value = str(rayon).strip().lower().replace(",", ".")
-    match = re.search(r"[-+]?\\d+(?:\\.\\d+)?", value)
+    value = str(rayon).strip().replace(",", ".")
 
-    if not match:
+    if not re.fullmatch(r"\d+(?:\.\d+)?", value):
         return None
 
     try:
-        return float(match.group())
+        return float(value)
     except ValueError:
         return None
 
@@ -844,37 +843,75 @@ def inscription_artisan():
         ""
     ).strip()
 
+    form_data = {
+        "entreprise": entreprise,
+        "responsable": responsable,
+        "email": email,
+        "telephone": telephone,
+        "adresse": adresse,
+        "code_postal": code_postal,
+        "ville": ville,
+        "description": description,
+        "rayon": rayon
+    }
+
+    def afficher_formulaire_erreur(message):
+        flash(message)
+
+        return render_template(
+            "inscription.html",
+            activites=ACTIVITES,
+            form_data=form_data,
+            form_activites=activites,
+            form_sous_categories=sous_categories
+        )
+
     if not email:
-        flash("Veuillez saisir votre adresse e-mail.")
-        return redirect(url_for("inscription"))
+        return afficher_formulaire_erreur(
+            "Veuillez saisir votre adresse e-mail."
+        )
 
     if not password:
-        flash("Veuillez choisir un mot de passe.")
-        return redirect(url_for("inscription"))
+        return afficher_formulaire_erreur(
+            "Veuillez choisir un mot de passe."
+        )
 
     if not entreprise:
-        flash("Veuillez saisir le nom de votre entreprise.")
-        return redirect(url_for("inscription"))
+        return afficher_formulaire_erreur(
+            "Veuillez saisir le nom de votre entreprise."
+        )
 
     if not telephone:
-        flash("Veuillez saisir votre numéro de téléphone.")
-        return redirect(url_for("inscription"))
+        return afficher_formulaire_erreur(
+            "Veuillez saisir votre numéro de téléphone."
+        )
 
     if not activites:
-        flash("Veuillez sélectionner au moins une activité.")
-        return redirect(url_for("inscription"))
+        return afficher_formulaire_erreur(
+            "Veuillez sélectionner au moins une activité."
+        )
 
     if not code_postal:
-        flash("Veuillez saisir votre code postal.")
-        return redirect(url_for("inscription"))
+        return afficher_formulaire_erreur(
+            "Veuillez saisir votre code postal."
+        )
 
     if not rayon:
-        flash("Veuillez saisir votre rayon d'intervention.")
-        return redirect(url_for("inscription"))
+        return afficher_formulaire_erreur(
+            "Veuillez saisir votre rayon d'intervention."
+        )
 
-    if parse_rayon_km(rayon) is None or parse_rayon_km(rayon) <= 0:
-        flash("Veuillez saisir un rayon d'intervention valide, par exemple 30 km.")
-        return redirect(url_for("inscription"))
+    rayon_km = parse_rayon_km(rayon)
+
+    if rayon_km is None:
+        return afficher_formulaire_erreur(
+            "Veuillez saisir uniquement le nombre de kilomètres, par exemple 30."
+        )
+
+    if rayon_km <= 0:
+        return afficher_formulaire_erreur(
+            "Le rayon d'intervention doit être supérieur à 0."
+        )
 
     conn = get_connection()
 
@@ -887,12 +924,8 @@ def inscription_artisan():
 
         conn.close()
 
-        flash(
+        return afficher_formulaire_erreur(
             "Un compte artisan existe déjà avec cette adresse e-mail."
-        )
-
-        return redirect(
-            url_for("inscription")
         )
 
     hashed_password = hash_password(
@@ -955,6 +988,10 @@ def inscription_artisan():
         url_for("artisan")
     )
 
+
+# ==========================================================
+# INSCRIPTION PARTICULIER
+# ==========================================================
 
 # ==========================================================
 # INSCRIPTION PARTICULIER
