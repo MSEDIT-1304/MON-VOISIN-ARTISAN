@@ -48,7 +48,28 @@
                     </small>
 
                 </div>
+                
+                {% if message["auteur_type"] == "particulier" %}
 
+                    <form
+                        method="POST"
+                        action="{{ url_for('repondre_demande', demande_id=message['demande_id']) }}"
+                        class="reply-form"
+                    >
+
+                        <textarea
+                            name="message"
+                            placeholder="Écrire une réponse..."
+                            required
+                        ></textarea>
+
+                        <button type="submit" class="btn">
+                            Répondre
+                        </button>
+
+                    </form>
+
+                {% endif %}
             </div>
 
         {% endfor %}
