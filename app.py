@@ -1034,7 +1034,7 @@ def inscription_artisan():
 
     flash(
         "Votre compte artisan a été créé. "
-        "Veuillez maintenant effectuer votre essai gratuit de 7 jours."
+        "Veuillez vous reconnecter et activer vos 7 jours gratuits."
     )
 
     return redirect(
