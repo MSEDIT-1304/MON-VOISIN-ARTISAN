@@ -66,7 +66,7 @@
                     </a>
                 
                     <a href="{{ url_for('messages') }}">
-                        Messages
+                        Messages reçus
                         {% if unread_messages > 0 %}
                             <span class="message-badge">{{ unread_messages }}</span>
                         {% endif %}
@@ -148,7 +148,7 @@
                 </a>
 
             <a href="{{ url_for('messages') }}">
-                Messages
+                Messages reçus
                 {% if unread_messages > 0 %}
                     <span class="message-badge">{{ unread_messages }}</span>
                 {% endif %}
