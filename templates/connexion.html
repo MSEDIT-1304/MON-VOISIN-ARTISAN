@@ -37,7 +37,14 @@
             name="password"
             required
         >
-
+        
+        <label>
+            <input
+                type="checkbox"
+                onclick="document.getElementById('password').type = this.checked ? 'text' : 'password';"
+            >
+            Afficher le mot de passe
+        </label>
 
         <button type="submit" class="btn">
             Se connecter
