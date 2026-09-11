@@ -1108,34 +1108,58 @@ def inscription_particulier():
 
 @app.route("/connexion", methods=["GET", "POST"])
 def connexion():
-
     if request.method == "GET":
+        return render_template("connexion.html")
 
-        return render_template(
-            "connexion.html"
-        )
-
-    email = clean_email(
-        request.form.get("email", "")
-    )
-
-    password = request.form.get(
-        "password",
-        ""
-    )
+    email = clean_email(request.form.get("email", ""))
+    password = request.form.get("password", "")
 
     if not email or not password:
-
-        flash(
-            "Veuillez saisir votre adresse e-mail et votre mot de passe."
-        )
-
-        return redirect(
-            url_for("connexion")
-        )
+        flash("Veuillez saisir votre adresse e-mail et votre mot de passe.")
+        return redirect(url_for("connexion"))
 
     conn = get_connection()
 
+    artisan = conn.execute(
+        """
+        SELECT *
+        FROM artisans
+        WHERE email = ?
+        """,
+        (email,)
+    ).fetchone()
+
+    if artisan:
+        conn.close()
+
+        session["user_id"] = artisan["id"]
+        session["user_type"] = "artisan"
+        session["email"] = artisan["email"]
+
+        return redirect(url_for("artisan"))
+
+    particulier = conn.execute(
+        """
+        SELECT *
+        FROM particuliers
+        WHERE email = ?
+        """,
+        (email,)
+    ).fetchone()
+
+    conn.close()
+
+    if particulier:
+        session["user_id"] = particulier["id"]
+        session["user_type"] = "particulier"
+        session["email"] = particulier["email"]
+
+        return redirect(url_for("demande"))
+
+    flash("Adresse e-mail ou compte introuvable.")
+    return redirect(url_for("connexion"))
+
+    
     # ------------------------------------------------------
     # RECHERCHE ARTISAN
     # ------------------------------------------------------
