@@ -1038,7 +1038,7 @@ def inscription_artisan():
     )
 
     return redirect(
-        url_for("artisan")
+        url_for("profil")
     )
 
 
@@ -2369,7 +2369,8 @@ def profil():
         user_type=user_type,
         activites=ACTIVITES,
         user_activites=user_activites,
-        user_sous_categories=user_sous_categories
+        user_sous_categories=user_sous_categories,
+        trial_link=TRIAL_LINK
     )
 
 # ==========================================================
