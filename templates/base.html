@@ -64,11 +64,18 @@
                     <a href="{{ url_for('artisan') }}">
                         Mes demandes
                     </a>
-
+                
+                    <a href="{{ url_for('messages') }}">
+                        Messages
+                        {% if unread_messages > 0 %}
+                            <span class="message-badge">{{ unread_messages }}</span>
+                        {% endif %}
+                    </a>
+                
                     <a href="{{ url_for('profil') }}">
                         Mon profil
                     </a>
-
+                
                     <a href="{{ url_for('deconnexion') }}">
                         Déconnexion
                     </a>
@@ -81,6 +88,9 @@
                 
                     <a href="{{ url_for('mes_demandes') }}">
                         Messages reçus
+                        {% if unread_messages > 0 %}
+                            <span class="message-badge">{{ unread_messages }}</span>
+                        {% endif %}
                     </a>
                 
                     <a href="{{ url_for('profil') }}">
@@ -137,6 +147,13 @@
                     Mes demandes
                 </a>
 
+            <a href="{{ url_for('messages') }}">
+                Messages
+                {% if unread_messages > 0 %}
+                    <span class="message-badge">{{ unread_messages }}</span>
+                {% endif %}
+            </a>
+
                 <a href="{{ url_for('profil') }}">
                     Mon profil
                 </a>
@@ -153,6 +170,9 @@
             
                 <a href="{{ url_for('mes_demandes') }}">
                     Messages reçus
+                    {% if unread_messages > 0 %}
+                        <span class="message-badge">{{ unread_messages }}</span>
+                    {% endif %}
                 </a>
 
                 <a href="{{ url_for('profil') }}">
