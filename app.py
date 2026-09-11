@@ -121,6 +121,9 @@ def init_database():
             photo1 TEXT,
             photo2 TEXT,
             photo3 TEXT,
+            siret TEXT,
+            tva TEXT,
+            photo_profil BLOB,
             valide INTEGER DEFAULT 0,
             created_at TEXT
         )
@@ -199,7 +202,19 @@ def init_database():
             )
         except sqlite3.OperationalError:
             pass
-
+        colonnes_artisan = [
+            ("siret", "TEXT"),
+            ("tva", "TEXT"),
+            ("photo_profil", "BLOB")
+        ]
+        
+        for colonne, definition in colonnes_artisan:
+            try:
+                cursor.execute(
+                    f"ALTER TABLE artisans ADD COLUMN {colonne} {definition}"
+                )
+            except sqlite3.OperationalError:
+                pass
     # Les anciennes réponses étaient nécessairement écrites
     # par un artisan.
     cursor.execute("""
