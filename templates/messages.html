@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block title %}Messages - Mon Voisin Artisan{% endblock %}
+
+{% block content %}
+
+<h1>Messages</h1>
+
+<div class="section">
+
+    {% if messages %}
+
+        {% for message in messages %}
+
+            <div class="conversation">
+
+                <h2>
+                    {{ message["activite"] }}
+                    {% if message["sous_categorie"] %}
+                        - {{ message["sous_categorie"] }}
+                    {% endif %}
+                </h2>
+
+                <p>
+                    Demande à {{ message["ville"] }}
+                </p>
+
+                <div class="message">
+
+                    {% if message["auteur_type"] == "particulier" %}
+
+                        <strong>
+                            {{ message["particulier_nom"] or "Particulier" }}
+                        </strong>
+
+                    {% else %}
+
+                        <strong>Vous</strong>
+
+                    {% endif %}
+
+                    <p>
+                        {{ message["message"] }}
+                    </p>
+
+                    <small>
+                        {{ message["created_at"] }}
+                    </small>
+
+                </div>
+
+            </div>
+
+        {% endfor %}
+
+    {% else %}
+
+        <p>Aucun message reçu.</p>
+
+    {% endif %}
+
+</div>
+
+<div class="section">
+
+    <a href="{{ url_for('artisan') }}" class="btn">
+        Retour à mon espace
+    </a>
+
+</div>
+
+{% endblock %}
