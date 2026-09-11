@@ -1155,6 +1155,21 @@ def connexion():
     flash("Adresse e-mail ou compte introuvable.")
     return redirect(url_for("connexion"))
 
+# ==========================================================
+# RÉINITIALISATION DU MOT DE PASSE
+# ==========================================================
+
+@app.route("/reinitialiser-mot-de-passe")
+def reinitialiser_mot_de_passe():
+
+    flash(
+        "Pour réinitialiser votre mot de passe, "
+        "contactez Studio Web & Applications à "
+        "studio.web.applications@gmail.com."
+    )
+
+    return redirect(url_for("connexion"))
+
     
 # ==========================================================
 # DÉCONNEXION
