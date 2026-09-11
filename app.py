@@ -2454,6 +2454,16 @@ def modifier_profil_artisan():
         ""
     ).strip()
 
+    siret = request.form.get(
+        "siret",
+        ""
+    ).strip()
+    
+    tva = request.form.get(
+        "tva",
+        ""
+    ).strip()
+
     ville = request.form.get(
         "ville",
         ""
@@ -2567,6 +2577,8 @@ def modifier_profil_artisan():
             responsable = ?,
             telephone = ?,
             adresse = ?,
+            siret = ?,
+            tva = ?,
             code_postal = ?,
             ville = ?,
             description = ?,
@@ -2583,6 +2595,8 @@ def modifier_profil_artisan():
             responsable,
             telephone,
             adresse,
+            siret,
+            tva,
             code_postal,
             ville,
             description,
