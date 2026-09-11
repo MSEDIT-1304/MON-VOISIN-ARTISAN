@@ -1038,7 +1038,7 @@ def inscription_artisan():
     )
 
     return redirect(
-        url_for("profil")
+        url_for("deconnexion")
     )
 
 
