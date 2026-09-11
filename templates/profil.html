@@ -138,7 +138,25 @@
             name="ville"
             value="{{ user['ville'] }}"
         >
+        <label for="siret">SIRET</label>
 
+        <input
+            type="text"
+            id="siret"
+            name="siret"
+            value="{{ user['siret'] or '' }}"
+            placeholder="Ex. 12345678900000"
+        >
+
+        <label for="tva">N° de TVA intracommunautaire</label>
+
+        <input
+            type="text"
+            id="tva"
+            name="tva"
+            value="{{ user['tva'] or '' }}"
+            placeholder="Ex. FR12345678901"
+        >
         <label for="description">
             Présentation de votre activité
         </label>
