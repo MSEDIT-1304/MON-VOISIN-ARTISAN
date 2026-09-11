@@ -1687,6 +1687,18 @@ def mes_demandes():
             }
         )
 
+    conn.execute(
+        """
+        UPDATE reponses
+        SET lu_particulier = 1
+        WHERE particulier_id = ?
+        AND auteur_type = 'artisan'
+        AND lu_particulier = 0
+        """,
+        (particulier_id,)
+    )
+    
+    conn.commit()
     conn.close()
 
     return render_template(
