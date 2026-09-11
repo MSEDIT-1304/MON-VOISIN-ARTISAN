@@ -744,7 +744,50 @@ def particulier_logged():
         and session.get("user_id") is not None
     )
 
+@app.context_processor
+def inject_unread_messages():
 
+    unread_messages = 0
+
+    user_type = session.get("user_type")
+    user_id = session.get("user_id")
+
+    if user_type and user_id:
+
+        conn = get_connection()
+
+        if user_type == "artisan":
+
+            unread_messages = conn.execute(
+                """
+                SELECT COUNT(*)
+                FROM reponses
+                WHERE artisan_id = ?
+                AND auteur_type = 'particulier'
+                AND lu_artisan = 0
+                """,
+                (user_id,)
+            ).fetchone()[0]
+
+        elif user_type == "particulier":
+
+            unread_messages = conn.execute(
+                """
+                SELECT COUNT(*)
+                FROM reponses
+                WHERE particulier_id = ?
+                AND auteur_type = 'artisan'
+                AND lu_particulier = 0
+                """,
+                (user_id,)
+            ).fetchone()[0]
+
+        conn.close()
+
+    return {
+        "unread_messages": unread_messages
+    }
+    
 def logout_user():
 
     session.pop("user_id", None)
