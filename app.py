@@ -31,7 +31,7 @@ from functools import lru_cache
 
 APP_NAME = "Mon Voisin Artisan"
 
-DATABASE = "mon_voisin_artisan.db"
+DATABASE = "/var/data/mon_voisin_artisan.db"
 
 # Google Sheets
 SHEET_ID = "1JWwwLP3IKaG-ELsC3li84eouOFVFnv_C5MxBDQSfz3M"
@@ -1245,6 +1245,67 @@ def deconnexion():
 
     return redirect(
         url_for("home")
+    )
+
+# ==========================================================
+# MESSAGES - ARTISAN
+# ==========================================================
+
+@app.route("/messages")
+def messages():
+
+    if not artisan_logged():
+
+        return redirect(
+            url_for("connexion")
+        )
+
+    artisan_id = session.get("user_id")
+
+    if not artisan_id:
+
+        return redirect(
+            url_for("connexion")
+        )
+
+    conn = get_connection()
+
+    messages = conn.execute(
+        """
+        SELECT
+            reponses.*,
+            demandes.activite,
+            demandes.sous_categorie,
+            demandes.ville,
+            particuliers.nom AS particulier_nom
+        FROM reponses
+        JOIN demandes
+            ON reponses.demande_id = demandes.id
+        LEFT JOIN particuliers
+            ON reponses.particulier_id = particuliers.id
+        WHERE reponses.artisan_id = ?
+        ORDER BY reponses.id DESC
+        """,
+        (artisan_id,)
+    ).fetchall()
+
+    conn.execute(
+        """
+        UPDATE reponses
+        SET lu_artisan = 1
+        WHERE artisan_id = ?
+        AND auteur_type = 'particulier'
+        AND lu_artisan = 0
+        """,
+        (artisan_id,)
+    )
+
+    conn.commit()
+    conn.close()
+
+    return render_template(
+        "messages.html",
+        messages=messages
     )
 
 # ==========================================================
