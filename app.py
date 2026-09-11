@@ -795,6 +795,11 @@ def inscription_artisan():
         ""
     ).strip()
 
+    password2 = request.form.get(
+        "password2",
+        ""
+    ).strip()
+
     entreprise = request.form.get(
         "entreprise",
         ""
@@ -874,6 +879,11 @@ def inscription_artisan():
     if not password:
         return afficher_formulaire_erreur(
             "Veuillez choisir un mot de passe."
+        )
+
+    if password != password2:
+        return afficher_formulaire_erreur(
+            "Les deux mots de passe ne correspondent pas."
         )
 
     if not entreprise:
@@ -1005,10 +1015,16 @@ def inscription_particulier():
         ""
     ).strip()
 
+    password2 = request.form.get(
+        "password2",
+        ""
+    ).strip()
+
     nom = request.form.get(
         "nom",
         ""
     ).strip()
+
 
     telephone = request.form.get(
         "telephone",
@@ -1026,6 +1042,10 @@ def inscription_particulier():
 
     if not password:
         flash("Veuillez choisir un mot de passe.")
+        return redirect(url_for("inscription"))
+
+    if password != password2:
+        flash("Les deux mots de passe ne correspondent pas.")
         return redirect(url_for("inscription"))
 
     if not nom:
