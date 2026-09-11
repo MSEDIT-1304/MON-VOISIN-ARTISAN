@@ -89,6 +89,21 @@ a:hover {
     color: #7E8790;
 }
 
+.message-badge {
+    display: inline-block;
+    min-width: 20px;
+    height: 20px;
+    padding: 2px 6px;
+    margin-left: 5px;
+    background: #D9534F;
+    color: #FFFFFF;
+    border-radius: 50%;
+    font-size: 12px;
+    font-weight: bold;
+    text-align: center;
+    line-height: 16px;
+}
+
 .menu-toggle {
     display: none;
     background: #7E8790;
