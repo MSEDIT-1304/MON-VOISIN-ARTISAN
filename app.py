@@ -993,10 +993,6 @@ def inscription_artisan():
 # INSCRIPTION PARTICULIER
 # ==========================================================
 
-# ==========================================================
-# INSCRIPTION PARTICULIER
-# ==========================================================
-
 @app.route("/inscription/particulier", methods=["POST"])
 def inscription_particulier():
 
