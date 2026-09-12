@@ -221,7 +221,10 @@ def init_database():
         ("particulier_id", "INTEGER"),
         ("auteur_type", "TEXT"),
         ("lu_artisan", "INTEGER DEFAULT 0"),
-        ("lu_particulier", "INTEGER DEFAULT 0")
+        ("lu_particulier", "INTEGER DEFAULT 0"),
+        ("piece_jointe", "BLOB"),
+        ("piece_jointe_nom", "TEXT"),
+        ("piece_jointe_mimetype", "TEXT")
     ]
 
     for colonne, definition in colonnes:
@@ -1454,6 +1457,90 @@ def supprimer_message(reponse_id):
     )
 
 # ==========================================================
+# TÉLÉCHARGER UNE PIÈCE JOINTE
+# ==========================================================
+
+@app.route(
+    "/message/<int:reponse_id>/fichier"
+)
+def telecharger_piece_jointe(reponse_id):
+
+    user_type = session.get("user_type")
+    user_id = session.get("user_id")
+
+    if not user_type or not user_id:
+        return redirect(
+            url_for("connexion")
+        )
+
+    conn = get_connection()
+
+    reponse = conn.execute(
+        """
+        SELECT
+            piece_jointe,
+            piece_jointe_nom,
+            piece_jointe_mimetype,
+            artisan_id,
+            particulier_id
+        FROM reponses
+        WHERE id = ?
+        """,
+        (reponse_id,)
+    ).fetchone()
+
+    conn.close()
+
+    if not reponse:
+        flash(
+            "Cette pièce jointe n'existe pas."
+        )
+        return redirect(
+            url_for("mes_demandes")
+        )
+
+    autorise = (
+        (
+            user_type == "artisan"
+            and reponse["artisan_id"] == user_id
+        )
+        or
+        (
+            user_type == "particulier"
+            and reponse["particulier_id"] == user_id
+        )
+    )
+
+    if not autorise:
+        flash(
+            "Vous n'êtes pas autorisé à accéder à cette pièce jointe."
+        )
+        return redirect(
+            url_for("connexion")
+        )
+
+    if not reponse["piece_jointe"]:
+        flash(
+            "Aucune pièce jointe disponible."
+        )
+
+        if user_type == "artisan":
+            return redirect(
+                url_for("messages")
+            )
+
+        return redirect(
+            url_for("mes_demandes")
+        )
+
+    return send_file(
+        BytesIO(reponse["piece_jointe"]),
+        as_attachment=True,
+        download_name=reponse["piece_jointe_nom"] or "piece_jointe",
+        mimetype=reponse["piece_jointe_mimetype"] or "application/octet-stream"
+    )
+
+# ==========================================================
 # MESSAGES - ARTISAN
 # ==========================================================
 
@@ -1986,6 +2073,9 @@ def repondre_artisan(demande_id):
         "message",
         ""
     ).strip()
+    fichier = request.files.get(
+        "fichier"
+    )
 
     if not artisan_id:
 
@@ -2136,9 +2226,12 @@ def repondre_artisan(demande_id):
             message,
             created_at,
             lu_artisan,
-            lu_particulier
+            lu_particulier,
+            piece_jointe,
+            piece_jointe_nom,
+            piece_jointe_mimetype
         )
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """,
         (
             demande_id,
@@ -2148,10 +2241,12 @@ def repondre_artisan(demande_id):
             message,
             now_string(),
             0,
-            1
+            1,
+            fichier.read() if fichier and fichier.filename else None,
+            fichier.filename if fichier and fichier.filename else None,
+            fichier.mimetype if fichier and fichier.filename else None
         )
     )
-
     conn.commit()
     conn.close()
 
@@ -3179,10 +3274,6 @@ def enregistrer_descriptions_photos():
         url_for("profil")
     )
 
-
-# ==========================================================
-# AFFICHAGE D'UNE PHOTO
-# ==========================================================
 
 
 # ==========================================================
