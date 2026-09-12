@@ -71,6 +71,10 @@
                             <span class="message-badge">{{ unread_messages }}</span>
                         {% endif %}
                     </a>
+
+                    <a href="{{ url_for('devis') }}">
+                        Devis et factures
+                    </a>
                 
                     <a href="{{ url_for('profil') }}">
                         Mon profil
@@ -152,6 +156,10 @@
                 {% if unread_messages > 0 %}
                     <span class="message-badge">{{ unread_messages }}</span>
                 {% endif %}
+            </a>
+
+            <a href="{{ url_for('devis') }}">
+                Devis et factures
             </a>
 
                 <a href="{{ url_for('profil') }}">
