@@ -84,6 +84,16 @@
                                     {{ groupe.list[0]["artisan_entreprise"] or "Artisan" }}
                                 </h3>
 
+                                <a
+                                    href="{{ url_for(
+                                        'profil_artisan_public',
+                                        artisan_id=groupe.list[0]['artisan_id']
+                                    ) }}"
+                                    class="btn"
+                                >
+                                    Voir le profil de l’artisan
+                                </a>
+
 
                                 {% for reponse in groupe.list %}
 
@@ -126,8 +136,8 @@
                                         'repondre_artisan',
                                         demande_id=element['demande']['id']
                                     ) }}"
+                                    enctype="multipart/form-data"
                                 >
-
                                     <input
                                         type="hidden"
                                         name="artisan_id"
