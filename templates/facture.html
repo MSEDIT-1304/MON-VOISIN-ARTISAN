@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+
+{% block title %}
+Facture - Mon Voisin Artisan
+{% endblock %}
+
+{% block content %}
+
+<h1>Créer une facture</h1>
+
+<div class="section">
+
+    <form method="POST">
+
+        <h2>Informations du client</h2>
+
+        <label for="client_nom">Nom / Entreprise</label>
+        <input
+            type="text"
+            id="client_nom"
+            name="client_nom"
+            required
+        >
+
+        <label for="client_adresse">Adresse</label>
+        <textarea
+            id="client_adresse"
+            name="client_adresse"
+            rows="3"
+            required
+        ></textarea>
+
+        <label for="client_email">E-mail</label>
+        <input
+            type="email"
+            id="client_email"
+            name="client_email"
+        >
+
+        <label for="client_telephone">Téléphone</label>
+        <input
+            type="text"
+            id="client_telephone"
+            name="client_telephone"
+        >
+
+        <h2>Informations de la facture</h2>
+
+        <label for="numero_facture">Numéro de facture</label>
+        <input
+            type="text"
+            id="numero_facture"
+            name="numero_facture"
+            required
+        >
+
+        <label for="date_facture">Date de facture</label>
+        <input
+            type="date"
+            id="date_facture"
+            name="date_facture"
+            required
+        >
+
+        <label for="date_echeance">Date d'échéance</label>
+        <input
+            type="date"
+            id="date_echeance"
+            name="date_echeance"
+        >
+
+        <h2>Prestations / Travaux</h2>
+
+        <label for="description">Description des travaux</label>
+        <textarea
+            id="description"
+            name="description"
+            rows="8"
+            required
+        ></textarea>
+
+        <label for="quantite">Quantité</label>
+        <input
+            type="number"
+            id="quantite"
+            name="quantite"
+            min="1"
+            step="1"
+            value="1"
+            required
+        >
+
+        <label for="prix_unitaire_ht">Prix unitaire HT (€)</label>
+        <input
+            type="number"
+            id="prix_unitaire_ht"
+            name="prix_unitaire_ht"
+            min="0"
+            step="0.01"
+            required
+        >
+
+        <label for="taux_tva">TVA (%)</label>
+        <input
+            type="number"
+            id="taux_tva"
+            name="taux_tva"
+            min="0"
+            step="0.01"
+            value="20"
+            required
+        >
+
+        <label for="conditions">Conditions / Observations</label>
+        <textarea
+            id="conditions"
+            name="conditions"
+            rows="5"
+        ></textarea>
+
+        <button type="submit" class="btn">
+            Générer la facture
+        </button>
+
+    </form>
+
+</div>
+
+<div class="section">
+
+    <a href="{{ url_for('artisan') }}" class="btn">
+        Retour à mon espace
+    </a>
+
+</div>
+
+{% endblock %}
