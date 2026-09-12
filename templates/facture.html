@@ -12,6 +12,28 @@ Facture - Mon Voisin Artisan
 
     <form method="POST">
 
+        <h2>Mes coordonnées</h2>
+
+        <p>
+            <strong>{{ artisan["entreprise"] }}</strong>
+        </p>
+
+        <p>
+            {{ artisan["adresse"] }}<br>
+            {{ artisan["code_postal"] }} {{ artisan["ville"] }}
+        </p>
+
+        {% if artisan["telephone"] %}
+            <p>
+                Téléphone : {{ artisan["telephone"] }}
+            </p>
+        {% endif %}
+
+        <p>
+            SIRET : {{ artisan["siret"] or "Non renseigné" }}<br>
+            TVA intracommunautaire : {{ artisan["tva"] or "Non renseignée" }}
+        </p>
+
         <h2>Informations du client</h2>
 
         <label for="client_nom">Nom / Entreprise</label>
@@ -29,6 +51,22 @@ Facture - Mon Voisin Artisan
             rows="3"
             required
         ></textarea>
+
+        <label for="client_code_postal">Code postal</label>
+        <input
+            type="text"
+            id="client_code_postal"
+            name="client_code_postal"
+            required
+        >
+
+        <label for="client_ville">Ville</label>
+        <input
+            type="text"
+            id="client_ville"
+            name="client_ville"
+            required
+        >
 
         <label for="client_email">E-mail</label>
         <input
@@ -69,48 +107,169 @@ Facture - Mon Voisin Artisan
             name="date_echeance"
         >
 
+        <label for="objet">Objet de la facture</label>
+        <input
+            type="text"
+            id="objet"
+            name="objet"
+            placeholder="Exemple : Travaux de plomberie"
+            required
+        >
+
         <h2>Prestations / Travaux</h2>
 
-        <label for="description">Description des travaux</label>
-        <textarea
-            id="description"
-            name="description"
-            rows="8"
-            required
-        ></textarea>
+        <div class="facture-ligne">
+            <label for="description1">Prestation 1</label>
+            <textarea
+                id="description1"
+                name="description1"
+                rows="2"
+                placeholder="Description de la prestation"
+                required
+            ></textarea>
 
-        <label for="quantite">Quantité</label>
-        <input
-            type="number"
-            id="quantite"
-            name="quantite"
-            min="1"
-            step="1"
-            value="1"
-            required
-        >
+            <label for="quantite1">Quantité</label>
+            <input
+                type="number"
+                id="quantite1"
+                name="quantite1"
+                min="0"
+                step="0.01"
+                value="1"
+            >
 
-        <label for="prix_unitaire_ht">Prix unitaire HT (€)</label>
-        <input
-            type="number"
-            id="prix_unitaire_ht"
-            name="prix_unitaire_ht"
-            min="0"
-            step="0.01"
-            required
-        >
+            <label for="prix_unitaire_ht1">Prix unitaire HT (€)</label>
+            <input
+                type="number"
+                id="prix_unitaire_ht1"
+                name="prix_unitaire_ht1"
+                min="0"
+                step="0.01"
+            >
+        </div>
 
-        <label for="taux_tva">TVA (%)</label>
-        <input
-            type="number"
-            id="taux_tva"
-            name="taux_tva"
-            min="0"
-            step="0.01"
-            value="20"
-            required
-        >
+        <div class="facture-ligne">
+            <label for="description2">Prestation 2</label>
+            <textarea
+                id="description2"
+                name="description2"
+                rows="2"
+                placeholder="Description de la prestation"
+            ></textarea>
 
+            <label for="quantite2">Quantité</label>
+            <input
+                type="number"
+                id="quantite2"
+                name="quantite2"
+                min="0"
+                step="0.01"
+            >
+
+            <label for="prix_unitaire_ht2">Prix unitaire HT (€)</label>
+            <input
+                type="number"
+                id="prix_unitaire_ht2"
+                name="prix_unitaire_ht2"
+                min="0"
+                step="0.01"
+            >
+        </div>
+
+        <div class="facture-ligne">
+            <label for="description3">Prestation 3</label>
+            <textarea
+                id="description3"
+                name="description3"
+                rows="2"
+                placeholder="Description de la prestation"
+            ></textarea>
+
+            <label for="quantite3">Quantité</label>
+            <input
+                type="number"
+                id="quantite3"
+                name="quantite3"
+                min="0"
+                step="0.01"
+            >
+
+            <label for="prix_unitaire_ht3">Prix unitaire HT (€)</label>
+            <input
+                type="number"
+                id="prix_unitaire_ht3"
+                name="prix_unitaire_ht3"
+                min="0"
+                step="0.01"
+            >
+        </div>
+
+        <div class="facture-ligne">
+            <label for="description4">Prestation 4</label>
+            <textarea
+                id="description4"
+                name="description4"
+                rows="2"
+                placeholder="Description de la prestation"
+            ></textarea>
+
+            <label for="quantite4">Quantité</label>
+            <input
+                type="number"
+                id="quantite4"
+                name="quantite4"
+                min="0"
+                step="0.01"
+            >
+
+            <label for="prix_unitaire_ht4">Prix unitaire HT (€)</label>
+            <input
+                type="number"
+                id="prix_unitaire_ht4"
+                name="prix_unitaire_ht4"
+                min="0"
+                step="0.01"
+            >
+        </div>
+
+        <div class="facture-ligne">
+            <label for="description5">Prestation 5</label>
+            <textarea
+                id="description5"
+                name="description5"
+                rows="2"
+                placeholder="Description de la prestation"
+            ></textarea>
+
+            <label for="quantite5">Quantité</label>
+            <input
+                type="number"
+                id="quantite5"
+                name="quantite5"
+                min="0"
+                step="0.01"
+            >
+
+            <label for="prix_unitaire_ht5">Prix unitaire HT (€)</label>
+            <input
+                type="number"
+                id="prix_unitaire_ht5"
+                name="prix_unitaire_ht5"
+                min="0"
+                step="0.01"
+            >
+        </div>
+
+        <h2>Récapitulatif</h2>
+        
+        <p><strong>Total HT :</strong> <span id="total-ht">0,00 €</span></p>
+        <p><strong>TVA :</strong> <span id="montant-tva">0,00 €</span></p>
+        <p><strong>Total TTC :</strong> <span id="total-ttc">0,00 €</span></p>
+
+        <label for="taux_tva">Taux de TVA (%)</label>
+        <input type="number" id="taux_tva" name="taux_tva"
+               min="0" max="100" step="0.01" value="20">
+        
         <label for="conditions">Conditions / Observations</label>
         <textarea
             id="conditions"
@@ -118,8 +277,8 @@ Facture - Mon Voisin Artisan
             rows="5"
         ></textarea>
 
-        <button type="submit" class="btn">
-            Générer la facture
+        <button type="submit">
+            Générer la facture PDF
         </button>
 
     </form>
@@ -133,5 +292,42 @@ Facture - Mon Voisin Artisan
     </a>
 
 </div>
+
+<script>
+function calculerTotaux() {
+    let totalHT = 0;
+
+    for (let i = 1; i <= 5; i++) {
+        const quantite = parseFloat(document.getElementById("quantite" + i)?.value) || 0;
+        const prixUnitaire = parseFloat(document.getElementById("prix_unitaire_ht" + i)?.value) || 0;
+
+        totalHT += quantite * prixUnitaire;
+    }
+
+    const tauxTVA = parseFloat(document.getElementById("taux_tva")?.value) || 0;
+    const montantTVA = totalHT * tauxTVA / 100;
+    const totalTTC = totalHT + montantTVA;
+
+    document.getElementById("total-ht").textContent =
+        totalHT.toFixed(2).replace(".", ",") + " €";
+
+    document.getElementById("montant-tva").textContent =
+        montantTVA.toFixed(2).replace(".", ",") + " €";
+
+    document.getElementById("total-ttc").textContent =
+        totalTTC.toFixed(2).replace(".", ",") + " €";
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+    for (let i = 1; i <= 5; i++) {
+        document.getElementById("quantite" + i)?.addEventListener("input", calculerTotaux);
+        document.getElementById("prix_unitaire_ht" + i)?.addEventListener("input", calculerTotaux);
+    }
+
+    document.getElementById("taux_tva")?.addEventListener("input", calculerTotaux);
+
+    calculerTotaux();
+});
+</script>
 
 {% endblock %}
