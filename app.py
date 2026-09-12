@@ -121,6 +121,9 @@ def init_database():
             photo1 TEXT,
             photo2 TEXT,
             photo3 TEXT,
+            description_photo1 TEXT,
+            description_photo2 TEXT,
+            description_photo3 TEXT,
             siret TEXT,
             tva TEXT,
             photo_profil BLOB,
@@ -206,6 +209,9 @@ def init_database():
             ("siret", "TEXT"),
             ("tva", "TEXT"),
             ("photo_profil", "BLOB")
+            ("description_photo1", "TEXT"),
+            ("description_photo2", "TEXT"),
+            ("description_photo3", "TEXT")
         ]
         
         for colonne, definition in colonnes_artisan:
@@ -1263,6 +1269,165 @@ def deconnexion():
     )
 
 # ==========================================================
+# SUPPRIMER UNE DEMANDE - PARTICULIER
+# ==========================================================
+
+@app.route(
+    "/mes-demandes/<int:demande_id>/supprimer",
+    methods=["POST"]
+)
+def supprimer_demande(demande_id):
+
+    if not particulier_logged():
+        return redirect(
+            url_for("connexion")
+        )
+
+    particulier_id = session.get("user_id")
+
+    if not particulier_id:
+        return redirect(
+            url_for("connexion")
+        )
+
+    conn = get_connection()
+
+    demande_item = conn.execute(
+        """
+        SELECT id
+        FROM demandes
+        WHERE id = ?
+        AND particulier_id = ?
+        """,
+        (
+            demande_id,
+            particulier_id
+        )
+    ).fetchone()
+
+    if not demande_item:
+        conn.close()
+
+        flash(
+            "Cette demande n'existe pas."
+        )
+
+        return redirect(
+            url_for("mes_demandes")
+        )
+
+    conn.execute(
+        """
+        DELETE FROM reponses
+        WHERE demande_id = ?
+        """,
+        (demande_id,)
+    )
+
+    conn.execute(
+        """
+        DELETE FROM demandes
+        WHERE id = ?
+        AND particulier_id = ?
+        """,
+        (
+            demande_id,
+            particulier_id
+        )
+    )
+
+    conn.commit()
+    conn.close()
+
+    flash(
+        "Votre demande a été supprimée."
+    )
+
+    return redirect(
+        url_for("mes_demandes")
+    )
+
+# ==========================================================
+# SUPPRIMER UN MESSAGE
+# ==========================================================
+
+@app.route(
+    "/message/<int:reponse_id>/supprimer",
+    methods=["POST"]
+)
+def supprimer_message(reponse_id):
+
+    user_type = session.get("user_type")
+    user_id = session.get("user_id")
+
+    if not user_type or not user_id:
+        return redirect(
+            url_for("connexion")
+        )
+
+    conn = get_connection()
+
+    reponse = conn.execute(
+        """
+        SELECT id
+        FROM reponses
+        WHERE id = ?
+        AND (
+            (artisan_id = ? AND ? = 'artisan')
+            OR
+            (particulier_id = ? AND ? = 'particulier')
+        )
+        """,
+        (
+            reponse_id,
+            user_id,
+            user_type,
+            user_id,
+            user_type
+        )
+    ).fetchone()
+
+    if not reponse:
+        conn.close()
+
+        flash(
+            "Ce message n'existe pas."
+        )
+
+        if user_type == "artisan":
+            return redirect(
+                url_for("messages")
+            )
+
+        return redirect(
+            url_for("mes_demandes")
+        )
+
+    conn.execute(
+        """
+        DELETE FROM reponses
+        WHERE id = ?
+        """,
+        (reponse_id,)
+    )
+
+    conn.commit()
+    conn.close()
+
+    flash(
+        "Le message a été supprimé."
+    )
+
+    if user_type == "artisan":
+        return redirect(
+            url_for("messages")
+        )
+
+    return redirect(
+        url_for("mes_demandes")
+    )
+
+# ==========================================================
 # MESSAGES - ARTISAN
 # ==========================================================
 
@@ -1322,6 +1487,45 @@ def messages():
         "messages.html",
         messages=messages
     )
+    
+# ==========================================================
+# PROFIL PUBLIC ARTISAN
+# ==========================================================
+
+@app.route(
+    "/profil-artisan/<int:artisan_id>"
+)
+def profil_artisan_public(artisan_id):
+
+    if not particulier_logged():
+        return redirect(
+            url_for("connexion")
+        )
+
+    conn = get_connection()
+
+    artisan = conn.execute(
+        """
+        SELECT *
+        FROM artisans
+        WHERE id = ?
+        """,
+        (artisan_id,)
+    ).fetchone()
+
+    conn.close()
+
+    if not artisan:
+        return redirect(
+            url_for("mes_demandes")
+        )
+
+    return render_template(
+        "profil_artisan_public.html",
+        artisan=artisan
+    )
+
+
 
 # ==========================================================
 # ESPACE ARTISAN
@@ -2795,7 +2999,21 @@ def modifier_photos():
     photo1 = request.files.get("photo1")
     photo2 = request.files.get("photo2")
     photo3 = request.files.get("photo3")
-
+    description_photo1 = request.form.get(
+        "description_photo1",
+        ""
+    ).strip()
+    
+    description_photo2 = request.form.get(
+        "description_photo2",
+        ""
+    ).strip()
+    
+    description_photo3 = request.form.get(
+        "description_photo3",
+        ""
+    ).strip()
+    
     photos = [
         photo1,
         photo2,
@@ -2847,12 +3065,18 @@ def modifier_photos():
             photo1 = ?,
             photo2 = ?,
             photo3 = ?
+            description_photo1 = ?,
+            description_photo2 = ?,
+            description_photo3 = ?
         WHERE id = ?
         """,
         (
             photo1,
             photo2,
             photo3,
+            description_photo1,
+            description_photo2,
+            description_photo3,
             artisan_user["id"]
         )
     )
