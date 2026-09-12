@@ -208,7 +208,7 @@ def init_database():
         colonnes_artisan = [
             ("siret", "TEXT"),
             ("tva", "TEXT"),
-            ("photo_profil", "BLOB")
+            ("photo_profil", "BLOB"),
             ("description_photo1", "TEXT"),
             ("description_photo2", "TEXT"),
             ("description_photo3", "TEXT")
