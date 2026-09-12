@@ -3091,18 +3091,12 @@ def modifier_photos():
             photo1 = ?,
             photo2 = ?,
             photo3 = ?
-            description_photo1 = ?,
-            description_photo2 = ?,
-            description_photo3 = ?
         WHERE id = ?
         """,
         (
             photo1,
             photo2,
             photo3,
-            description_photo1,
-            description_photo2,
-            description_photo3,
             artisan_user["id"]
         )
     )
@@ -3168,6 +3162,60 @@ def afficher_photo(
     else:
         mimetype = "image/jpeg"
     
+    return Response(
+        image,
+        mimetype=mimetype
+    )
+
+# ==========================================================
+# AFFICHER LA PHOTO DE PROFIL ARTISAN
+# ==========================================================
+
+@app.route("/profil/photo-profil")
+def afficher_photo_profil():
+
+    if not artisan_logged():
+        return redirect(
+            url_for("connexion")
+        )
+
+    artisan_id = session.get("user_id")
+
+    if not artisan_id:
+        return "", 404
+
+    conn = get_connection()
+
+    artisan_user = conn.execute(
+        """
+        SELECT photo_profil
+        FROM artisans
+        WHERE id = ?
+        """,
+        (artisan_id,)
+    ).fetchone()
+
+    conn.close()
+
+    if not artisan_user:
+        return "", 404
+
+    image = artisan_user["photo_profil"]
+
+    if not image:
+        return "", 404
+
+    from flask import Response
+
+    if image.startswith(b"\x89PNG"):
+        mimetype = "image/png"
+
+    elif image.startswith(b"RIFF") and image[8:12] == b"WEBP":
+        mimetype = "image/webp"
+
+    else:
+        mimetype = "image/jpeg"
+
     return Response(
         image,
         mimetype=mimetype
