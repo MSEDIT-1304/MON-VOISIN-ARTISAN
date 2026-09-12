@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+
+{% block title %}
+Profil artisan - Mon Voisin Artisan
+{% endblock %}
+
+{% block content %}
+
+<h1>{{ artisan["entreprise"] or "Artisan" }}</h1>
+
+<div class="section">
+
+    {% if artisan["photo_profil"] %}
+        <div class="profile-photo-public">
+            <img
+                src="{{ url_for('afficher_photo_profil', artisan_id=artisan['id']) }}"
+                alt="Photo ou logo de {{ artisan['entreprise'] }}"
+            >
+        </div>
+    {% endif %}
+
+    {% if artisan["description"] %}
+        <h2>Présentation</h2>
+        <p>{{ artisan["description"] }}</p>
+    {% endif %}
+
+    {% if artisan["activites"] %}
+        <h2>Activités proposées</h2>
+        <p>{{ artisan["activites"] }}</p>
+    {% endif %}
+
+    {% if artisan["sous_categories"] %}
+        <h2>Travaux proposés</h2>
+        <p>{{ artisan["sous_categories"] }}</p>
+    {% endif %}
+
+    {% if artisan["ville"] %}
+        <p><strong>Ville :</strong> {{ artisan["ville"] }}</p>
+    {% endif %}
+
+    {% if artisan["telephone"] %}
+        <p><strong>Téléphone :</strong> {{ artisan["telephone"] }}</p>
+    {% endif %}
+
+</div>
+
+<div class="section">
+
+    <h2>Réalisations</h2>
+
+    <div class="realisations">
+
+        {% if artisan["photo1"] %}
+            <div class="realisation">
+                <img
+                    src="{{ url_for('afficher_photo', artisan_id=artisan['id'], numero=1) }}"
+                    alt="Réalisation 1"
+                >
+                {% if artisan["description_photo1"] %}
+                    <p>{{ artisan["description_photo1"] }}</p>
+                {% endif %}
+            </div>
+        {% endif %}
+
+        {% if artisan["photo2"] %}
+            <div class="realisation">
+                <img
+                    src="{{ url_for('afficher_photo', artisan_id=artisan['id'], numero=2) }}"
+                    alt="Réalisation 2"
+                >
+                {% if artisan["description_photo2"] %}
+                    <p>{{ artisan["description_photo2"] }}</p>
+                {% endif %}
+            </div>
+        {% endif %}
+
+        {% if artisan["photo3"] %}
+            <div class="realisation">
+                <img
+                    src="{{ url_for('afficher_photo', artisan_id=artisan['id'], numero=3) }}"
+                    alt="Réalisation 3"
+                >
+                {% if artisan["description_photo3"] %}
+                    <p>{{ artisan["description_photo3"] }}</p>
+                {% endif %}
+            </div>
+        {% endif %}
+
+    </div>
+
+</div>
+
+<div class="section">
+    <a href="{{ url_for('mes_demandes') }}" class="btn">
+        Retour à mes demandes
+    </a>
+</div>
+
+{% endblock %}
