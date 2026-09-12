@@ -330,6 +330,7 @@
 
     {% if user_type == "artisan" %}
 
+        <!-- ENREGISTREMENT DES PHOTOS -->
         <form
             method="POST"
             action="/profil/photos"
@@ -344,16 +345,7 @@
                 name="photo1"
                 accept=".jpg,.jpeg,.png,.webp"
             >
-            <label for="description_photo1">
-                Description des travaux
-            </label>
 
-            <textarea
-                id="description_photo1"
-                name="description_photo1"
-                placeholder="Décrivez les travaux réalisés."
-            >{{ user['description_photo1'] or '' }}</textarea>
-            
             <label for="photo2">Photo 2</label>
 
             <input
@@ -362,16 +354,6 @@
                 name="photo2"
                 accept=".jpg,.jpeg,.png,.webp"
             >
-
-            <label for="description_photo2">
-                Description des travaux
-            </label>
-
-            <textarea
-                id="description_photo2"
-                name="description_photo2"
-                placeholder="Décrivez les travaux réalisés."
-            >{{ user['description_photo2'] or '' }}</textarea>
 
             <label for="photo3">Photo 3</label>
 
@@ -382,8 +364,43 @@
                 accept=".jpg,.jpeg,.png,.webp"
             >
 
+            <button type="submit" class="btn">
+                Enregistrer mes photos
+            </button>
+
+        </form>
+
+
+        <!-- ENREGISTREMENT DES DESCRIPTIFS -->
+        <form
+            method="POST"
+            action="/profil/descriptions-photos"
+        >
+
+            <label for="description_photo1">
+                Description des travaux - Photo 1
+            </label>
+
+            <textarea
+                id="description_photo1"
+                name="description_photo1"
+                placeholder="Décrivez les travaux réalisés."
+            >{{ user['description_photo1'] or '' }}</textarea>
+
+
+            <label for="description_photo2">
+                Description des travaux - Photo 2
+            </label>
+
+            <textarea
+                id="description_photo2"
+                name="description_photo2"
+                placeholder="Décrivez les travaux réalisés."
+            >{{ user['description_photo2'] or '' }}</textarea>
+
+
             <label for="description_photo3">
-                Description des travaux
+                Description des travaux - Photo 3
             </label>
 
             <textarea
@@ -392,8 +409,9 @@
                 placeholder="Décrivez les travaux réalisés."
             >{{ user['description_photo3'] or '' }}</textarea>
 
+
             <button type="submit" class="btn">
-                Enregistrer mes photos
+                Enregistrer les descriptifs photos
             </button>
 
         </form>
