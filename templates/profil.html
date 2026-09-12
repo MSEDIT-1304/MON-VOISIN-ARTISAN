@@ -242,6 +242,43 @@
 
 </div>
 
+    <div class="profile-logo">
+
+        <h2>Photo de profil / Logo</h2>
+
+        <p>
+            Ajoutez une photo de profil ou le logo de votre entreprise.
+        </p>
+
+        {% if user['photo_profil'] %}
+
+            <img
+                src="/photo-profil/{{ user['id'] }}"
+                alt="Photo de profil ou logo"
+            >
+
+        {% endif %}
+
+        <form
+            method="POST"
+            action="/profil/photo-profil"
+            enctype="multipart/form-data"
+        >
+
+            <input
+                type="file"
+                id="photo_profil"
+                name="photo_profil"
+                accept=".jpg,.jpeg,.png,.webp"
+            >
+
+            <button type="submit" class="btn">
+                Enregistrer ma photo / mon logo
+            </button>
+
+        </form>
+
+    </div>
 {% endif %}
 
 
@@ -307,7 +344,16 @@
                 name="photo1"
                 accept=".jpg,.jpeg,.png,.webp"
             >
+            <label for="description_photo1">
+                Description des travaux
+            </label>
 
+            <textarea
+                id="description_photo1"
+                name="description_photo1"
+                placeholder="Décrivez les travaux réalisés."
+            >{{ user['description_photo1'] or '' }}</textarea>
+            
             <label for="photo2">Photo 2</label>
 
             <input
@@ -317,6 +363,16 @@
                 accept=".jpg,.jpeg,.png,.webp"
             >
 
+            <label for="description_photo2">
+                Description des travaux
+            </label>
+
+            <textarea
+                id="description_photo2"
+                name="description_photo2"
+                placeholder="Décrivez les travaux réalisés."
+            >{{ user['description_photo2'] or '' }}</textarea>
+
             <label for="photo3">Photo 3</label>
 
             <input
@@ -325,6 +381,16 @@
                 name="photo3"
                 accept=".jpg,.jpeg,.png,.webp"
             >
+
+            <label for="description_photo3">
+                Description des travaux
+            </label>
+
+            <textarea
+                id="description_photo3"
+                name="description_photo3"
+                placeholder="Décrivez les travaux réalisés."
+            >{{ user['description_photo3'] or '' }}</textarea>
 
             <button type="submit" class="btn">
                 Enregistrer mes photos
