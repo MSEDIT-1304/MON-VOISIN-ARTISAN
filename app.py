@@ -3090,7 +3090,7 @@ def modifier_photos():
         SET
             photo1 = ?,
             photo2 = ?,
-            photo3 = ?
+            photo3 = ?,
         WHERE id = ?
         """,
         (
@@ -3111,6 +3111,78 @@ def modifier_photos():
     return redirect(
         url_for("profil")
     )
+
+# ==========================================================
+# ENREGISTRER LES DESCRIPTIFS DES PHOTOS
+# ==========================================================
+
+@app.route(
+    "/profil/descriptions-photos",
+    methods=["POST"]
+)
+def enregistrer_descriptions_photos():
+
+    if not artisan_logged():
+        return redirect(
+            url_for("connexion")
+        )
+
+    artisan_user = get_current_user()
+
+    if not artisan_user:
+        return redirect(
+            url_for("connexion")
+        )
+
+    description_photo1 = request.form.get(
+        "description_photo1",
+        ""
+    ).strip()
+
+    description_photo2 = request.form.get(
+        "description_photo2",
+        ""
+    ).strip()
+
+    description_photo3 = request.form.get(
+        "description_photo3",
+        ""
+    ).strip()
+
+    conn = get_connection()
+
+    conn.execute(
+        """
+        UPDATE artisans
+        SET
+            description_photo1 = ?,
+            description_photo2 = ?,
+            description_photo3 = ?
+        WHERE id = ?
+        """,
+        (
+            description_photo1,
+            description_photo2,
+            description_photo3,
+            artisan_user["id"]
+        )
+    )
+
+    conn.commit()
+    conn.close()
+
+    flash(
+        "Les descriptifs de vos photos ont été enregistrés."
+    )
+
+    return redirect(
+        url_for("profil")
+    )
+
+
+# ==========================================================
+# AFFICHAGE D'UNE PHOTO
+# ==========================================================
 
 
 # ==========================================================
@@ -3220,6 +3292,125 @@ def afficher_photo_profil():
         image,
         mimetype=mimetype
     )
+
+# ==========================================================
+# PHOTO DE PROFIL / LOGO ARTISAN
+# ==========================================================
+
+@app.route(
+    "/profil/photo-profil",
+    methods=["POST"]
+)
+@app.route(
+    "/photo-profil/<int:artisan_id>",
+    methods=["GET"]
+)
+def afficher_photo_profil(artisan_id=None):
+
+    if request.method == "POST":
+
+        if not artisan_logged():
+            return redirect(
+                url_for("connexion")
+            )
+
+        artisan_user = get_current_user()
+
+        if not artisan_user:
+            return redirect(
+                url_for("connexion")
+            )
+
+        photo = request.files.get(
+            "photo_profil"
+        )
+
+        if not photo or not photo.filename:
+            flash(
+                "Veuillez sélectionner une photo ou un logo."
+            )
+            return redirect(
+                url_for("profil")
+            )
+
+        if not allowed_image(
+            photo.filename
+        ):
+            flash(
+                "Format de photo non accepté. "
+                "Utilisez JPG, JPEG, PNG ou WEBP."
+            )
+            return redirect(
+                url_for("profil")
+            )
+
+        image = photo.read()
+
+        conn = get_connection()
+
+        conn.execute(
+            """
+            UPDATE artisans
+            SET photo_profil = ?
+            WHERE id = ?
+            """,
+            (
+                image,
+                artisan_user["id"]
+            )
+        )
+
+        conn.commit()
+        conn.close()
+
+        flash(
+            "Votre photo / votre logo a été enregistré."
+        )
+
+        return redirect(
+            url_for("profil")
+        )
+
+    if artisan_id is None:
+        return "", 404
+
+    conn = get_connection()
+
+    artisan_user = conn.execute(
+        """
+        SELECT photo_profil
+        FROM artisans
+        WHERE id = ?
+        """,
+        (artisan_id,)
+    ).fetchone()
+
+    conn.close()
+
+    if not artisan_user:
+        return "", 404
+
+    image = artisan_user["photo_profil"]
+
+    if not image:
+        return "", 404
+
+    from flask import Response
+
+    if image.startswith(b"\x89PNG"):
+        mimetype = "image/png"
+
+    elif image.startswith(b"RIFF") and image[8:12] == b"WEBP":
+        mimetype = "image/webp"
+
+    else:
+        mimetype = "image/jpeg"
+
+    return Response(
+        image,
+        mimetype=mimetype
+    )
+
     
 # ==========================================================
 # GÉNÉRATION PDF - DEVIS
