@@ -17,12 +17,37 @@ import os
 import re
 import math
 import sqlite3
+from io import BytesIO
+
 import pandas as pd
 import requests
 import bcrypt
 
 from datetime import datetime, timedelta
 from functools import lru_cache
+
+from flask import (
+    Flask,
+    render_template,
+    request,
+    redirect,
+    url_for,
+    session,
+    flash,
+    send_file
+)
+
+from reportlab.lib import colors
+from reportlab.lib.pagesizes import A4
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.lib.enums import TA_CENTER, TA_RIGHT
+from reportlab.platypus import (
+    SimpleDocTemplate,
+    Paragraph,
+    Spacer,
+    Table,
+    TableStyle
+)
 
 
 # ==========================================================
@@ -39,7 +64,7 @@ SHEET_ID = "1JWwwLP3IKaG-ELsC3li84eouOFVFnv_C5MxBDQSfz3M"
 # Make
 WEBHOOK_URL = "https://hook.eu1.make.com/942mf8fk2jehv637xc3s0tsjsxrad0gu"
 
-# Stripe - ESSAI GRATUIT 7 JOURS
+# Stripe - ESSAI GRATUIT 15 JOURS
 TRIAL_LINK = "https://buy.stripe.com/eVq7sM9YK9RH1HJeek9fW0l"
 
 # Stripe - 1 MOIS : 20 € HT / 24 € TTC
@@ -3146,7 +3171,372 @@ def afficher_photo(
         image,
         mimetype=mimetype
     )
+    
+# ==========================================================
+# GÉNÉRATION PDF - DEVIS
+# ==========================================================
 
+def generer_pdf_devis(artisan, donnees):
+    buffer = BytesIO()
+
+    document = SimpleDocTemplate(
+        buffer,
+        pagesize=A4,
+        rightMargin=40,
+        leftMargin=40,
+        topMargin=40,
+        bottomMargin=40
+    )
+
+    styles = getSampleStyleSheet()
+
+    titre_style = ParagraphStyle(
+        "TitreDevis",
+        parent=styles["Title"],
+        alignment=TA_CENTER,
+        fontSize=20,
+        spaceAfter=20
+    )
+
+    texte_style = ParagraphStyle(
+        "TexteDevis",
+        parent=styles["Normal"],
+        fontSize=9,
+        leading=12
+    )
+
+    elements = []
+
+    elements.append(
+        Paragraph("DEVIS", titre_style)
+    )
+
+    elements.append(
+        Paragraph(
+            f"<b>{artisan['entreprise']}</b><br/>"
+            f"{artisan['adresse']}<br/>"
+            f"{artisan['code_postal']} {artisan['ville']}<br/>"
+            f"Téléphone : {artisan['telephone'] or ''}<br/>"
+            f"SIRET : {artisan['siret'] or 'Non renseigné'}<br/>"
+            f"TVA : {artisan['tva'] or 'Non renseignée'}",
+            texte_style
+        )
+    )
+
+    elements.append(Spacer(1, 15))
+
+    elements.append(
+        Paragraph(
+            f"<b>Client :</b> {donnees.get('client_nom', '')}<br/>"
+            f"{donnees.get('client_adresse', '')}<br/>"
+            f"{donnees.get('client_code_postal', '')} "
+            f"{donnees.get('client_ville', '')}<br/>"
+            f"E-mail : {donnees.get('client_email', '')}<br/>"
+            f"Téléphone : {donnees.get('client_telephone', '')}",
+            texte_style
+        )
+    )
+
+    elements.append(Spacer(1, 15))
+
+    elements.append(
+        Paragraph(
+            f"<b>Numéro du devis :</b> {donnees.get('numero', '')}<br/>"
+            f"<b>Date :</b> {donnees.get('date', '')}<br/>"
+            f"<b>Validité :</b> {donnees.get('validite', '')}<br/>"
+            f"<b>Objet :</b> {donnees.get('objet', '')}",
+            texte_style
+        )
+    )
+
+    elements.append(Spacer(1, 20))
+
+    lignes = [
+        [
+            Paragraph("<b>Prestation</b>", texte_style),
+            Paragraph("<b>Qté</b>", texte_style),
+            Paragraph("<b>Prix unitaire HT</b>", texte_style),
+            Paragraph("<b>Total HT</b>", texte_style)
+        ]
+    ]
+
+    total_ht = 0
+
+    champs_obligatoires = [
+        "client_nom",
+        "client_adresse",
+        "client_code_postal",
+        "client_ville",
+        "numero",
+        "date",
+        "validite",
+        "objet"
+    ]
+
+    for champ in champs_obligatoires:
+        if not donnees.get(champ):
+            flash("Veuillez renseigner tous les champs obligatoires du devis.")
+            return render_template(
+                "devis.html",
+                artisan=artisan
+            )
+            
+    for i in range(1, 6):
+        description = donnees.get(f"description{i}", "").strip()
+        quantite = float(donnees.get(f"quantite{i}", 0) or 0)
+        prix_unitaire = float(
+            donnees.get(f"prix_unitaire_ht{i}", 0) or 0
+        )
+
+        total_ligne = quantite * prix_unitaire
+        total_ht += total_ligne
+
+        if description:
+            lignes.append(
+                [
+                    Paragraph(description, texte_style),
+                    Paragraph(f"{quantite:g}", texte_style),
+                    Paragraph(f"{prix_unitaire:.2f} €", texte_style),
+                    Paragraph(f"{total_ligne:.2f} €", texte_style)
+                ]
+            )
+
+    tableau = Table(
+        lignes,
+        colWidths=[250, 55, 95, 95]
+    )
+
+    tableau.setStyle(
+        TableStyle(
+            [
+                ("GRID", (0, 0), (-1, -1), 0.5, colors.grey),
+                ("BACKGROUND", (0, 0), (-1, 0), colors.lightgrey),
+                ("VALIGN", (0, 0), (-1, -1), "TOP"),
+                ("ALIGN", (1, 1), (-1, -1), "RIGHT"),
+                ("PADDING", (0, 0), (-1, -1), 6)
+            ]
+        )
+    )
+
+    elements.append(tableau)
+    elements.append(Spacer(1, 15))
+
+    taux_tva = float(donnees.get("taux_tva", 0) or 0)
+    montant_tva = total_ht * taux_tva / 100
+    total_ttc = total_ht + montant_tva
+
+    recap = Table(
+        [
+            ["Total HT", f"{total_ht:.2f} €"],
+            [f"TVA ({taux_tva:g} %)", f"{montant_tva:.2f} €"],
+            ["Total TTC", f"{total_ttc:.2f} €"]
+        ],
+        colWidths=[350, 145]
+    )
+
+    recap.setStyle(
+        TableStyle(
+            [
+                ("GRID", (0, 0), (-1, -1), 0.5, colors.grey),
+                ("ALIGN", (1, 0), (1, -1), "RIGHT"),
+                ("FONTNAME", (0, 2), (-1, 2), "Helvetica-Bold"),
+                ("PADDING", (0, 0), (-1, -1), 6)
+            ]
+        )
+    )
+
+    elements.append(recap)
+    elements.append(Spacer(1, 15))
+
+    conditions = donnees.get("conditions", "").strip()
+
+    if conditions:
+        elements.append(
+            Paragraph(
+                f"<b>Conditions / Observations :</b><br/>{conditions}",
+                texte_style
+            )
+        )
+
+    document.build(elements)
+
+    buffer.seek(0)
+
+    return buffer
+
+# ==========================================================
+# GÉNÉRATION PDF - FACTURE
+# ==========================================================
+
+def generer_pdf_facture(artisan, donnees):
+    buffer = BytesIO()
+
+    document = SimpleDocTemplate(
+        buffer,
+        pagesize=A4,
+        rightMargin=40,
+        leftMargin=40,
+        topMargin=40,
+        bottomMargin=40
+    )
+
+    styles = getSampleStyleSheet()
+
+    titre_style = ParagraphStyle(
+        "TitreFacture",
+        parent=styles["Title"],
+        alignment=TA_CENTER,
+        fontSize=20,
+        spaceAfter=20
+    )
+
+    texte_style = ParagraphStyle(
+        "TexteFacture",
+        parent=styles["Normal"],
+        fontSize=9,
+        leading=12
+    )
+
+    elements = []
+
+    elements.append(
+        Paragraph("FACTURE", titre_style)
+    )
+
+    elements.append(
+        Paragraph(
+            f"<b>{artisan['entreprise']}</b><br/>"
+            f"{artisan['adresse']}<br/>"
+            f"{artisan['code_postal']} {artisan['ville']}<br/>"
+            f"Téléphone : {artisan['telephone'] or ''}<br/>"
+            f"SIRET : {artisan['siret'] or 'Non renseigné'}<br/>"
+            f"TVA : {artisan['tva'] or 'Non renseignée'}",
+            texte_style
+        )
+    )
+
+    elements.append(Spacer(1, 15))
+
+    elements.append(
+        Paragraph(
+            f"<b>Client :</b> {donnees.get('client_nom', '')}<br/>"
+            f"{donnees.get('client_adresse', '')}<br/>"
+            f"{donnees.get('client_code_postal', '')} "
+            f"{donnees.get('client_ville', '')}<br/>"
+            f"E-mail : {donnees.get('client_email', '')}<br/>"
+            f"Téléphone : {donnees.get('client_telephone', '')}",
+            texte_style
+        )
+    )
+
+    elements.append(Spacer(1, 15))
+
+    elements.append(
+        Paragraph(
+            f"<b>Numéro de facture :</b> {donnees.get('numero', '')}<br/>"
+            f"<b>Date :</b> {donnees.get('date', '')}<br/>"
+            f"<b>Date d'échéance :</b> {donnees.get('echeance', '')}<br/>"
+            f"<b>Objet :</b> {donnees.get('objet', '')}",
+            texte_style
+        )
+    )
+
+    elements.append(Spacer(1, 20))
+
+    lignes = [
+        [
+            Paragraph("<b>Prestation</b>", texte_style),
+            Paragraph("<b>Qté</b>", texte_style),
+            Paragraph("<b>Prix unitaire HT</b>", texte_style),
+            Paragraph("<b>Total HT</b>", texte_style)
+        ]
+    ]
+
+    total_ht = 0
+
+    for i in range(1, 6):
+        description = donnees.get(f"description{i}", "").strip()
+        quantite = float(donnees.get(f"quantite{i}", 0) or 0)
+        prix_unitaire = float(
+            donnees.get(f"prix_unitaire_ht{i}", 0) or 0
+        )
+
+        total_ligne = quantite * prix_unitaire
+        total_ht += total_ligne
+
+        if description:
+            lignes.append(
+                [
+                    Paragraph(description, texte_style),
+                    Paragraph(f"{quantite:g}", texte_style),
+                    Paragraph(f"{prix_unitaire:.2f} €", texte_style),
+                    Paragraph(f"{total_ligne:.2f} €", texte_style)
+                ]
+            )
+
+    tableau = Table(
+        lignes,
+        colWidths=[250, 55, 95, 95]
+    )
+
+    tableau.setStyle(
+        TableStyle(
+            [
+                ("GRID", (0, 0), (-1, -1), 0.5, colors.grey),
+                ("BACKGROUND", (0, 0), (-1, 0), colors.lightgrey),
+                ("VALIGN", (0, 0), (-1, -1), "TOP"),
+                ("ALIGN", (1, 1), (-1, -1), "RIGHT"),
+                ("PADDING", (0, 0), (-1, -1), 6)
+            ]
+        )
+    )
+
+    elements.append(tableau)
+    elements.append(Spacer(1, 15))
+
+    taux_tva = float(donnees.get("taux_tva", 0) or 0)
+    montant_tva = total_ht * taux_tva / 100
+    total_ttc = total_ht + montant_tva
+
+    recap = Table(
+        [
+            ["Total HT", f"{total_ht:.2f} €"],
+            [f"TVA ({taux_tva:g} %)", f"{montant_tva:.2f} €"],
+            ["Total TTC", f"{total_ttc:.2f} €"]
+        ],
+        colWidths=[350, 145]
+    )
+
+    recap.setStyle(
+        TableStyle(
+            [
+                ("GRID", (0, 0), (-1, -1), 0.5, colors.grey),
+                ("ALIGN", (1, 0), (1, -1), "RIGHT"),
+                ("FONTNAME", (0, 2), (-1, 2), "Helvetica-Bold"),
+                ("PADDING", (0, 0), (-1, -1), 6)
+            ]
+        )
+    )
+
+    elements.append(recap)
+    elements.append(Spacer(1, 15))
+
+    conditions = donnees.get("conditions", "").strip()
+
+    if conditions:
+        elements.append(
+            Paragraph(
+                f"<b>Conditions / Observations :</b><br/>{conditions}",
+                texte_style
+            )
+        )
+
+    document.build(elements)
+
+    buffer.seek(0)
+
+    return buffer
+    
 # ==========================================================
 # DEVIS
 # ==========================================================
@@ -3161,9 +3551,115 @@ def devis():
     if not artisan:
         return redirect(url_for("connexion"))
 
-    return render_template(
-        "devis.html",
-        artisan=artisan
+    if request.method == "GET":
+        return render_template(
+            "devis.html",
+            artisan=artisan
+        )
+
+    donnees = {
+        "client_nom": request.form.get("client_nom", "").strip(),
+        "client_adresse": request.form.get("client_adresse", "").strip(),
+        "client_code_postal": request.form.get("client_code_postal", "").strip(),
+        "client_ville": request.form.get("client_ville", "").strip(),
+        "client_email": request.form.get("client_email", "").strip(),
+        "client_telephone": request.form.get("client_telephone", "").strip(),
+        "numero": request.form.get("numero", "").strip(),
+        "date": request.form.get("date", "").strip(),
+        "validite": request.form.get("validite", "").strip(),
+        "objet": request.form.get("objet", "").strip(),
+        "taux_tva": request.form.get("taux_tva", "20").strip(),
+        "conditions": request.form.get("conditions", "").strip()
+    }
+
+    champs_obligatoires = [
+        "client_nom",
+        "client_adresse",
+        "client_code_postal",
+        "client_ville",
+        "numero",
+        "date",
+        "validite",
+        "objet"
+    ]
+
+    for champ in champs_obligatoires:
+        if not donnees.get(champ):
+            flash("Veuillez renseigner tous les champs obligatoires du devis.")
+            return render_template(
+                "devis.html",
+                artisan=artisan
+            ) 
+
+    for i in range(1, 6):
+        donnees[f"description{i}"] = request.form.get(
+            f"description{i}", ""
+        ).strip()
+
+        donnees[f"quantite{i}"] = request.form.get(
+            f"quantite{i}", "0"
+        ).strip()
+
+        donnees[f"prix_unitaire_ht{i}"] = request.form.get(
+            f"prix_unitaire_ht{i}", "0"
+        ).strip()
+
+        prestation_presente = any(
+            donnees[f"description{i}"]
+            for i in range(1, 6)
+        )
+    
+        if not prestation_presente:
+            flash("Veuillez renseigner au moins une prestation dans le devis.")
+            return render_template(
+                "devis.html",
+                artisan=artisan
+            )
+    
+    try:
+        taux_tva = float(
+            donnees["taux_tva"].replace(",", ".")
+        )
+
+        if taux_tva < 0 or taux_tva > 100:
+            raise ValueError
+
+        donnees["taux_tva"] = str(taux_tva)
+
+        for i in range(1, 6):
+            quantite = float(
+                donnees[f"quantite{i}"].replace(",", ".") or 0
+            )
+            prix = float(
+                donnees[f"prix_unitaire_ht{i}"].replace(",", ".") or 0
+            )
+
+            if quantite < 0 or prix < 0:
+                raise ValueError
+
+            donnees[f"quantite{i}"] = str(quantite)
+            donnees[f"prix_unitaire_ht{i}"] = str(prix)
+
+    except (ValueError, AttributeError):
+        flash("Veuillez vérifier les quantités, prix et le taux de TVA.")
+        return render_template(
+            "devis.html",
+            artisan=artisan
+        )
+
+    pdf = generer_pdf_devis(
+        artisan,
+        donnees
+    )
+
+    numero_devis = donnees["numero"] or "devis"
+    numero_devis = re.sub(r"[^A-Za-z0-9_-]", "_", numero_devis)
+    
+    return send_file(
+        pdf,
+        as_attachment=True,
+        download_name=f"devis_{numero_devis}.pdf",
+        mimetype="application/pdf"
     )
 
 # ==========================================================
@@ -3180,9 +3676,116 @@ def facture():
     if not artisan:
         return redirect(url_for("connexion"))
 
-    return render_template(
-        "facture.html",
-        artisan=artisan
+    if request.method == "GET":
+        return render_template(
+            "facture.html",
+            artisan=artisan
+        )
+
+    donnees = {
+        "client_nom": request.form.get("client_nom", "").strip(),
+        "client_adresse": request.form.get("client_adresse", "").strip(),
+        "client_code_postal": request.form.get("client_code_postal", "").strip(),
+        "client_ville": request.form.get("client_ville", "").strip(),
+        "client_email": request.form.get("client_email", "").strip(),
+        "client_telephone": request.form.get("client_telephone", "").strip(),
+        "numero": request.form.get("numero", "").strip(),
+        "date": request.form.get("date", "").strip(),
+        "echeance": request.form.get("echeance", "").strip(),
+        "objet": request.form.get("objet", "").strip(),
+        "taux_tva": request.form.get("taux_tva", "20").strip(),
+        "conditions": request.form.get("conditions", "").strip()
+    }
+
+    champs_obligatoires = [
+        "client_nom",
+        "client_adresse",
+        "client_code_postal",
+        "client_ville",
+        "numero",
+        "date",
+        "echeance",
+        "objet"
+    ]
+
+    for champ in champs_obligatoires:
+        if not donnees.get(champ):
+            flash("Veuillez renseigner tous les champs obligatoires de la facture.")
+            return render_template(
+                "facture.html",
+                artisan=artisan
+            )
+
+    for i in range(1, 6):
+        donnees[f"description{i}"] = request.form.get(
+            f"description{i}", ""
+        ).strip()
+
+        donnees[f"quantite{i}"] = request.form.get(
+            f"quantite{i}", "0"
+        ).strip()
+
+        donnees[f"prix_unitaire_ht{i}"] = request.form.get(
+            f"prix_unitaire_ht{i}", "0"
+        ).strip()
+
+    prestation_presente = any(
+            donnees[f"description{i}"]
+            for i in range(1, 6)
+        )
+    
+        if not prestation_presente:
+            flash("Veuillez renseigner au moins une prestation dans la facture.")
+            return render_template(
+                "facture.html",
+                artisan=artisan
+            )
+
+    try:
+        taux_tva = float(
+            donnees["taux_tva"].replace(",", ".")
+        )
+
+        if taux_tva < 0 or taux_tva > 100:
+            raise ValueError
+
+        donnees["taux_tva"] = str(taux_tva)
+
+        for i in range(1, 6):
+            quantite = float(
+                donnees[f"quantite{i}"].replace(",", ".") or 0
+            )
+
+            prix = float(
+                donnees[f"prix_unitaire_ht{i}"].replace(",", ".") or 0
+            )
+
+            if quantite < 0 or prix < 0:
+                raise ValueError
+
+            donnees[f"quantite{i}"] = str(quantite)
+            donnees[f"prix_unitaire_ht{i}"] = str(prix)
+
+    except (ValueError, AttributeError):
+        flash("Veuillez vérifier les quantités, prix et le taux de TVA.")
+        return render_template(
+            "facture.html",
+            artisan=artisan
+        )
+
+    pdf = generer_pdf_facture(
+        artisan,
+        donnees
+    )
+
+    numero_facture = donnees["numero"] or "facture"
+    numero_facture = re.sub(r"[^A-Za-z0-9_-]", "_", numero_facture)
+    
+    return send_file(
+        pdf,
+        as_attachment=True,
+        download_name=f"facture_{numero_facture}.pdf",
+        mimetype="application/pdf"
     )
 
 
