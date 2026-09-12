@@ -3161,15 +3161,10 @@ def devis():
     if not artisan:
         return redirect(url_for("connexion"))
 
-    if request.method == "GET":
-        return render_template(
-            "devis.html",
-            artisan=artisan
-        )
-
-    flash("Le devis a été préparé.")
-    return redirect(url_for("devis"))
-
+    return render_template(
+        "devis.html",
+        artisan=artisan
+    )
 
 # ==========================================================
 # FACTURE
@@ -3185,14 +3180,11 @@ def facture():
     if not artisan:
         return redirect(url_for("connexion"))
 
-    if request.method == "GET":
-        return render_template(
-            "facture.html",
-            artisan=artisan
-        )
+    return render_template(
+        "facture.html",
+        artisan=artisan
+    )
 
-    flash("La facture a été préparée.")
-    return redirect(url_for("facture"))
 
 # ==========================================================
 # DÉMARRAGE DE L'APPLICATION
