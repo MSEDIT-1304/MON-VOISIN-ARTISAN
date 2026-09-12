@@ -3147,6 +3147,52 @@ def afficher_photo(
         mimetype=mimetype
     )
 
+# ==========================================================
+# DEVIS
+# ==========================================================
+
+@app.route("/artisan/devis", methods=["GET", "POST"])
+def devis():
+    if not artisan_logged():
+        return redirect(url_for("connexion"))
+
+    artisan = get_current_user()
+
+    if not artisan:
+        return redirect(url_for("connexion"))
+
+    if request.method == "GET":
+        return render_template(
+            "devis.html",
+            artisan=artisan
+        )
+
+    flash("Le devis a été préparé.")
+    return redirect(url_for("devis"))
+
+
+# ==========================================================
+# FACTURE
+# ==========================================================
+
+@app.route("/artisan/facture", methods=["GET", "POST"])
+def facture():
+    if not artisan_logged():
+        return redirect(url_for("connexion"))
+
+    artisan = get_current_user()
+
+    if not artisan:
+        return redirect(url_for("connexion"))
+
+    if request.method == "GET":
+        return render_template(
+            "facture.html",
+            artisan=artisan
+        )
+
+    flash("La facture a été préparée.")
+    return redirect(url_for("facture"))
 
 # ==========================================================
 # DÉMARRAGE DE L'APPLICATION
