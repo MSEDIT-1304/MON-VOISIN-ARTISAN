@@ -3604,12 +3604,12 @@ def devis():
             f"prix_unitaire_ht{i}", "0"
         ).strip()
 
-        prestation_presente = any(
+    prestation_presente = any(
             donnees[f"description{i}"]
             for i in range(1, 6)
-        )
+    )
     
-        if not prestation_presente:
+    if not prestation_presente:
             flash("Veuillez renseigner au moins une prestation dans le devis.")
             return render_template(
                 "devis.html",
@@ -3732,9 +3732,9 @@ def facture():
     prestation_presente = any(
             donnees[f"description{i}"]
             for i in range(1, 6)
-        )
+    )
     
-        if not prestation_presente:
+    if not prestation_presente:
             flash("Veuillez renseigner au moins une prestation dans la facture.")
             return render_template(
                 "facture.html",
