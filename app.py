@@ -1976,15 +1976,33 @@ def mes_demandes():
 
     conn = get_connection()
 
-    demandes = conn.execute(
-        """
-        SELECT *
-        FROM demandes
-        WHERE particulier_id = ?
-        ORDER BY id DESC
-        """,
-        (particulier_id,)
-    ).fetchall()
+    if request.args.get("messages") == "1":
+        demandes = conn.execute(
+            """
+            SELECT *
+            FROM demandes
+            WHERE particulier_id = ?
+            AND EXISTS (
+                SELECT 1
+                FROM reponses
+                WHERE reponses.demande_id = demandes.id
+                AND reponses.auteur_type = 'artisan'
+            )
+            ORDER BY id DESC
+            """,
+            (particulier_id,)
+        ).fetchall()
+
+    else:
+        demandes = conn.execute(
+            """
+            SELECT *
+            FROM demandes
+            WHERE particulier_id = ?
+            ORDER BY id DESC
+            """,
+            (particulier_id,)
+        ).fetchall()
 
     mes_demandes = []
 
