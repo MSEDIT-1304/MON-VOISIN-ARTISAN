@@ -28,24 +28,36 @@
         <label for="password">
             Nouveau mot de passe
         </label>
-
+        
         <input
             type="password"
             id="password"
             name="password"
             required
         >
-
+        
         <label for="password2">
             Confirmer le nouveau mot de passe
         </label>
-
+        
         <input
             type="password"
             id="password2"
             name="password2"
             required
         >
+        
+        <label style="display: flex; align-items: center; gap: 8px; margin-top: 10px; cursor: pointer;">
+            <input
+                type="checkbox"
+                id="afficher_mot_de_passe"
+                onchange="
+                    document.getElementById('password').type = this.checked ? 'text' : 'password';
+                    document.getElementById('password2').type = this.checked ? 'text' : 'password';
+                "
+            >
+            Afficher le mot de passe
+        </label>
 
         <button type="submit" class="btn">
             Réinitialiser mon mot de passe
