@@ -4,7 +4,13 @@
 
 {% block content %}
 
-<h1>Mes demandes</h1>
+<h1>
+    {% if request.args.get("messages") == "1" %}
+        Messages reçus
+    {% else %}
+        Mes demandes
+    {% endif %}
+</h1>
 
 <p>
     Retrouvez ici vos demandes de travaux et les échanges avec les artisans.
