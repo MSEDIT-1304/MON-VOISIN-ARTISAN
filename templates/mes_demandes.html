@@ -115,6 +115,15 @@
                                             {{ reponse["message"] }}
                                         </p>
 
+                                        {% if reponse["piece_jointe_nom"] %}
+                                            <p>
+                                                📎
+                                                <a href="{{ url_for('telecharger_piece_jointe', reponse_id=reponse['id']) }}">
+                                                    Télécharger : {{ reponse["piece_jointe_nom"] }}
+                                                </a>
+                                            </p>
+                                        {% endif %}
+
 
                                         {% if reponse["created_at"] %}
 
@@ -159,6 +168,18 @@
                                             required
                                         ></textarea>
 
+                                        <label for="fichier-{{ element['demande']['id'] }}-{{ groupe.list[0]['artisan_id'] }}">
+                                            Joindre un fichier
+                                        </label>
+                                        <input
+                                            type="file"
+                                            id="fichier-{{ element['demande']['id'] }}-{{ groupe.list[0]['artisan_id'] }}"
+                                            name="fichier"
+                                            accept=".pdf,.jpg,.jpeg,.png,.webp"
+                                        >                                            
+                                                                                  
+                                                                                                                            
+                                                                                
                                     </div>
 
 
