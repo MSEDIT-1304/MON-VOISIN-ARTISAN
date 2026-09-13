@@ -106,6 +106,16 @@
                     Voir la demande
                 </a>
 
+                <form
+                    method="POST"
+                    action="/artisan/demande/{{ demande['id'] }}/supprimer"
+                    onsubmit="return confirm('Voulez-vous vraiment supprimer cette demande de votre liste ?');"
+                >
+                    <button type="submit" class="btn">
+                        🗑️ Supprimer la demande
+                    </button>
+                </form>
+
             </div>
 
         {% endfor %}
