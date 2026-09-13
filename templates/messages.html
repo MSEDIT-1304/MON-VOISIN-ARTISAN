@@ -55,6 +55,7 @@
                         method="POST"
                         action="{{ url_for('repondre_demande', demande_id=message['demande_id']) }}"
                         class="reply-form"
+                        enctype="multipart/form-data"
                     >
 
                         <textarea
@@ -62,6 +63,17 @@
                             placeholder="Écrire une réponse..."
                             required
                         ></textarea>
+
+                        <label for="fichier-{{ message['demande_id'] }}">
+                            Joindre un fichier
+                        </label>
+                        
+                        <input
+                            type="file"
+                            id="fichier-{{ message['demande_id'] }}"
+                            name="fichier"
+                            accept=".pdf,.jpg,.jpeg,.png,.webp"
+                        >
 
                         <button type="submit" class="btn">
                             Répondre
