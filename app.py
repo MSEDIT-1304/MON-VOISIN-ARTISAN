@@ -1283,17 +1283,132 @@ def connexion():
 # RÉINITIALISATION DU MOT DE PASSE
 # ==========================================================
 
-@app.route("/reinitialiser-mot-de-passe")
+@app.route(
+    "/reinitialiser-mot-de-passe",
+    methods=["GET", "POST"]
+)
 def reinitialiser_mot_de_passe():
 
-    flash(
-        "Pour réinitialiser votre mot de passe, "
-        "contactez Studio Web & Applications à "
-        "studio.web.applications@gmail.com."
+    if request.method == "GET":
+        return render_template(
+            "reinitialiser-mot-de-passe.html"
+        )
+
+    email = clean_email(
+        request.form.get("email", "")
     )
 
-    return redirect(url_for("connexion"))
+    password = request.form.get(
+        "password",
+        ""
+    ).strip()
 
+    password2 = request.form.get(
+        "password2",
+        ""
+    ).strip()
+
+    if not email:
+        flash(
+            "Veuillez saisir votre adresse e-mail."
+        )
+        return redirect(
+            url_for("reinitialiser_mot_de_passe")
+        )
+
+    if not password:
+        flash(
+            "Veuillez saisir un nouveau mot de passe."
+        )
+        return redirect(
+            url_for("reinitialiser_mot_de_passe")
+        )
+
+    if password != password2:
+        flash(
+            "Les deux mots de passe ne correspondent pas."
+        )
+        return redirect(
+            url_for("reinitialiser_mot_de_passe")
+        )
+
+    conn = get_connection()
+
+    artisan = conn.execute(
+        """
+        SELECT *
+        FROM artisans
+        WHERE email = ?
+        """,
+        (email,)
+    ).fetchone()
+
+    if artisan:
+        conn.execute(
+            """
+            UPDATE artisans
+            SET password = ?
+            WHERE id = ?
+            """,
+            (
+                hash_password(password),
+                artisan["id"]
+            )
+        )
+
+        conn.commit()
+        conn.close()
+
+        session["user_id"] = artisan["id"]
+        session["user_type"] = "artisan"
+        session["email"] = artisan["email"]
+
+        return redirect(
+            url_for("artisan")
+        )
+
+    particulier = conn.execute(
+        """
+        SELECT *
+        FROM particuliers
+        WHERE email = ?
+        """,
+        (email,)
+    ).fetchone()
+
+    if particulier:
+        conn.execute(
+            """
+            UPDATE particuliers
+            SET password = ?
+            WHERE id = ?
+            """,
+            (
+                hash_password(password),
+                particulier["id"]
+            )
+        )
+
+        conn.commit()
+        conn.close()
+
+        session["user_id"] = particulier["id"]
+        session["user_type"] = "particulier"
+        session["email"] = particulier["email"]
+
+        return redirect(
+            url_for("demande")
+        )
+
+    conn.close()
+
+    flash(
+        "Adresse e-mail ou compte introuvable."
+    )
+
+    return redirect(
+        url_for("reinitialiser_mot_de_passe")
+    )
     
 # ==========================================================
 # DÉCONNEXION
