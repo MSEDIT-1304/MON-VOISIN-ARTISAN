@@ -223,6 +223,58 @@ def init_database():
             UNIQUE(artisan_id, demande_id)
         )
     """)
+
+        # ------------------------------------------------------
+    # DEVIS
+    # ------------------------------------------------------
+
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS devis (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            artisan_id INTEGER NOT NULL,
+            numero TEXT NOT NULL,
+            client_nom TEXT NOT NULL,
+            client_adresse TEXT NOT NULL,
+            client_code_postal TEXT NOT NULL,
+            client_ville TEXT NOT NULL,
+            client_email TEXT,
+            client_telephone TEXT,
+            date TEXT NOT NULL,
+            validite TEXT,
+            objet TEXT NOT NULL,
+            taux_tva REAL DEFAULT 20,
+            conditions TEXT,
+            fichier_pdf BLOB NOT NULL,
+            created_at TEXT
+        )
+    """)
+
+    # ------------------------------------------------------
+    # FACTURES
+    # ------------------------------------------------------
+
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS factures (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            artisan_id INTEGER NOT NULL,
+            devis_id INTEGER,
+            numero TEXT NOT NULL,
+            client_nom TEXT NOT NULL,
+            client_adresse TEXT NOT NULL,
+            client_code_postal TEXT NOT NULL,
+            client_ville TEXT NOT NULL,
+            client_email TEXT,
+            client_telephone TEXT,
+            date TEXT NOT NULL,
+            echeance TEXT,
+            objet TEXT NOT NULL,
+            taux_tva REAL DEFAULT 20,
+            conditions TEXT,
+            fichier_pdf BLOB NOT NULL,
+            created_at TEXT
+        )
+    """)
+    
     # ------------------------------------------------------
     # MISE À JOUR DE LA TABLE EXISTANTE
     # ------------------------------------------------------
