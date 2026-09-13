@@ -547,6 +547,16 @@ input[type="radio"] {
     padding: 9px 20px;
     font-size: 14px;
     }
+/* BOUTONS CONNEXION MOBILE */
+
+.form form[action="/connexion"] > .btn {
+    display: block;
+    width: auto;
+    padding: 9px 16px;
+    margin-top: 12px;
+    font-size: 14px;
+    line-height: 1.3;
+    }
 
     input,
     select,
