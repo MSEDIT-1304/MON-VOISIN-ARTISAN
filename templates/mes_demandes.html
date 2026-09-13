@@ -237,7 +237,15 @@
                     </p>
 
                 {% endif %}
-
+                <form
+                    method="POST"
+                    action="{{ url_for('supprimer_demande', demande_id=element['demande']['id']) }}"
+                    onsubmit="return confirm('Voulez-vous vraiment supprimer cette demande ?');"
+                >
+                    <button type="submit" class="btn">
+                        🗑️ Supprimer la demande
+                    </button>
+                </form>
             </div>
 
         {% endfor %}
