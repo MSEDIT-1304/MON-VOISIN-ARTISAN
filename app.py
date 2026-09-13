@@ -2531,6 +2531,7 @@ def repondre_demande(demande_id):
             url_for("connexion")
         )
 
+
     # ------------------------------------------------------
     # VÉRIFICATION DE L'ACCÈS
     # ------------------------------------------------------
@@ -2549,6 +2550,9 @@ def repondre_demande(demande_id):
         "message",
         ""
     ).strip()
+    fichier = request.files.get(
+        "fichier"
+    )
 
     if not message:
 
@@ -2657,9 +2661,12 @@ def repondre_demande(demande_id):
             message,
             created_at,
             lu_artisan,
-            lu_particulier
+            lu_particulier,
+            piece_jointe,
+            piece_jointe_nom,
+            piece_jointe_mimetype
         )
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """,
         (
             demande_id,
@@ -2669,7 +2676,10 @@ def repondre_demande(demande_id):
             message,
             now_string(),
             1,
-            0
+            0,
+            fichier.read() if fichier and fichier.filename else None,
+            fichier.filename if fichier and fichier.filename else None,
+            fichier.mimetype if fichier and fichier.filename else None
         )
     )
 
