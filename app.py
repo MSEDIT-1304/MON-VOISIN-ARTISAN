@@ -2393,8 +2393,15 @@ def demandes():
         FROM demandes
         JOIN particuliers
             ON demandes.particulier_id = particuliers.id
+        WHERE NOT EXISTS (
+            SELECT 1
+            FROM artisan_demandes_supprimees
+            WHERE artisan_demandes_supprimees.artisan_id = ?
+            AND artisan_demandes_supprimees.demande_id = demandes.id
+        )
         ORDER BY demandes.id DESC
-        """
+        """,
+        (artisan_user["id"],)
     ).fetchall()
 
     conn.close()
