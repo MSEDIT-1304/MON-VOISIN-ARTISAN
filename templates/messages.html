@@ -51,14 +51,6 @@
                         </p>
                     {% endif %}
 
-                    {% if message["piece_jointe_nom"] %}
-                        <p>
-                            📎
-                            <a href="{{ url_for('telecharger_piece_jointe', reponse_id=message['id']) }}">
-                                Télécharger : {{ message["piece_jointe_nom"] }}
-                            </a>
-                        </p>
-                    {% endif %}
                     <small>
                         {{ message["created_at"] }}
                     </small>
