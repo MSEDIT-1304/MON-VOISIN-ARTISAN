@@ -524,6 +524,11 @@ input[type="radio"] {
     .btn {
         max-width: 100%;
     }
+    .card > form {
+    display: block;
+    margin-top: 12px;
+    margin-left: 0;
+    }
 
     input,
     select,
