@@ -419,7 +419,14 @@ input[type="radio"] {
     margin-top: 0;
     margin-left: 12px;
 }
+@media screen and (min-width: 769px) {
 
+    .section > .btn {
+        padding: 8px 16px;
+        font-size: 13px;
+    }
+
+}
 /* ==========================================================
    MOBILE
    ========================================================== */
