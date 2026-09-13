@@ -54,7 +54,14 @@
                     <small>
                         {{ message["created_at"] }}
                     </small>
-
+                    <form
+                        method="POST"
+                        action="{{ url_for('supprimer_message', reponse_id=message['id']) }}"
+                    >
+                        <button type="submit" class="btn">
+                            🗑️ Supprimer
+                        </button>
+                    </form>
                 </div>
                 
                 {% if message["auteur_type"] == "particulier" %}
