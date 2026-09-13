@@ -212,7 +212,18 @@ def init_database():
             lu_particulier INTEGER DEFAULT 0
         )
     """)
+    # ------------------------------------------------------
+    # DEMANDES MASQUÉES PAR LES ARTISANS
+    # ------------------------------------------------------
 
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS artisan_demandes_supprimees (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            artisan_id INTEGER NOT NULL,
+            demande_id INTEGER NOT NULL,
+            UNIQUE(artisan_id, demande_id)
+        )
+    """)
     # ------------------------------------------------------
     # MISE À JOUR DE LA TABLE EXISTANTE
     # ------------------------------------------------------
@@ -1375,6 +1386,53 @@ def supprimer_demande(demande_id):
     return redirect(
         url_for("mes_demandes")
     )
+    
+# ==========================================================
+# MASQUER UNE DEMANDE - ARTISAN
+# ==========================================================
+
+@app.route(
+    "/artisan/demande/<int:demande_id>/supprimer",
+    methods=["POST"]
+)
+def supprimer_demande_artisan(demande_id):
+
+    if not artisan_logged():
+        return redirect(
+            url_for("connexion")
+        )
+
+    artisan_id = session.get("user_id")
+
+    if not artisan_id:
+        return redirect(
+            url_for("connexion")
+        )
+
+    # Pour l'instant, on vérifie simplement que la demande existe.
+    conn = get_connection()
+
+    demande_item = conn.execute(
+        """
+        SELECT id
+        FROM demandes
+        WHERE id = ?
+        """,
+        (demande_id,)
+    ).fetchone()
+
+    conn.close()
+
+    if not demande_item:
+        flash("Cette demande n'existe pas.")
+        return redirect(url_for("artisan"))
+
+    # La suppression définitive sera remplacée par un masquage
+    # propre à l'artisan lors de l'étape suivante.
+    flash("Demande retirée de votre liste.")
+
+    return redirect(url_for("artisan"))
+
 
 # ==========================================================
 # SUPPRIMER UN MESSAGE
