@@ -35,6 +35,15 @@ a:hover {
     color: #444444;
 }
 
+.profile-logo img,
+.profile-photo-public img {
+    max-width: 192px;
+    max-height: 192px;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+}
+
 /* ==========================================================
    HEADER
    ========================================================== */
@@ -268,7 +277,8 @@ input[type="radio"] {
 
 .photos-preview img {
     width: 100%;
-    height: 180px;
+    max-width: 400px;
+    height: 240px;
     object-fit: cover;
     border-radius: 10px;
     border: 1px solid #C7CED6;
@@ -287,6 +297,14 @@ input[type="radio"] {
     height: 220px;
     object-fit: cover;
     object-position: center;
+    border-radius: 12px;
+}
+
+.realisations .realisation img {
+    width: 100%;
+    max-width: 500px;
+    height: 300px;
+    object-fit: cover;
     border-radius: 12px;
 }
 
