@@ -4370,6 +4370,58 @@ def facture():
     numero_facture = donnees["numero"] or "facture"
     numero_facture = re.sub(r"[^A-Za-z0-9_-]", "_", numero_facture)
     
+    pdf.seek(0)
+    fichier_pdf = pdf.read()
+
+    conn = get_connection()
+
+    conn.execute(
+        """
+        INSERT INTO factures (
+            artisan_id,
+            devis_id,
+            numero,
+            client_nom,
+            client_adresse,
+            client_code_postal,
+            client_ville,
+            client_email,
+            client_telephone,
+            date,
+            echeance,
+            objet,
+            taux_tva,
+            conditions,
+            fichier_pdf,
+            created_at
+        )
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """,
+        (
+            artisan["id"],
+            None,
+            donnees["numero"],
+            donnees["client_nom"],
+            donnees["client_adresse"],
+            donnees["client_code_postal"],
+            donnees["client_ville"],
+            donnees["client_email"],
+            donnees["client_telephone"],
+            donnees["date"],
+            donnees["echeance"],
+            donnees["objet"],
+            float(donnees["taux_tva"]),
+            donnees["conditions"],
+            fichier_pdf,
+            now_string()
+        )
+    )
+
+    conn.commit()
+    conn.close()
+
+    pdf.seek(0)
+
     return send_file(
         pdf,
         as_attachment=True,
