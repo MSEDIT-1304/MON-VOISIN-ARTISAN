@@ -536,6 +536,10 @@ input[type="radio"] {
     margin-top: 12px;
     margin-left: 0;
     }
+    .section > .btn {
+    padding: 9px 20px;
+    font-size: 14px;
+    }
 
     input,
     select,
