@@ -419,6 +419,13 @@ input[type="radio"] {
     margin-top: 0;
     margin-left: 12px;
 }
+/* CENTRAGE DU CONTENU DU PROFIL ARTISAN PUBLIC */
+
+.page-container > .section:first-of-type p {
+    text-align: center;
+    overflow-wrap: anywhere;
+    word-break: normal;
+}
 @media screen and (min-width: 769px) {
 
     .section > .btn {
