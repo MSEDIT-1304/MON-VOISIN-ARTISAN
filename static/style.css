@@ -401,6 +401,25 @@ input[type="radio"] {
     font-size: 13px;
 }
 
+/* BOUTONS DES DEMANDES ARTISAN */
+
+.card > .btn {
+    padding: 8px 16px;
+    font-size: 13px;
+    vertical-align: middle;
+}
+
+.card > form .btn {
+    padding: 7px 13px;
+    font-size: 12px;
+    vertical-align: middle;
+}
+.card > form {
+    display: inline-block;
+    margin-top: 0;
+    margin-left: 12px;
+}
+
 /* ==========================================================
    MOBILE
    ========================================================== */
