@@ -244,11 +244,11 @@ def init_database():
             objet TEXT NOT NULL,
             taux_tva REAL DEFAULT 20,
             conditions TEXT,
+            donnees_json TEXT,
             fichier_pdf BLOB NOT NULL,
             created_at TEXT
         )
     """)
-
     # ------------------------------------------------------
     # FACTURES
     # ------------------------------------------------------
@@ -4192,6 +4192,58 @@ def devis():
     numero_devis = donnees["numero"] or "devis"
     numero_devis = re.sub(r"[^A-Za-z0-9_-]", "_", numero_devis)
     
+    pdf.seek(0)
+    fichier_pdf = pdf.read()
+
+    conn = get_connection()
+
+    conn.execute(
+        """
+        INSERT INTO devis (
+            artisan_id,
+            numero,
+            client_nom,
+            client_adresse,
+            client_code_postal,
+            client_ville,
+            client_email,
+            client_telephone,
+            date,
+            validite,
+            objet,
+            taux_tva,
+            conditions,
+            donnees_json,
+            fichier_pdf,
+            created_at
+        )
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """,
+        (
+            artisan["id"],
+            donnees["numero"],
+            donnees["client_nom"],
+            donnees["client_adresse"],
+            donnees["client_code_postal"],
+            donnees["client_ville"],
+            donnees["client_email"],
+            donnees["client_telephone"],
+            donnees["date"],
+            donnees["validite"],
+            donnees["objet"],
+            float(donnees["taux_tva"]),
+            donnees["conditions"],
+            str(donnees),
+            fichier_pdf,
+            now_string()
+        )
+    )
+
+    conn.commit()
+    conn.close()
+
+    pdf.seek(0)
+
     return send_file(
         pdf,
         as_attachment=True,
