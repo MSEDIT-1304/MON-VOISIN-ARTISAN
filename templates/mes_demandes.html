@@ -135,7 +135,17 @@
 
                                         {% endif %}
 
+                                        <form
+                                            method="POST"
+                                            action="{{ url_for('supprimer_message', reponse_id=reponse['id']) }}"
+                                        >
+                                            <button type="submit" class="btn">
+                                                🗑️ Supprimer
+                                            </button>
+                                        </form>
+
                                     </div>
+                                
 
                                 {% endfor %}
 
