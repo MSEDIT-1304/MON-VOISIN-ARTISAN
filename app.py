@@ -4428,7 +4428,39 @@ def facture():
         download_name=f"facture_{numero_facture}.pdf",
         mimetype="application/pdf"
     )
+# ==========================================================
+# MES FACTURES - ARTISAN
+# ==========================================================
 
+@app.route("/artisan/mes-factures")
+def mes_factures():
+
+    if not artisan_logged():
+        return redirect(url_for("connexion"))
+
+    artisan_id = session.get("user_id")
+
+    if not artisan_id:
+        return redirect(url_for("connexion"))
+
+    conn = get_connection()
+
+    factures = conn.execute(
+        """
+        SELECT *
+        FROM factures
+        WHERE artisan_id = ?
+        ORDER BY id DESC
+        """,
+        (artisan_id,)
+    ).fetchall()
+
+    conn.close()
+
+    return render_template(
+        "mes_factures.html",
+        factures=factures
+    )
 
 # ==========================================================
 # DÉMARRAGE DE L'APPLICATION
