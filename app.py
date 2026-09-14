@@ -4609,6 +4609,136 @@ def facture():
         download_name=f"facture_{numero_facture}.pdf",
         mimetype="application/pdf"
     )
+
+# ==========================================================
+# TÉLÉCHARGER UNE FACTURE
+# ==========================================================
+
+@app.route("/artisan/facture/<int:facture_id>/telecharger")
+def telecharger_facture(facture_id):
+
+    if not artisan_logged():
+        return redirect(url_for("connexion"))
+
+    artisan_id = session.get("user_id")
+
+    if not artisan_id:
+        return redirect(url_for("connexion"))
+
+    conn = get_connection()
+
+    facture = conn.execute(
+        """
+        SELECT *
+        FROM factures
+        WHERE id = ?
+        AND artisan_id = ?
+        """,
+        (
+            facture_id,
+            artisan_id
+        )
+    ).fetchone()
+
+    if not facture:
+        conn.close()
+        flash("Cette facture n'existe pas.")
+        return redirect(url_for("mes_factures"))
+
+    if not facture["fichier_pdf"]:
+        conn.close()
+        flash("Aucun fichier PDF disponible pour cette facture.")
+        return redirect(url_for("mes_factures"))
+
+    fichier_pdf = facture["fichier_pdf"]
+
+    # Suppression automatique du devis d'origine
+    # après création de la facture.
+    if facture["devis_id"] is not None:
+        conn.execute(
+            """
+            DELETE FROM devis
+            WHERE id = ?
+            AND artisan_id = ?
+            """,
+            (
+                facture["devis_id"],
+                artisan_id
+            )
+        )
+
+    conn.commit()
+    conn.close()
+
+    numero_facture = re.sub(
+        r"[^A-Za-z0-9_-]",
+        "_",
+        facture["numero"] or "facture"
+    )
+
+    return send_file(
+        BytesIO(fichier_pdf),
+        as_attachment=True,
+        download_name=f"facture_{numero_facture}.pdf",
+        mimetype="application/pdf"
+    )
+
+# ==========================================================
+# SUPPRIMER UNE FACTURE
+# ==========================================================
+
+@app.route(
+    "/artisan/facture/<int:facture_id>/supprimer",
+    methods=["POST"]
+)
+def supprimer_facture(facture_id):
+
+    if not artisan_logged():
+        return redirect(url_for("connexion"))
+
+    artisan_id = session.get("user_id")
+
+    if not artisan_id:
+        return redirect(url_for("connexion"))
+
+    conn = get_connection()
+
+    facture = conn.execute(
+        """
+        SELECT id
+        FROM factures
+        WHERE id = ?
+        AND artisan_id = ?
+        """,
+        (
+            facture_id,
+            artisan_id
+        )
+    ).fetchone()
+
+    if not facture:
+        conn.close()
+        flash("Cette facture n'existe pas.")
+        return redirect(url_for("mes_factures"))
+
+    conn.execute(
+        """
+        DELETE FROM factures
+        WHERE id = ?
+        AND artisan_id = ?
+        """,
+        (
+            facture_id,
+            artisan_id
+        )
+    )
+
+    conn.commit()
+    conn.close()
+
+    flash("Facture supprimée.")
+
+    return redirect(url_for("mes_factures"))
 # ==========================================================
 # MES FACTURES - ARTISAN
 # ==========================================================
