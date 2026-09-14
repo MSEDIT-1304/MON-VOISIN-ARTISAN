@@ -98,6 +98,63 @@ app = Flask(__name__)
 
 app.secret_key = SECRET_KEY
 
+# ==========================================================
+# MODE MAINTENANCE
+# ==========================================================
+
+MAINTENANCE = True
+
+if MAINTENANCE:
+
+    @app.before_request
+    def mode_maintenance():
+
+        return """
+        <!DOCTYPE html>
+        <html lang="fr">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Mon Voisin Artisan - Maintenance</title>
+
+            <style>
+                body {
+                    font-family: Arial, sans-serif;
+                    text-align: center;
+                    padding: 60px 20px;
+                }
+
+                h1 {
+                    margin-bottom: 20px;
+                }
+
+                p {
+                    font-size: 18px;
+                    line-height: 1.6;
+                }
+            </style>
+        </head>
+
+        <body>
+
+            <h1>🔧 Application en maintenance</h1>
+
+            <p>
+                L'application est temporairement indisponible.
+            </p>
+
+            <p>
+                Nous effectuons actuellement les dernières améliorations.
+            </p>
+
+            <p>
+                Merci de revenir prochainement.
+            </p>
+
+        </body>
+        </html>
+        """
+
 app.config["SESSION_PERMANENT"] = False
 
 app.config["TEMPLATES_AUTO_RELOAD"] = True
