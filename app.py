@@ -4347,6 +4347,62 @@ def telecharger_devis(devis_id):
     )
 
 # ==========================================================
+# SUPPRIMER UN DEVIS
+# ==========================================================
+
+@app.route(
+    "/artisan/devis/<int:devis_id>/supprimer",
+    methods=["POST"]
+)
+def supprimer_devis(devis_id):
+
+    if not artisan_logged():
+        return redirect(url_for("connexion"))
+
+    artisan_id = session.get("user_id")
+
+    if not artisan_id:
+        return redirect(url_for("connexion"))
+
+    conn = get_connection()
+
+    devis = conn.execute(
+        """
+        SELECT id
+        FROM devis
+        WHERE id = ?
+        AND artisan_id = ?
+        """,
+        (
+            devis_id,
+            artisan_id
+        )
+    ).fetchone()
+
+    if not devis:
+        conn.close()
+        flash("Ce devis n'existe pas.")
+        return redirect(url_for("mes_devis"))
+
+    conn.execute(
+        """
+        DELETE FROM devis
+        WHERE id = ?
+        AND artisan_id = ?
+        """,
+        (
+            devis_id,
+            artisan_id
+        )
+    )
+
+    conn.commit()
+    conn.close()
+
+    flash("Devis supprimé.")
+
+    return redirect(url_for("mes_devis"))
+# ==========================================================
 # GÉNÉRER UNE FACTURE DEPUIS UN DEVIS
 # ==========================================================
 
