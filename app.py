@@ -49,6 +49,16 @@ from reportlab.platypus import (
     TableStyle
 )
 
+# ===== MODE MAINTENANCE =====
+MAINTENANCE = False
+
+if MAINTENANCE:
+    st.title("🔧 Bientôt disponnible. Maintenance en cours")
+    st.warning("L'application est temporairement indisponible.")
+    st.info("Merci de revenir plus tard.")
+    st.stop()
+# ============================
+
 
 # ==========================================================
 # CONFIGURATION
