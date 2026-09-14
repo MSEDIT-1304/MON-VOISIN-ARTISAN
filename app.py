@@ -960,6 +960,16 @@ def inscription_artisan():
         ""
     ).strip()
 
+    siret = request.form.get(
+    "siret",
+    ""
+    ).strip()
+    
+    tva = request.form.get(
+        "tva",
+        ""
+    ).strip()
+
     responsable = request.form.get(
         "responsable",
         ""
@@ -1005,6 +1015,8 @@ def inscription_artisan():
 
     form_data = {
         "entreprise": entreprise,
+        "siret": siret,
+        "tva": tva,
         "responsable": responsable,
         "email": email,
         "telephone": telephone,
@@ -1103,6 +1115,8 @@ def inscription_artisan():
             email,
             password,
             entreprise,
+            siret,
+            tva,
             responsable,
             telephone,
             adresse,
@@ -1121,6 +1135,8 @@ def inscription_artisan():
             email,
             hashed_password,
             entreprise,
+            siret,
+            tva,
             responsable,
             telephone,
             adresse,
@@ -4254,6 +4270,33 @@ def devis():
 # TÉLÉCHARGER UN DEVIS
 # ==========================================================
 
+@app.route("/artisan/mes-devis")
+def mes_devis():
+    artisan = get_current_user()
+
+    if not artisan:
+        return redirect(url_for("connexion"))
+
+    conn = get_db()
+
+    devis = conn.execute(
+        """
+        SELECT *
+        FROM devis
+        WHERE artisan_id = ?
+        ORDER BY id DESC
+        """,
+        (artisan["id"],)
+    ).fetchall()
+
+    conn.close()
+
+    return render_template(
+        "mes-devis.html",
+        artisan=artisan,
+        devis=devis
+    )
+    
 @app.route("/artisan/devis/<int:devis_id>/telecharger")
 def telecharger_devis(devis_id):
 
