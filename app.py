@@ -4250,7 +4250,183 @@ def devis():
         download_name=f"devis_{numero_devis}.pdf",
         mimetype="application/pdf"
     )
+# ==========================================================
+# TÉLÉCHARGER UN DEVIS
+# ==========================================================
 
+@app.route("/artisan/devis/<int:devis_id>/telecharger")
+def telecharger_devis(devis_id):
+
+    if not artisan_logged():
+        return redirect(url_for("connexion"))
+
+    artisan_id = session.get("user_id")
+
+    if not artisan_id:
+        return redirect(url_for("connexion"))
+
+    conn = get_connection()
+
+    devis = conn.execute(
+        """
+        SELECT *
+        FROM devis
+        WHERE id = ?
+        AND artisan_id = ?
+        """,
+        (
+            devis_id,
+            artisan_id
+        )
+    ).fetchone()
+
+    conn.close()
+
+    if not devis:
+        flash("Ce devis n'existe pas.")
+        return redirect(url_for("mes_devis"))
+
+    if not devis["fichier_pdf"]:
+        flash("Aucun fichier PDF disponible pour ce devis.")
+        return redirect(url_for("mes_devis"))
+
+    numero_devis = re.sub(
+        r"[^A-Za-z0-9_-]",
+        "_",
+        devis["numero"] or "devis"
+    )
+
+    return send_file(
+        BytesIO(devis["fichier_pdf"]),
+        as_attachment=True,
+        download_name=f"devis_{numero_devis}.pdf",
+        mimetype="application/pdf"
+    )
+
+# ==========================================================
+# GÉNÉRER UNE FACTURE DEPUIS UN DEVIS
+# ==========================================================
+
+@app.route(
+    "/artisan/devis/<int:devis_id>/generer-facture"
+)
+def generer_facture_depuis_devis(devis_id):
+
+    if not artisan_logged():
+        return redirect(url_for("connexion"))
+
+    artisan_id = session.get("user_id")
+
+    if not artisan_id:
+        return redirect(url_for("connexion"))
+
+    conn = get_connection()
+
+    devis_item = conn.execute(
+        """
+        SELECT *
+        FROM devis
+        WHERE id = ?
+        AND artisan_id = ?
+        """,
+        (
+            devis_id,
+            artisan_id
+        )
+    ).fetchone()
+
+    conn.close()
+
+    if not devis_item:
+        flash("Ce devis n'existe pas.")
+        return redirect(url_for("mes_devis"))
+
+    if not devis_item["donnees_json"]:
+        flash("Les données de ce devis sont indisponibles.")
+        return redirect(url_for("mes_devis"))
+
+    try:
+        donnees = __import__("ast").literal_eval(
+            devis_item["donnees_json"]
+        )
+    except Exception:
+        flash("Impossible de récupérer les données du devis.")
+        return redirect(url_for("mes_devis"))
+
+    donnees["echeance"] = ""
+
+    donnees["numero"] = (
+        f"FACT-{devis_item['numero']}"
+    )
+
+    pdf = generer_pdf_facture(
+        artisan,
+        donnees
+    )
+
+    numero_facture = re.sub(
+        r"[^A-Za-z0-9_-]",
+        "_",
+        donnees["numero"]
+    )
+
+    pdf.seek(0)
+    fichier_pdf = pdf.read()
+
+    conn = get_connection()
+
+    conn.execute(
+        """
+        INSERT INTO factures (
+            artisan_id,
+            devis_id,
+            numero,
+            client_nom,
+            client_adresse,
+            client_code_postal,
+            client_ville,
+            client_email,
+            client_telephone,
+            date,
+            echeance,
+            objet,
+            taux_tva,
+            conditions,
+            fichier_pdf,
+            created_at
+        )
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """,
+        (
+            artisan_id,
+            devis_id,
+            donnees["numero"],
+            donnees["client_nom"],
+            donnees["client_adresse"],
+            donnees["client_code_postal"],
+            donnees["client_ville"],
+            donnees["client_email"],
+            donnees["client_telephone"],
+            donnees["date"],
+            donnees["echeance"],
+            donnees["objet"],
+            float(donnees["taux_tva"]),
+            donnees["conditions"],
+            fichier_pdf,
+            now_string()
+        )
+    )
+
+    conn.commit()
+    conn.close()
+
+    flash(
+        "La facture a été créée à partir du devis."
+    )
+
+    return redirect(
+        url_for("mes_factures")
+    )
 # ==========================================================
 # FACTURE
 # ==========================================================
