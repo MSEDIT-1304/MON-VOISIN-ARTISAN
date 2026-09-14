@@ -4319,7 +4319,12 @@ def generer_facture_depuis_devis(devis_id):
 
     if not artisan_id:
         return redirect(url_for("connexion"))
-
+    
+    artisan = get_current_user()
+    
+    if not artisan:
+        return redirect(url_for("connexion"))
+    
     conn = get_connection()
 
     devis_item = conn.execute(
