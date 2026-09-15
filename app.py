@@ -4334,7 +4334,7 @@ def mes_devis():
     if not artisan:
         return redirect(url_for("connexion"))
 
-    conn = get_db()
+    conn = get_connection()
 
     devis = conn.execute(
         """
