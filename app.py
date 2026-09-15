@@ -3845,28 +3845,33 @@ def generer_pdf_devis(artisan, donnees):
     )
 
     elements = []
+
     from xml.sax.saxutils import escape
 
     def texte_pdf(valeur):
         return escape(str(valeur or ""))
+
     elements.append(
         Paragraph("DEVIS", titre_style)
     )
 
+    # Informations artisan
     elements.append(
         Paragraph(
-            f"<b>Client :</b> {texte_pdf(donnees.get('client_nom', ''))}<br/>"
-            f"{texte_pdf(donnees.get('client_adresse', ''))}<br/>"
-            f"{texte_pdf(donnees.get('client_code_postal', ''))} "
-            f"{texte_pdf(donnees.get('client_ville', ''))}<br/>"
-            f"E-mail : {texte_pdf(donnees.get('client_email', ''))}<br/>"
-            f"Téléphone : {texte_pdf(donnees.get('client_telephone', ''))}",
+            f"<b>{texte_pdf(artisan['entreprise'])}</b><br/>"
+            f"{texte_pdf(artisan['adresse'])}<br/>"
+            f"{texte_pdf(artisan['code_postal'])} "
+            f"{texte_pdf(artisan['ville'])}<br/>"
+            f"Téléphone : {texte_pdf(artisan['telephone'])}<br/>"
+            f"SIRET : {texte_pdf(artisan['siret'] or 'Non renseigné')}<br/>"
+            f"TVA : {texte_pdf(artisan['tva'] or 'Non renseignée')}",
             texte_style
         )
     )
 
     elements.append(Spacer(1, 15))
 
+    # Informations client
     elements.append(
         Paragraph(
             f"<b>Client :</b> {texte_pdf(donnees.get('client_nom', ''))}<br/>"
@@ -3878,7 +3883,6 @@ def generer_pdf_devis(artisan, donnees):
             texte_style
         )
     )
-
     elements.append(Spacer(1, 15))
 
     elements.append(
