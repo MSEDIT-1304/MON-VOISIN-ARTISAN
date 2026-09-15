@@ -57,7 +57,8 @@ Devis - Mon Voisin Artisan
         <textarea
             id="client_adresse"
             name="client_adresse"
-            rows="3"
+            rows="2"
+            style="min-height:50px; resize:vertical;"
             required
         >{{ request.form.get('client_adresse', '') }}</textarea>
         
@@ -287,7 +288,25 @@ Devis - Mon Voisin Artisan
                 step="0.01"
             >
         </div>
+        <label for="taux_tva">Taux de TVA</label>
 
+    <input
+        type="number"
+        id="taux_tva"
+        name="taux_tva"
+        value="{{ request.form.get('taux_tva', '20') }}"
+        min="0"
+        max="100"
+        step="0.1"
+        list="taux-tva-options"
+    >
+    
+    <datalist id="taux-tva-options">
+        <option value="5.5">
+        <option value="10">
+        <option value="12.5">
+        <option value="20">
+    </datalist>
         <h2>Récapitulatif</h2>
 
         <p>
@@ -340,10 +359,12 @@ function calculerTotaux() {
         totalHT += quantite * prix;
     }
 
-    const tauxTVA = 20;
+    const tauxTVA = parseFloat(
+    document.getElementById("taux_tva")?.value || 20
+    );
+    
     const montantTVA = totalHT * tauxTVA / 100;
     const totalTTC = totalHT + montantTVA;
-
     document.getElementById("total-ht").textContent =
         totalHT.toFixed(2).replace(".", ",") + " €";
 
@@ -374,7 +395,11 @@ document.addEventListener("DOMContentLoaded", function () {
             prix.addEventListener("input", calculerTotaux);
         }
     }
+    const tauxTVAInput = document.getElementById("taux_tva");
 
+    if (tauxTVAInput) {
+        tauxTVAInput.addEventListener("input", calculerTotaux);
+    }
 
     /* -------------------------------------------------
        AJOUT PROGRESSIF DES PRESTATIONS
