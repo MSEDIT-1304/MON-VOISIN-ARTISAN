@@ -9,7 +9,15 @@ Devis - Mon Voisin Artisan
 <h1>Créer un devis</h1>
 
 <div class="section">
-
+{% if artisan["photo_profil"] %}
+    <div style="text-align:center; margin-bottom:20px;">
+        <img
+            src="{{ url_for('photo_profil', artisan_id=artisan['id']) }}"
+            alt="Logo de l'artisan"
+            style="max-width:192px; max-height:192px; object-fit:contain;"
+        >
+    </div>
+{% endif %}
     <form method="POST">
 
         <h2>Mes coordonnées</h2>
@@ -269,8 +277,12 @@ Devis - Mon Voisin Artisan
             rows="5"
         ></textarea>
 
-        <button type="submit" class="btn">
-            Générer le devis
+        <button type="submit" name="action" value="telecharger" class="btn">
+            Télécharger le devis
+        </button>
+        
+        <button type="submit" name="action" value="facture" class="btn">
+            Émettre la facture
         </button>
 
     </form>
