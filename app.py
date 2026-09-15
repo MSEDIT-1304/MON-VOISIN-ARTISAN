@@ -4341,6 +4341,11 @@ def mes_devis():
         SELECT *
         FROM devis
         WHERE artisan_id = ?
+        AND NOT EXISTS (
+            SELECT 1
+            FROM factures
+            WHERE factures.devis_id = devis.id
+        )
         ORDER BY id DESC
         """,
         (artisan["id"],)
