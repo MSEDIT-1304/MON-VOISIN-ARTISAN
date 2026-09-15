@@ -399,9 +399,38 @@ def init_database():
     except sqlite3.OperationalError:
         pass
 
+    # Ajout des nouvelles colonnes des devis
+    # si la base existait déjà
+    colonnes_devis = [
+        ("client_code_postal", "TEXT"),
+        ("client_ville", "TEXT")
+    ]
+
+    for colonne, definition in colonnes_devis:
+        try:
+            cursor.execute(
+                f"ALTER TABLE devis ADD COLUMN {colonne} {definition}"
+            )
+        except sqlite3.OperationalError:
+            pass
+
+    # Ajout des nouvelles colonnes des factures
+    # si la base existait déjà
+    colonnes_factures = [
+        ("client_code_postal", "TEXT"),
+        ("client_ville", "TEXT")
+    ]
+
+    for colonne, definition in colonnes_factures:
+        try:
+            cursor.execute(
+                f"ALTER TABLE factures ADD COLUMN {colonne} {definition}"
+            )
+        except sqlite3.OperationalError:
+            pass
+
     conn.commit()
     conn.close()
-
 
 # Initialisation de la base
 init_database()
