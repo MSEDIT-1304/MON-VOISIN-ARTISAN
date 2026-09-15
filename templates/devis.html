@@ -49,6 +49,7 @@ Devis - Mon Voisin Artisan
             type="text"
             id="client_nom"
             name="client_nom"
+            value="{{ request.form.get('client_nom', '') }}"
             required
         >
 
@@ -58,13 +59,32 @@ Devis - Mon Voisin Artisan
             name="client_adresse"
             rows="3"
             required
-        ></textarea>
-
+        >{{ request.form.get('client_adresse', '') }}</textarea>
+        
+        <label for="client_code_postal">Code postal</label>
+        <input
+            type="text"
+            id="client_code_postal"
+            name="client_code_postal"
+            value="{{ request.form.get('client_code_postal', '') }}"
+            required
+        >
+        
+        <label for="client_ville">Ville</label>
+        <input
+            type="text"
+            id="client_ville"
+            name="client_ville"
+            value="{{ request.form.get('client_ville', '') }}"
+            required
+        >
+        
         <label for="client_email">E-mail</label>
         <input
             type="email"
             id="client_email"
             name="client_email"
+            value="{{ request.form.get('client_email', '') }}"
         >
 
         <label for="client_telephone">Téléphone</label>
@@ -72,23 +92,26 @@ Devis - Mon Voisin Artisan
             type="text"
             id="client_telephone"
             name="client_telephone"
+            value="{{ request.form.get('client_telephone', '') }}"
         >
 
         <h2>Informations du devis</h2>
 
-        <label for="numero_devis">Numéro du devis</label>
+        <label for="numero">Numéro du devis</label>
         <input
             type="text"
-            id="numero_devis"
-            name="numero_devis"
+            id="numero"
+            name="numero"
+            value="{{ request.form.get('numero', '') }}"
             required
         >
 
-        <label for="date_devis">Date</label>
+        <label for="date">Date</label>
         <input
             type="date"
-            id="date_devis"
-            name="date_devis"
+            id="date"
+            name="date"
+            value="{{ request.form.get('date', '') }}"
             required
         >
 
@@ -97,7 +120,9 @@ Devis - Mon Voisin Artisan
             type="text"
             id="validite"
             name="validite"
+            value="{{ request.form.get('validite', '') }}"
             placeholder="Exemple : 30 jours"
+            required
         >
 
         <label for="objet">Objet du devis</label>
@@ -105,6 +130,7 @@ Devis - Mon Voisin Artisan
             type="text"
             id="objet"
             name="objet"
+            value="{{ request.form.get('objet', '') }}"
             placeholder="Exemple : Réfection complète d'une salle de bains"
             required
         >
@@ -119,7 +145,7 @@ Devis - Mon Voisin Artisan
                 rows="2"
                 placeholder="Description de la prestation"
                 required
-            ></textarea>
+            >{{ request.form.get('description1', '') }}</textarea>
 
             <label for="quantite1">Quantité</label>
             <input
@@ -128,7 +154,7 @@ Devis - Mon Voisin Artisan
                 name="quantite1"
                 min="0"
                 step="0.01"
-                value="1"
+                value="{{ request.form.get('quantite1', '1') }}"
             >
 
             <label for="prix_unitaire_ht1">Prix unitaire HT (€)</label>
@@ -136,25 +162,30 @@ Devis - Mon Voisin Artisan
                 type="number"
                 id="prix_unitaire_ht1"
                 name="prix_unitaire_ht1"
+                value="{{ request.form.get('prix_unitaire_ht1', '') }}"
                 min="0"
                 step="0.01"
             >
         </div>
+        <button type="button" id="ajouter-prestation" class="btn">
+            + Ajouter une prestation
+        </button>
 
-        <div class="devis-ligne">
+        <div class="devis-ligne" id="prestation2" style="display:none;">
             <label for="description2">Prestation 2</label>
             <textarea
                 id="description2"
                 name="description2"
                 rows="2"
                 placeholder="Description de la prestation"
-            ></textarea>
+            >{{ request.form.get('description2', '') }}</textarea>
 
             <label for="quantite2">Quantité</label>
             <input
                 type="number"
                 id="quantite2"
                 name="quantite2"
+                value="{{ request.form.get('quantite2', '') }}"
                 min="0"
                 step="0.01"
             >
@@ -164,12 +195,13 @@ Devis - Mon Voisin Artisan
                 type="number"
                 id="prix_unitaire_ht2"
                 name="prix_unitaire_ht2"
+                value="{{ request.form.get('prix_unitaire_ht2', '') }}"
                 min="0"
                 step="0.01"
             >
         </div>
 
-        <div class="devis-ligne">
+        <div class="devis-ligne" id="prestation3" style="display:none;">
             <label for="description3">Prestation 3</label>
             <textarea
                 id="description3"
@@ -192,12 +224,13 @@ Devis - Mon Voisin Artisan
                 type="number"
                 id="prix_unitaire_ht3"
                 name="prix_unitaire_ht3"
+                value="{{ request.form.get('prix_unitaire_ht3', '') }}"
                 min="0"
                 step="0.01"
             >
         </div>
 
-        <div class="devis-ligne">
+        <div class="devis-ligne" id="prestation4" style="display:none;">
             <label for="description4">Prestation 4</label>
             <textarea
                 id="description4"
@@ -220,12 +253,13 @@ Devis - Mon Voisin Artisan
                 type="number"
                 id="prix_unitaire_ht4"
                 name="prix_unitaire_ht4"
+                value="{{ request.form.get('prix_unitaire_ht4', '') }}"
                 min="0"
                 step="0.01"
             >
         </div>
 
-        <div class="devis-ligne">
+        <div class="devis-ligne" id="prestation5" style="display:none;">
             <label for="description5">Prestation 5</label>
             <textarea
                 id="description5"
@@ -248,6 +282,7 @@ Devis - Mon Voisin Artisan
                 type="number"
                 id="prix_unitaire_ht5"
                 name="prix_unitaire_ht5"
+                value="{{ request.form.get('prix_unitaire_ht5', '') }}"
                 min="0"
                 step="0.01"
             >
@@ -275,7 +310,7 @@ Devis - Mon Voisin Artisan
             id="conditions"
             name="conditions"
             rows="5"
-        ></textarea>
+        >{{ request.form.get('conditions', '') }}</textarea>
 
         <button type="submit" name="action" value="telecharger" class="btn">
             Télécharger le devis
@@ -288,6 +323,54 @@ Devis - Mon Voisin Artisan
     </form>
 
 </div>
+<script>
+function calculerTotaux() {
+    let totalHT = 0;
 
+    for (let i = 1; i <= 5; i++) {
+        const quantite = parseFloat(
+            document.getElementById("quantite" + i)?.value || 0
+        );
+
+        const prix = parseFloat(
+            document.getElementById("prix_unitaire_ht" + i)?.value || 0
+        );
+
+        totalHT += quantite * prix;
+    }
+
+    const tauxTVA = 20;
+    const montantTVA = totalHT * tauxTVA / 100;
+    const totalTTC = totalHT + montantTVA;
+
+    document.getElementById("total-ht").textContent =
+        totalHT.toFixed(2).replace(".", ",") + " €";
+
+    document.getElementById("montant-tva").textContent =
+        montantTVA.toFixed(2).replace(".", ",") + " €";
+
+    document.getElementById("total-ttc").textContent =
+        totalTTC.toFixed(2).replace(".", ",") + " €";
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    for (let i = 1; i <= 5; i++) {
+
+        const quantite = document.getElementById("quantite" + i);
+        const prix = document.getElementById("prix_unitaire_ht" + i);
+
+        if (quantite) {
+            quantite.addEventListener("input", calculerTotaux);
+        }
+
+        if (prix) {
+            prix.addEventListener("input", calculerTotaux);
+        }
+    }
+
+    calculerTotaux();
+});
+</script>
 
 {% endblock %}
