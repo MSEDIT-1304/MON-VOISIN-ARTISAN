@@ -4547,7 +4547,7 @@ def generer_facture_depuis_devis(devis_id):
 
     conn = get_connection()
 
-    conn.execute(
+    curseur = conn.execute(
         """
         INSERT INTO factures (
             artisan_id,
@@ -4589,6 +4589,8 @@ def generer_facture_depuis_devis(devis_id):
         )
     )
 
+    facture_id = curseur.lastrowid
+
     conn.commit()
     conn.close()
 
@@ -4597,7 +4599,10 @@ def generer_facture_depuis_devis(devis_id):
     )
 
     return redirect(
-        url_for("mes_factures")
+        url_for(
+            "telecharger_facture",
+            facture_id=facture_id
+        )
     )
 # ==========================================================
 # FACTURE
