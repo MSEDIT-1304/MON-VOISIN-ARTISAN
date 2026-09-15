@@ -4181,7 +4181,7 @@ def devis():
         "taux_tva": request.form.get("taux_tva", "20").strip(),
         "conditions": request.form.get("conditions", "").strip()
     }
-
+    action = request.form.get("action", "telecharger").strip()
     champs_obligatoires = [
         "client_nom",
         "client_adresse",
@@ -4270,7 +4270,7 @@ def devis():
 
     conn = get_connection()
 
-    conn.execute(
+    curseur = conn.execute(
         """
         INSERT INTO devis (
             artisan_id,
@@ -4312,17 +4312,23 @@ def devis():
         )
     )
 
+    devis_id = curseur.lastrowid
     conn.commit()
     conn.close()
-
+    
+    if action == "facture":
+        return redirect(
+            url_for("generer_facture_depuis_devis", devis_id=devis_id)
+        )
+    
     pdf.seek(0)
-
     return send_file(
         pdf,
         as_attachment=True,
         download_name=f"devis_{numero_devis}.pdf",
         mimetype="application/pdf"
     )
+    
 # ==========================================================
 # TÉLÉCHARGER UN DEVIS
 # ==========================================================
