@@ -4380,7 +4380,7 @@ def telecharger_devis(devis_id):
 
     devis = conn.execute(
         """
-        SELECT *
+        SELECT fichier_pdf, numero
         FROM devis
         WHERE id = ?
         AND artisan_id = ?
@@ -4397,18 +4397,20 @@ def telecharger_devis(devis_id):
         flash("Ce devis n'existe pas.")
         return redirect(url_for("mes_devis"))
 
-    if not devis["fichier_pdf"]:
+    fichier_pdf = devis["fichier_pdf"]
+
+    if not fichier_pdf:
         flash("Aucun fichier PDF disponible pour ce devis.")
         return redirect(url_for("mes_devis"))
 
     numero_devis = re.sub(
         r"[^A-Za-z0-9_-]",
         "_",
-        devis["numero"] or "devis"
+        str(devis["numero"] or "devis")
     )
 
     return send_file(
-        BytesIO(devis["fichier_pdf"]),
+        BytesIO(bytes(fichier_pdf)),
         as_attachment=True,
         download_name=f"devis_{numero_devis}.pdf",
         mimetype="application/pdf"
