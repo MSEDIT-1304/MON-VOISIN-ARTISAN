@@ -82,11 +82,15 @@
                     </a>
 
                     <a href="{{ url_for('devis') }}">
-                        Créer un devis
+                        Devis
                     </a>
                     
                     <a href="{{ url_for('facture') }}">
-                        Créer une facture
+                        Émettre une facture
+                    </a>
+                    
+                    <a href="{{ url_for('mes_devis') }}">
+                        Mes devis en attente
                     </a>
                 
                     <a href="{{ url_for('profil') }}">
@@ -176,7 +180,15 @@
             </a>
 
             <a href="{{ url_for('devis') }}">
-                Devis et factures
+                Devis
+            </a>
+
+            <a href="{{ url_for('facture') }}">
+                Émettre une facture
+            </a>
+            
+            <a href="{{ url_for('mes_devis') }}">
+                Mes devis en attente
             </a>
 
                 <a href="{{ url_for('profil') }}">
