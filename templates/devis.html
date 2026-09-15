@@ -12,7 +12,7 @@ Devis - Mon Voisin Artisan
 {% if artisan["photo_profil"] %}
     <div style="text-align:center; margin-bottom:20px;">
         <img
-            src="{{ url_for('photo_profil', artisan_id=artisan['id']) }}"
+            src="{{ url_for('afficher_photo_profil', artisan_id=artisan['id']) }}"
             alt="Logo de l'artisan"
             style="max-width:192px; max-height:192px; object-fit:contain;"
         >
