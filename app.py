@@ -1433,8 +1433,7 @@ def connexion():
         session["user_type"] = "particulier"
         session["email"] = particulier["email"]
 
-        return redirect(url_for("demande"))
-
+        return redirect(url_for("mes_demandes"))
     flash("Adresse e-mail ou compte introuvable.")
     return redirect(url_for("connexion"))
 
@@ -1556,9 +1555,8 @@ def reinitialiser_mot_de_passe():
         session["email"] = particulier["email"]
 
         return redirect(
-            url_for("demande")
+            url_for("mes_demandes")
         )
-
     conn.close()
 
     flash(
