@@ -116,13 +116,12 @@ Facture - Mon Voisin Artisan
             required
         >
 
-        <label for="validite">Validité de la facture</label>
+        <label for="echeance">Date d'échéance</label>
         <input
-            type="text"
-            id="validite"
-            name="validite"
-            value="{{ request.form.get('validite', '') }}"
-            placeholder="Exemple : 30 jours"
+            type="date"
+            id="echeance"
+            name="echeance"
+            value="{{ request.form.get('echeance', '') }}"
             required
         >
 
