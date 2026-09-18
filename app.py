@@ -4440,33 +4440,35 @@ def devis():
 
 @app.route("/artisan/mes-devis")
 def mes_devis():
-    artisan = get_current_user()
+    if not artisan_logged():
+        return redirect(url_for("connexion"))
 
-    if not artisan:
+    artisan_id = session.get("user_id")
+
+    if not artisan_id:
         return redirect(url_for("connexion"))
 
     conn = get_connection()
 
     devis = conn.execute(
         """
-        SELECT *
+        SELECT devis.*
         FROM devis
-        WHERE artisan_id = ?
+        WHERE devis.artisan_id = ?
         AND NOT EXISTS (
             SELECT 1
             FROM factures
             WHERE factures.devis_id = devis.id
         )
-        ORDER BY id DESC
+        ORDER BY devis.id DESC
         """,
-        (artisan["id"],)
+        (artisan_id,)
     ).fetchall()
 
     conn.close()
 
     return render_template(
-        "mes-devis.html",
-        artisan=artisan,
+        "mes_devis.html",
         devis=devis
     )
     
