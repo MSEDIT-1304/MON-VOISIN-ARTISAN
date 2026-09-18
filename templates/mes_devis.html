@@ -33,12 +33,6 @@
 
                 <div class="actions">
 
-                    <a
-                        href="{{ url_for('telecharger_devis', devis_id=d['id']) }}"
-                        class="btn"
-                    >
-                        Télécharger le devis
-                    </a>
 
                     <a
                         href="{{ url_for('generer_facture_depuis_devis', devis_id=d['id']) }}"
