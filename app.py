@@ -3888,10 +3888,10 @@ def generer_pdf_devis(artisan, donnees):
 
     elements.append(
         Paragraph(
-            f"<b>Numéro du devis :</b> {donnees.get('numero', '')}<br/>"
-            f"<b>Date :</b> {donnees.get('date', '')}<br/>"
-            f"<b>Validité :</b> {donnees.get('validite', '')}<br/>"
-            f"<b>Objet :</b> {donnees.get('objet', '')}",
+            f"<b>Numéro du devis :</b> {texte_pdf(donnees.get('numero', ''))}<br/>"
+            f"<b>Date :</b> {texte_pdf(donnees.get('date', ''))}<br/>"
+            f"<b>Validité :</b> {texte_pdf(donnees.get('validite', ''))}<br/>"
+            f"<b>Objet :</b> {texte_pdf(donnees.get('objet', ''))}",
             texte_style
         )
     )
