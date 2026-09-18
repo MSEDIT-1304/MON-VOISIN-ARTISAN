@@ -118,11 +118,10 @@ Devis - Mon Voisin Artisan
 
         <label for="validite">Validité du devis</label>
         <input
-            type="text"
+            type="date"
             id="validite"
             name="validite"
             value="{{ request.form.get('validite', '') }}"
-            placeholder="Exemple : 30 jours"
             required
         >
 
