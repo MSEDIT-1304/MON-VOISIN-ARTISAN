@@ -3941,7 +3941,7 @@ def generer_pdf_devis(artisan, donnees):
         if description:
             lignes.append(
                 [
-                    Paragraph(texte_pdf(description), texte_style)
+                    Paragraph(texte_pdf(description), texte_style),
                     Paragraph(f"{quantite:g}", texte_style),
                     Paragraph(f"{prix_unitaire:.2f} €", texte_style),
                     Paragraph(f"{total_ligne:.2f} €", texte_style)
