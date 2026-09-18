@@ -3853,36 +3853,36 @@ def generer_pdf_devis(artisan, donnees):
     elements = []
 
     if artisan["photo_profil"]:
-    try:
-        logo_data = BytesIO(bytes(artisan["photo_profil"]))
-        logo_reader = ImageReader(logo_data)
-
-        largeur_originale, hauteur_originale = logo_reader.getSize()
-
-        largeur_max = 120
-        hauteur_max = 60
-
-        ratio = min(
-            largeur_max / largeur_originale,
-            hauteur_max / hauteur_originale
-        )
-
-        largeur_logo = largeur_originale * ratio
-        hauteur_logo = hauteur_originale * ratio
-
-        logo = RLImage(
-            logo_data,
-            width=largeur_logo,
-            height=hauteur_logo
-        )
-
-        logo.hAlign = "CENTER"
-
-        elements.append(logo)
-        elements.append(Spacer(1, 8))
-
-    except Exception:
-        pass
+        try:
+            logo_data = BytesIO(bytes(artisan["photo_profil"]))
+            logo_reader = ImageReader(logo_data)
+    
+            largeur_originale, hauteur_originale = logo_reader.getSize()
+    
+            largeur_max = 120
+            hauteur_max = 60
+    
+            ratio = min(
+                largeur_max / largeur_originale,
+                hauteur_max / hauteur_originale
+            )
+    
+            largeur_logo = largeur_originale * ratio
+            hauteur_logo = hauteur_originale * ratio
+    
+            logo = RLImage(
+                logo_data,
+                width=largeur_logo,
+                height=hauteur_logo
+            )
+    
+            logo.hAlign = "CENTER"
+    
+            elements.append(logo)
+            elements.append(Spacer(1, 8))
+    
+        except Exception:
+            pass
 
     from xml.sax.saxutils import escape
 
