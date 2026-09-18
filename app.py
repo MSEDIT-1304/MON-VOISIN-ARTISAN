@@ -47,8 +47,11 @@ from reportlab.platypus import (
     Paragraph,
     Spacer,
     Table,
-    TableStyle
+    TableStyle,
+    Image as RLImage
 )
+
+from reportlab.lib.utils import ImageReader
 
 
 # ==========================================================
@@ -3849,6 +3852,19 @@ def generer_pdf_devis(artisan, donnees):
 
     elements = []
 
+    if artisan["photo_profil"]:
+        try:
+            logo = RLImage(
+                BytesIO(bytes(artisan["photo_profil"])),
+                width=120,
+                height=60
+            )
+            logo.hAlign = "CENTER"
+            elements.append(logo)
+            elements.append(Spacer(1, 8))
+        except Exception:
+            pass
+
     from xml.sax.saxutils import escape
 
     def texte_pdf(valeur):
@@ -4048,10 +4064,22 @@ def generer_pdf_facture(artisan, donnees):
 
     elements = []
 
+    if artisan["photo_profil"]:
+        try:
+            logo = RLImage(
+                BytesIO(bytes(artisan["photo_profil"])),
+                width=120,
+                height=60
+            )
+            logo.hAlign = "CENTER"
+            elements.append(logo)
+            elements.append(Spacer(1, 8))
+        except Exception:
+            pass
+
     elements.append(
         Paragraph("FACTURE", titre_style)
     )
-
     elements.append(
         Paragraph(
             f"<b>{artisan['entreprise']}</b><br/>"
