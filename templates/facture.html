@@ -9,7 +9,15 @@ Facture - Mon Voisin Artisan
 <h1>Créer une facture</h1>
 
 <div class="section">
-
+{% if artisan["photo_profil"] %}
+    <div style="text-align:center; margin-bottom:20px;">
+        <img
+            src="{{ url_for('afficher_photo_profil', artisan_id=artisan['id']) }}"
+            alt="Logo de l'artisan"
+            style="max-width:192px; max-height:192px; object-fit:contain;"
+        >
+    </div>
+{% endif %}
     <form method="POST">
 
         <h2>Mes coordonnées</h2>
@@ -33,7 +41,7 @@ Facture - Mon Voisin Artisan
             SIRET : {{ artisan["siret"] or "Non renseigné" }}<br>
             TVA intracommunautaire : {{ artisan["tva"] or "Non renseignée" }}
         </p>
-
+        
         <h2>Informations du client</h2>
 
         <label for="client_nom">Nom / Entreprise</label>
@@ -41,6 +49,7 @@ Facture - Mon Voisin Artisan
             type="text"
             id="client_nom"
             name="client_nom"
+            value="{{ request.form.get('client_nom', '') }}"
             required
         >
 
@@ -48,31 +57,35 @@ Facture - Mon Voisin Artisan
         <textarea
             id="client_adresse"
             name="client_adresse"
-            rows="3"
+            rows="2"
+            style="min-height:50px; resize:vertical;"
             required
-        ></textarea>
-
+        >{{ request.form.get('client_adresse', '') }}</textarea>
+        
         <label for="client_code_postal">Code postal</label>
         <input
             type="text"
             id="client_code_postal"
             name="client_code_postal"
+            value="{{ request.form.get('client_code_postal', '') }}"
             required
         >
-
+        
         <label for="client_ville">Ville</label>
         <input
             type="text"
             id="client_ville"
             name="client_ville"
+            value="{{ request.form.get('client_ville', '') }}"
             required
         >
-
+        
         <label for="client_email">E-mail</label>
         <input
             type="email"
             id="client_email"
             name="client_email"
+            value="{{ request.form.get('client_email', '') }}"
         >
 
         <label for="client_telephone">Téléphone</label>
@@ -80,31 +93,37 @@ Facture - Mon Voisin Artisan
             type="text"
             id="client_telephone"
             name="client_telephone"
+            value="{{ request.form.get('client_telephone', '') }}"
         >
 
         <h2>Informations de la facture</h2>
 
-        <label for="numero_facture">Numéro de facture</label>
+        <label for="numero">Numéro de la facture</label>
         <input
             type="text"
-            id="numero_facture"
-            name="numero_facture"
+            id="numero"
+            name="numero"
+            value="{{ request.form.get('numero', '') }}"
             required
         >
 
-        <label for="date_facture">Date de facture</label>
+        <label for="date">Date</label>
         <input
             type="date"
-            id="date_facture"
-            name="date_facture"
+            id="date"
+            name="date"
+            value="{{ request.form.get('date', '') }}"
             required
         >
 
-        <label for="date_echeance">Date d'échéance</label>
+        <label for="validite">Validité de la facture</label>
         <input
-            type="date"
-            id="date_echeance"
-            name="date_echeance"
+            type="text"
+            id="validite"
+            name="validite"
+            value="{{ request.form.get('validite', '') }}"
+            placeholder="Exemple : 30 jours"
+            required
         >
 
         <label for="objet">Objet de la facture</label>
@@ -112,11 +131,12 @@ Facture - Mon Voisin Artisan
             type="text"
             id="objet"
             name="objet"
-            placeholder="Exemple : Travaux de plomberie"
+            value="{{ request.form.get('objet', '') }}"
+            placeholder="Exemple : Réfection complète d'une salle de bains"
             required
         >
 
-        <h2>Prestations / Travaux</h2>
+        <h2>Travaux / Prestations</h2>
 
         <div class="facture-ligne">
             <label for="description1">Prestation 1</label>
@@ -126,7 +146,7 @@ Facture - Mon Voisin Artisan
                 rows="2"
                 placeholder="Description de la prestation"
                 required
-            ></textarea>
+            >{{ request.form.get('description1', '') }}</textarea>
 
             <label for="quantite1">Quantité</label>
             <input
@@ -135,7 +155,7 @@ Facture - Mon Voisin Artisan
                 name="quantite1"
                 min="0"
                 step="0.01"
-                value="1"
+                value="{{ request.form.get('quantite1', '1') }}"
             >
 
             <label for="prix_unitaire_ht1">Prix unitaire HT (€)</label>
@@ -143,25 +163,30 @@ Facture - Mon Voisin Artisan
                 type="number"
                 id="prix_unitaire_ht1"
                 name="prix_unitaire_ht1"
+                value="{{ request.form.get('prix_unitaire_ht1', '') }}"
                 min="0"
                 step="0.01"
             >
         </div>
+        <button type="button" id="ajouter-prestation" class="btn">
+            + Ajouter une prestation
+        </button>
 
-        <div class="facture-ligne">
+        <div class="facture-ligne" id="prestation2" style="display:none;">
             <label for="description2">Prestation 2</label>
             <textarea
                 id="description2"
                 name="description2"
                 rows="2"
                 placeholder="Description de la prestation"
-            ></textarea>
+            >{{ request.form.get('description2', '') }}</textarea>
 
             <label for="quantite2">Quantité</label>
             <input
                 type="number"
                 id="quantite2"
                 name="quantite2"
+                value="{{ request.form.get('quantite2', '') }}"
                 min="0"
                 step="0.01"
             >
@@ -171,25 +196,27 @@ Facture - Mon Voisin Artisan
                 type="number"
                 id="prix_unitaire_ht2"
                 name="prix_unitaire_ht2"
+                value="{{ request.form.get('prix_unitaire_ht2', '') }}"
                 min="0"
                 step="0.01"
             >
         </div>
 
-        <div class="facture-ligne">
+        <div class="facture-ligne" id="prestation3" style="display:none;">
             <label for="description3">Prestation 3</label>
             <textarea
                 id="description3"
                 name="description3"
                 rows="2"
                 placeholder="Description de la prestation"
-            ></textarea>
+            >{{ request.form.get('description3', '') }}</textarea>
 
             <label for="quantite3">Quantité</label>
             <input
                 type="number"
                 id="quantite3"
                 name="quantite3"
+                value="{{ request.form.get('quantite3', '') }}"
                 min="0"
                 step="0.01"
             >
@@ -199,25 +226,27 @@ Facture - Mon Voisin Artisan
                 type="number"
                 id="prix_unitaire_ht3"
                 name="prix_unitaire_ht3"
+                value="{{ request.form.get('prix_unitaire_ht3', '') }}"
                 min="0"
                 step="0.01"
             >
         </div>
 
-        <div class="facture-ligne">
+        <div class="facture-ligne" id="prestation4" style="display:none;">
             <label for="description4">Prestation 4</label>
             <textarea
                 id="description4"
                 name="description4"
                 rows="2"
                 placeholder="Description de la prestation"
-            ></textarea>
+            >{{ request.form.get('description4', '') }}</textarea>
 
             <label for="quantite4">Quantité</label>
             <input
                 type="number"
                 id="quantite4"
                 name="quantite4"
+                value="{{ request.form.get('quantite4', '') }}"
                 min="0"
                 step="0.01"
             >
@@ -227,25 +256,27 @@ Facture - Mon Voisin Artisan
                 type="number"
                 id="prix_unitaire_ht4"
                 name="prix_unitaire_ht4"
+                value="{{ request.form.get('prix_unitaire_ht4', '') }}"
                 min="0"
                 step="0.01"
             >
         </div>
 
-        <div class="facture-ligne">
+        <div class="facture-ligne" id="prestation5" style="display:none;">
             <label for="description5">Prestation 5</label>
             <textarea
                 id="description5"
                 name="description5"
                 rows="2"
                 placeholder="Description de la prestation"
-            ></textarea>
+            >{{ request.form.get('description5', '') }}</textarea>
 
             <label for="quantite5">Quantité</label>
             <input
                 type="number"
                 id="quantite5"
                 name="quantite5"
+                value="{{ request.form.get('quantite5', '') }}"
                 min="0"
                 step="0.01"
             >
@@ -255,41 +286,59 @@ Facture - Mon Voisin Artisan
                 type="number"
                 id="prix_unitaire_ht5"
                 name="prix_unitaire_ht5"
+                value="{{ request.form.get('prix_unitaire_ht5', '') }}"
                 min="0"
                 step="0.01"
             >
         </div>
+        <label for="taux_tva">Taux de TVA</label>
 
+    <input
+        type="number"
+        id="taux_tva"
+        name="taux_tva"
+        value="{{ request.form.get('taux_tva', '20') }}"
+        min="0"
+        max="100"
+        step="0.1"
+        list="taux-tva-options"
+    >
+    
+    <datalist id="taux-tva-options">
+        <option value="5.5">
+        <option value="10">
+        <option value="12.5">
+        <option value="20">
+    </datalist>
         <h2>Récapitulatif</h2>
-        
-        <p><strong>Total HT :</strong> <span id="total-ht">0,00 €</span></p>
-        <p><strong>TVA :</strong> <span id="montant-tva">0,00 €</span></p>
-        <p><strong>Total TTC :</strong> <span id="total-ttc">0,00 €</span></p>
 
-        <label for="taux_tva">Taux de TVA (%)</label>
-        <input type="number" id="taux_tva" name="taux_tva"
-               min="0" max="100" step="0.01" value="20">
+        <p>
+            <strong>Total HT :</strong>
+            <span id="total-ht">0,00 €</span>
+        </p>
+
+        <p>
+            <strong>TVA :</strong>
+            <span id="montant-tva">0,00 €</span>
+        </p>
+
+        <p>
+            <strong>Total TTC :</strong>
+            <span id="total-ttc">0,00 €</span>
+        </p>
         
         <label for="conditions">Conditions / Observations</label>
         <textarea
             id="conditions"
             name="conditions"
             rows="5"
-        ></textarea>
+        >{{ request.form.get('conditions', '') }}</textarea>
 
-        <button type="submit">
-            Générer la facture PDF
+        <button type="submit" name="action" value="telecharger" class="btn">
+            Télécharger la facture
         </button>
-
+        
     </form>
-
-</div>
-
-<div class="section">
-
-    <a href="{{ url_for('artisan') }}" class="btn">
-        Retour à mon espace
-    </a>
 
 </div>
 
@@ -298,16 +347,23 @@ function calculerTotaux() {
     let totalHT = 0;
 
     for (let i = 1; i <= 5; i++) {
-        const quantite = parseFloat(document.getElementById("quantite" + i)?.value) || 0;
-        const prixUnitaire = parseFloat(document.getElementById("prix_unitaire_ht" + i)?.value) || 0;
+        const quantite = parseFloat(
+            document.getElementById("quantite" + i)?.value || 0
+        );
 
-        totalHT += quantite * prixUnitaire;
+        const prix = parseFloat(
+            document.getElementById("prix_unitaire_ht" + i)?.value || 0
+        );
+
+        totalHT += quantite * prix;
     }
 
-    const tauxTVA = parseFloat(document.getElementById("taux_tva")?.value) || 0;
+    const tauxTVA = parseFloat(
+    document.getElementById("taux_tva")?.value || 20
+    );
+    
     const montantTVA = totalHT * tauxTVA / 100;
     const totalTTC = totalHT + montantTVA;
-
     document.getElementById("total-ht").textContent =
         totalHT.toFixed(2).replace(".", ",") + " €";
 
@@ -318,16 +374,79 @@ function calculerTotaux() {
         totalTTC.toFixed(2).replace(".", ",") + " €";
 }
 
+
 document.addEventListener("DOMContentLoaded", function () {
+
+    /* -------------------------------------------------
+       CALCUL DES TOTAUX
+    ------------------------------------------------- */
+
     for (let i = 1; i <= 5; i++) {
-        document.getElementById("quantite" + i)?.addEventListener("input", calculerTotaux);
-        document.getElementById("prix_unitaire_ht" + i)?.addEventListener("input", calculerTotaux);
+
+        const quantite = document.getElementById("quantite" + i);
+        const prix = document.getElementById("prix_unitaire_ht" + i);
+
+        if (quantite) {
+            quantite.addEventListener("input", calculerTotaux);
+        }
+
+        if (prix) {
+            prix.addEventListener("input", calculerTotaux);
+        }
+    }
+    const tauxTVAInput = document.getElementById("taux_tva");
+
+    if (tauxTVAInput) {
+        tauxTVAInput.addEventListener("input", calculerTotaux);
     }
 
-    document.getElementById("taux_tva")?.addEventListener("input", calculerTotaux);
+    /* -------------------------------------------------
+       AJOUT PROGRESSIF DES PRESTATIONS
+    ------------------------------------------------- */
+
+    const boutonAjouter =
+        document.getElementById("ajouter-prestation");
+
+    let prestationActuelle = 1;
+
+    if (boutonAjouter) {
+
+        boutonAjouter.addEventListener("click", function () {
+
+            if (prestationActuelle < 5) {
+
+                prestationActuelle++;
+
+                const prestation =
+                    document.getElementById(
+                        "prestation" + prestationActuelle
+                    );
+
+                if (prestation) {
+                    prestation.style.display = "block";
+                }
+
+                /*
+                 * Quand on arrive à la 5e prestation,
+                 * le bouton disparaît.
+                 */
+                if (prestationActuelle === 5) {
+                    boutonAjouter.style.display = "none";
+                }
+
+            }
+
+            calculerTotaux();
+        });
+    }
+
+
+    /* -------------------------------------------------
+       CALCUL INITIAL
+    ------------------------------------------------- */
 
     calculerTotaux();
+
 });
 </script>
-
 {% endblock %}
