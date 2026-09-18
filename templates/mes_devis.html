@@ -33,14 +33,17 @@
 
                 <div class="actions">
 
-
+                    <p>
+                        <strong>Une fois la facture téléchargée, elle sera supprimée de l'application.</strong>
+                    </p>
+                
                     <a
                         href="{{ url_for('generer_facture_depuis_devis', devis_id=d['id']) }}"
                         class="btn"
                     >
-                        Générer une facture
+                        Générer et télécharger la facture
                     </a>
-
+                
                 </div>
 
             </div>
