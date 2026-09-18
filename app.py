@@ -418,10 +418,10 @@ def init_database():
 
     # Ajout des nouvelles colonnes des factures
     # si la base existait déjà
-        colonnes_devis = [
+    colonnes_factures = [
         ("client_code_postal", "TEXT"),
         ("client_ville", "TEXT"),
-        ("donnees_json", "TEXT")
+        ("devis_id", "INTEGER")
     ]
 
     for colonne, definition in colonnes_factures:
