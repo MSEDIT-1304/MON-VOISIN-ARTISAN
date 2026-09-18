@@ -64,9 +64,7 @@
 
             <nav class="main-nav">
 
-                <a href="{{ url_for('home') }}">
-                    Accueil
-                </a>
+        
 
                 {% if session.get("user_type") == "artisan" %}
 
@@ -162,9 +160,6 @@
             class="mobile-nav"
         >
 
-            <a href="{{ url_for('home') }}">
-                Accueil
-            </a>
 
             {% if session.get("user_type") == "artisan" %}
 
