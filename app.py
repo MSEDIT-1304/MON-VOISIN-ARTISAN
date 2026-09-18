@@ -404,7 +404,8 @@ def init_database():
     # si la base existait déjà
     colonnes_devis = [
         ("client_code_postal", "TEXT"),
-        ("client_ville", "TEXT")
+        ("client_ville", "TEXT"),
+        ("donnees_json", "TEXT")
     ]
 
     for colonne, definition in colonnes_devis:
@@ -417,9 +418,10 @@ def init_database():
 
     # Ajout des nouvelles colonnes des factures
     # si la base existait déjà
-    colonnes_factures = [
+        colonnes_devis = [
         ("client_code_postal", "TEXT"),
-        ("client_ville", "TEXT")
+        ("client_ville", "TEXT"),
+        ("donnees_json", "TEXT")
     ]
 
     for colonne, definition in colonnes_factures:
