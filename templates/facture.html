@@ -331,7 +331,11 @@ Facture - Mon Voisin Artisan
             name="conditions"
             rows="5"
         >{{ request.form.get('conditions', '') }}</textarea>
-
+        
+        <p>
+            <strong>Une fois la facture téléchargée, elle sera supprimée de l'application.</strong>
+        </p>
+        
         <button type="submit" name="action" value="telecharger" class="btn">
             Télécharger la facture
         </button>
