@@ -574,14 +574,21 @@ input[type="radio"] {
     }
 }
 
-/* ==========================================================
-   MOBILE - MES DEMANDES / MESSAGES RECUS
-   ========================================================== */
+/* CENTRAGE MES DEMANDES / MESSAGES RECUS SUR MOBILE */
 
 @media screen and (max-width: 768px) {
 
-    .page-container:has(.cards .section) {
-        zoom: 90%;
+    .page-container:has(.cards .section) .cards {
+        display: block;
+        width: 100%;
+        margin: 0 auto;
+    }
+
+    .page-container:has(.cards .section) .section {
+        width: 100%;
+        max-width: 800px;
+        margin: 20px auto;
+        box-sizing: border-box;
     }
 
 }
