@@ -789,6 +789,7 @@ def get_postal_coordinates(code_postal, ville=None):
         return None
 
     def normaliser_nom(nom):
+
         nom = str(nom or "").strip().lower()
 
         import unicodedata
@@ -814,26 +815,25 @@ def get_postal_coordinates(code_postal, ville=None):
 
     try:
 
-        response = requests.get(
-            "https://geo.api.gouv.fr/communes",
-            params={
-                "codePostal": code_postal,
-                "fields": "nom,centre",
-                "format": "json"
-            },
-            timeout=5
-        )
+        # --------------------------------------------------
+        # RECHERCHE DIRECTE PAR VILLE
+        # --------------------------------------------------
 
-        response.raise_for_status()
-
-        communes = response.json()
-
-        if not communes:
-            return None
-
-        # Si la ville est connue, chercher précisément
-        # la commune correspondant au code postal ET au nom.
         if ville:
+
+            response = requests.get(
+                "https://geo.api.gouv.fr/communes",
+                params={
+                    "nom": ville,
+                    "fields": "nom,centre,codesPostaux",
+                    "format": "json"
+                },
+                timeout=5
+            )
+
+            response.raise_for_status()
+
+            communes = response.json()
 
             ville_normalisee = normaliser_nom(ville)
 
@@ -843,7 +843,18 @@ def get_postal_coordinates(code_postal, ville=None):
                     commune.get("nom")
                 )
 
-                if nom_commune == ville_normalisee:
+                codes_postaux = [
+                    str(cp).strip()
+                    for cp in commune.get(
+                        "codesPostaux",
+                        []
+                    )
+                ]
+
+                if (
+                    nom_commune == ville_normalisee
+                    and code_postal in codes_postaux
+                ):
 
                     centre = commune.get("centre")
 
@@ -860,11 +871,57 @@ def get_postal_coordinates(code_postal, ville=None):
                             float(coordinates[1])
                         )
 
-            # Aucun nom correspondant :
-            # on ne prend PAS une autre commune au hasard.
+        # --------------------------------------------------
+        # SECOURS : RECHERCHE PAR CODE POSTAL
+        # --------------------------------------------------
+
+        response = requests.get(
+            "https://geo.api.gouv.fr/communes",
+            params={
+                "codePostal": code_postal,
+                "fields": "nom,centre,codesPostaux",
+                "format": "json"
+            },
+            timeout=5
+        )
+
+        response.raise_for_status()
+
+        communes = response.json()
+
+        if not communes:
             return None
 
-        # Sans ville, conserver le comportement existant.
+        if ville:
+
+            ville_normalisee = normaliser_nom(ville)
+
+            for commune in communes:
+
+                nom_commune = normaliser_nom(
+                    commune.get("nom")
+                )
+
+                if nom_commune != ville_normalisee:
+                    continue
+
+                centre = commune.get("centre")
+
+                coordinates = (
+                    centre.get("coordinates")
+                    if centre
+                    else None
+                )
+
+                if coordinates and len(coordinates) >= 2:
+
+                    return (
+                        float(coordinates[0]),
+                        float(coordinates[1])
+                    )
+
+            return None
+
         centre = communes[0].get("centre")
 
         coordinates = (
@@ -883,7 +940,6 @@ def get_postal_coordinates(code_postal, ville=None):
 
     except Exception:
         return None
-
 
 def parse_rayon_km(rayon):
     if rayon is None:
