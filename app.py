@@ -2082,6 +2082,59 @@ def telecharger_piece_jointe(reponse_id):
         download_name=reponse["piece_jointe_nom"] or "piece_jointe",
         mimetype=reponse["piece_jointe_mimetype"] or "application/octet-stream"
     )
+# ==========================================================
+# NOTIFICATIONS - NOUVEAUX MESSAGES
+# ==========================================================
+
+@app.route("/notifications")
+def notifications():
+
+    user_type = session.get("user_type")
+    user_id = session.get("user_id")
+
+    if not user_type or not user_id:
+        return {
+            "unread_messages": 0
+        }
+
+    conn = get_connection()
+
+    if user_type == "artisan":
+
+        unread_messages = conn.execute(
+            """
+            SELECT COUNT(*)
+            FROM reponses
+            WHERE artisan_id = ?
+            AND auteur_type = 'particulier'
+            AND lu_artisan = 0
+            """,
+            (user_id,)
+        ).fetchone()[0]
+
+    elif user_type == "particulier":
+
+        unread_messages = conn.execute(
+            """
+            SELECT COUNT(*)
+            FROM reponses
+            WHERE particulier_id = ?
+            AND auteur_type = 'artisan'
+            AND lu_particulier = 0
+            """,
+            (user_id,)
+        ).fetchone()[0]
+
+    else:
+
+        unread_messages = 0
+
+    conn.close()
+
+    return {
+        "unread_messages": unread_messages
+    }
+
 
 # ==========================================================
 # MESSAGES - ARTISAN
