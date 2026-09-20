@@ -70,6 +70,9 @@
 
                     <a href="{{ url_for('artisan') }}">
                         Mes demandes
+                        {% if unread_demandes > 0 %}
+                            <span class="message-badge">{{ unread_demandes }}</span>
+                        {% endif %}
                     </a>
                 
                     <a href="{{ url_for('messages') }}">
