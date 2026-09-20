@@ -781,12 +781,39 @@ REGIONS = [
 # ==========================================================
 
 @lru_cache(maxsize=512)
-def get_postal_coordinates(code_postal):
-    code_postal = str(code_postal).strip()
+def get_postal_coordinates(code_postal, ville=None):
+
+    code_postal = str(code_postal or "").strip()
+
     if not code_postal:
         return None
 
+    def normaliser_nom(nom):
+        nom = str(nom or "").strip().lower()
+
+        import unicodedata
+
+        nom = unicodedata.normalize(
+            "NFD",
+            nom
+        )
+
+        nom = "".join(
+            caractere
+            for caractere in nom
+            if unicodedata.category(caractere) != "Mn"
+        )
+
+        nom = re.sub(
+            r"[^a-z0-9]+",
+            "",
+            nom
+        )
+
+        return nom
+
     try:
+
         response = requests.get(
             "https://geo.api.gouv.fr/communes",
             params={
@@ -796,19 +823,63 @@ def get_postal_coordinates(code_postal):
             },
             timeout=5
         )
+
         response.raise_for_status()
+
         communes = response.json()
 
         if not communes:
             return None
 
+        # Si la ville est connue, chercher précisément
+        # la commune correspondant au code postal ET au nom.
+        if ville:
+
+            ville_normalisee = normaliser_nom(ville)
+
+            for commune in communes:
+
+                nom_commune = normaliser_nom(
+                    commune.get("nom")
+                )
+
+                if nom_commune == ville_normalisee:
+
+                    centre = commune.get("centre")
+
+                    coordinates = (
+                        centre.get("coordinates")
+                        if centre
+                        else None
+                    )
+
+                    if coordinates and len(coordinates) >= 2:
+
+                        return (
+                            float(coordinates[0]),
+                            float(coordinates[1])
+                        )
+
+            # Aucun nom correspondant :
+            # on ne prend PAS une autre commune au hasard.
+            return None
+
+        # Sans ville, conserver le comportement existant.
         centre = communes[0].get("centre")
-        coordinates = centre.get("coordinates") if centre else None
+
+        coordinates = (
+            centre.get("coordinates")
+            if centre
+            else None
+        )
 
         if not coordinates or len(coordinates) < 2:
             return None
 
-        return float(coordinates[0]), float(coordinates[1])
+        return (
+            float(coordinates[0]),
+            float(coordinates[1])
+        )
 
     except Exception:
         return None
@@ -829,9 +900,22 @@ def parse_rayon_km(rayon):
         return None
 
 
-def distance_km(code_postal_1, code_postal_2):
-    coord1 = get_postal_coordinates(code_postal_1)
-    coord2 = get_postal_coordinates(code_postal_2)
+def distance_km(
+    code_postal_1,
+    code_postal_2,
+    ville_1=None,
+    ville_2=None
+):
+
+    coord1 = get_postal_coordinates(
+        code_postal_1,
+        ville_1
+    )
+
+    coord2 = get_postal_coordinates(
+        code_postal_2,
+        ville_2
+    )
 
     if not coord1 or not coord2:
         return None
@@ -843,6 +927,7 @@ def distance_km(code_postal_1, code_postal_2):
 
     lat1 = math.radians(lat1)
     lat2 = math.radians(lat2)
+
     delta_lat = math.radians(lat2 - lat1)
     delta_lon = math.radians(lon2 - lon1)
 
@@ -853,8 +938,9 @@ def distance_km(code_postal_1, code_postal_2):
         * math.sin(delta_lon / 2) ** 2
     )
 
-    return radius_terre * 2 * math.asin(math.sqrt(a))
-
+    return radius_terre * 2 * math.asin(
+        math.sqrt(a)
+    )
 
 def demande_dans_rayon(artisan, demande):
     artisan_cp = str(artisan["code_postal"] or "").strip()
@@ -864,8 +950,12 @@ def demande_dans_rayon(artisan, demande):
     if not artisan_cp or not demande_cp or rayon_km is None or rayon_km <= 0:
         return False
 
-    distance = distance_km(artisan_cp, demande_cp)
-
+    distance = distance_km(
+        artisan_cp,
+        demande_cp,
+        artisan["ville"],
+        demande["ville"]
+    )
     if distance is None:
         return artisan_cp == demande_cp
 
