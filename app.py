@@ -284,13 +284,7 @@ def init_database():
             UNIQUE(artisan_id, demande_id)
         )
     """)
-    cursor.execute("""
-        CREATE TABLE IF NOT EXISTS artisan_demandes_vues (
-            artisan_id INTEGER NOT NULL,
-            demande_id INTEGER NOT NULL,
-            PRIMARY KEY (artisan_id, demande_id)
-        )
-    """)
+
         # ------------------------------------------------------
     # DEVIS
     # ------------------------------------------------------
@@ -958,7 +952,6 @@ def particulier_logged():
 def inject_unread_messages():
 
     unread_messages = 0
-    artisan_new_demandes = 0
 
     user_type = session.get("user_type")
     user_id = session.get("user_id")
@@ -980,54 +973,6 @@ def inject_unread_messages():
                 (user_id,)
             ).fetchone()[0]
 
-            artisan = conn.execute(
-                "SELECT * FROM artisans WHERE id = ?",
-                (user_id,)
-            ).fetchone()
-
-            if artisan:
-
-                activites = load_list(artisan["activites"])
-                sous_categories = load_list(artisan["sous_categories"])
-
-                nouvelles_demandes = conn.execute(
-                    """
-                    SELECT demandes.*
-                    FROM demandes
-                    WHERE NOT EXISTS (
-                        SELECT 1
-                        FROM artisan_demandes_supprimees
-                        WHERE artisan_demandes_supprimees.artisan_id = ?
-                        AND artisan_demandes_supprimees.demande_id = demandes.id
-                    )
-                    AND NOT EXISTS (
-                        SELECT 1
-                        FROM artisan_demandes_vues
-                        WHERE artisan_demandes_vues.artisan_id = ?
-                        AND artisan_demandes_vues.demande_id = demandes.id
-                    )
-                    ORDER BY demandes.id DESC
-                    """,
-                    (user_id, user_id)
-                ).fetchall()
-
-                for demande in nouvelles_demandes:
-
-                    if demande["activite"] not in activites:
-                        continue
-
-                    if sous_categories:
-                        if (
-                            demande["sous_categorie"]
-                            and demande["sous_categorie"] not in sous_categories
-                        ):
-                            continue
-
-                    if not demande_dans_rayon(artisan, demande):
-                        continue
-
-                    artisan_new_demandes += 1
-
         elif user_type == "particulier":
 
             unread_messages = conn.execute(
@@ -1044,8 +989,7 @@ def inject_unread_messages():
         conn.close()
 
     return {
-        "unread_messages": unread_messages,
-        "artisan_new_demandes": artisan_new_demandes
+        "unread_messages": unread_messages
     }
     
 def logout_user():
@@ -2167,20 +2111,7 @@ def artisan():
         demandes_filtrees.append(
             demande
         )
-    conn = get_connection()
 
-    for demande in demandes_filtrees:
-        conn.execute(
-            """
-            INSERT OR IGNORE INTO artisan_demandes_vues
-            (artisan_id, demande_id)
-            VALUES (?, ?)
-            """,
-            (artisan_user["id"], demande["id"])
-        )
-
-    conn.commit()
-    conn.close()
     return render_template(
         "artisan.html",
         artisan=artisan_user,
