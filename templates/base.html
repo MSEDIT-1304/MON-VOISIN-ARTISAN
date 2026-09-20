@@ -112,7 +112,7 @@
                         Mes demandes
                     </a>
                 
-                    <a href="{{ url_for('messages_recus', messages=1) }}">
+                    <a href="{{ url_for('mes_demandes', messages=1) }}">
                         Messages reçus
                         {% if unread_messages > 0 %}
                             <span class="message-badge">{{ unread_messages }}</span>
