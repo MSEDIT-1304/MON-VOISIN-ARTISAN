@@ -8,7 +8,7 @@
     {% if request.args.get("messages") == "1" %}
         Messages reçus
     {% else %}
-        Messages reçus
+        Mes demandes
     {% endif %}
 </h1>
 
@@ -20,8 +20,7 @@
 
 {% if demandes %}
 
-    <div class="cards">
-
+    <div class="cards demandes-particulier">
         {% for element in demandes %}
 
             <div class="card">
