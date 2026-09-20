@@ -510,12 +510,9 @@ input[type="radio"] {
     }
 
    .cards {
-        width: calc(100% - 30px);
-        margin-left: auto;
-        margin-right: auto;
-        grid-template-columns: 1fr;
-        gap: 15px;
-    }
+       grid-template-columns: 1fr;
+       gap: 15px;
+   }
 
     .card,
     .form,
@@ -575,4 +572,31 @@ input[type="radio"] {
     .message {
         padding: 10px 12px;
     }
+}
+/* ==========================================================
+   MOBILE - MES DEMANDES / MESSAGES RECUS
+   ========================================================== */
+
+@media screen and (max-width: 768px) {
+
+    .page-container:has(.cards .section) .cards {
+        width: 100%;
+        margin-left: 0;
+        margin-right: 0;
+    }
+
+    .page-container:has(.cards .section) .card {
+        width: 100%;
+        max-width: 100%;
+        margin-left: 0;
+        margin-right: 0;
+    }
+
+    .page-container:has(.cards .section) .section {
+        width: 100%;
+        max-width: 100%;
+        margin-left: 0;
+        margin-right: 0;
+    }
+
 }
