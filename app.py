@@ -2581,53 +2581,99 @@ def demande():
 def mes_demandes():
 
     if not particulier_logged():
-        return redirect(
-            url_for("connexion")
-        )
+        return redirect(url_for("connexion"))
 
-    particulier_id = session.get(
-        "user_id"
-    )
+    particulier_id = session.get("user_id")
 
     if not particulier_id:
-        return redirect(
-            url_for("connexion")
-        )
+        return redirect(url_for("connexion"))
 
     conn = get_connection()
 
-    if request.args.get("messages") == "1":
-        demandes = conn.execute(
-            """
-            SELECT *
-            FROM demandes
-            WHERE particulier_id = ?
-            AND EXISTS (
-                SELECT 1
-                FROM reponses
-                WHERE reponses.demande_id = demandes.id
-                AND reponses.auteur_type = 'artisan'
-            )
-            ORDER BY id DESC
-            """,
-            (particulier_id,)
-        ).fetchall()
-
-    else:
-        demandes = conn.execute(
-            """
-            SELECT *
-            FROM demandes
-            WHERE particulier_id = ?
-            ORDER BY id DESC
-            """,
-            (particulier_id,)
-        ).fetchall()
+    demandes = conn.execute(
+        """
+        SELECT *
+        FROM demandes
+        WHERE particulier_id = ?
+        ORDER BY id DESC
+        """,
+        (particulier_id,)
+    ).fetchall()
 
     mes_demandes = []
 
     for demande_item in demandes:
+        reponses = conn.execute(
+            """
+            SELECT
+                reponses.*,
+                artisans.entreprise AS artisan_entreprise
+            FROM reponses
+            LEFT JOIN artisans
+                ON reponses.artisan_id = artisans.id
+            WHERE reponses.demande_id = ?
+            ORDER BY reponses.id ASC
+            """,
+            (demande_item["id"],)
+        ).fetchall()
 
+        nouveaux_messages = sum(
+            1
+            for reponse in reponses
+            if reponse["auteur_type"] == "artisan"
+            and reponse["lu_particulier"] == 0
+        )
+
+        mes_demandes.append(
+            {
+                "demande": demande_item,
+                "reponses": reponses,
+                "nouveaux_messages": nouveaux_messages
+            }
+        )
+
+    conn.commit()
+    conn.close()
+
+    return render_template(
+        "mes_demandes.html",
+        demandes=mes_demandes,
+        messages_page=False
+    )
+
+
+@app.route("/messages-recus")
+def messages_recus():
+
+    if not particulier_logged():
+        return redirect(url_for("connexion"))
+
+    particulier_id = session.get("user_id")
+
+    if not particulier_id:
+        return redirect(url_for("connexion"))
+
+    conn = get_connection()
+
+    demandes = conn.execute(
+        """
+        SELECT *
+        FROM demandes
+        WHERE particulier_id = ?
+        AND EXISTS (
+            SELECT 1
+            FROM reponses
+            WHERE reponses.demande_id = demandes.id
+            AND reponses.auteur_type = 'artisan'
+        )
+        ORDER BY id DESC
+        """,
+        (particulier_id,)
+    ).fetchall()
+
+    mes_demandes = []
+
+    for demande_item in demandes:
         reponses = conn.execute(
             """
             SELECT
@@ -2667,13 +2713,14 @@ def mes_demandes():
         """,
         (particulier_id,)
     )
-    
+
     conn.commit()
     conn.close()
 
     return render_template(
         "mes_demandes.html",
-        demandes=mes_demandes
+        demandes=mes_demandes,
+        messages_page=True
     )
 
 # ==========================================================
