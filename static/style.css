@@ -581,10 +581,7 @@ input[type="radio"] {
 @media screen and (max-width: 768px) {
 
     .page-container:has(.cards .section) {
-        width: 92%;
-        max-width: 92%;
-        margin-left: auto;
-        margin-right: auto;
+        zoom: 90%;
     }
 
 }
