@@ -306,6 +306,203 @@
 
         }
 
+
+        // ==================================================
+        // NOTIFICATIONS - NOUVEAUX MESSAGES
+        // ==================================================
+
+        let dernierNombreMessages = null;
+        let audioContext = null;
+
+
+        function activerSon() {
+
+            if (!audioContext) {
+                audioContext = new (
+                    window.AudioContext ||
+                    window.webkitAudioContext
+                )();
+            }
+
+            if (audioContext.state === "suspended") {
+                audioContext.resume();
+            }
+        }
+
+
+        function jouerSonNotification() {
+
+            try {
+
+                activerSon();
+
+                const oscillator =
+                    audioContext.createOscillator();
+
+                const gain =
+                    audioContext.createGain();
+
+                oscillator.connect(gain);
+                gain.connect(audioContext.destination);
+
+                oscillator.frequency.value = 880;
+                oscillator.type = "sine";
+
+                gain.gain.setValueAtTime(
+                    0.001,
+                    audioContext.currentTime
+                );
+
+                gain.gain.exponentialRampToValueAtTime(
+                    0.25,
+                    audioContext.currentTime + 0.03
+                );
+
+                gain.gain.exponentialRampToValueAtTime(
+                    0.001,
+                    audioContext.currentTime + 0.35
+                );
+
+                oscillator.start();
+
+                oscillator.stop(
+                    audioContext.currentTime + 0.35
+                );
+
+            } catch (error) {
+
+                console.log(
+                    "Son de notification indisponible."
+                );
+
+            }
+
+        }
+
+
+        function demanderPermissionNotification() {
+
+            if (
+                "Notification" in window &&
+                Notification.permission === "default"
+            ) {
+
+                Notification.requestPermission();
+
+            }
+
+        }
+
+
+        function verifierNotifications() {
+
+            fetch("/notifications")
+                .then(response => response.json())
+                .then(data => {
+
+                    const nombreMessages =
+                        Number(data.unread_messages || 0);
+
+
+                    // Première vérification :
+                    // on mémorise simplement le nombre actuel.
+                    if (dernierNombreMessages === null) {
+
+                        dernierNombreMessages =
+                            nombreMessages;
+
+                        return;
+                    }
+
+
+                    // Nouveau message détecté
+                    if (
+                        nombreMessages >
+                        dernierNombreMessages
+                    ) {
+
+                        jouerSonNotification();
+
+
+                        if (
+                            "Notification" in window &&
+                            Notification.permission === "granted"
+                        ) {
+
+                            const notification =
+                                new Notification(
+                                    "Mon Voisin Artisan",
+                                    {
+                                        body:
+                                            "Vous avez un nouveau message.",
+                                        icon:
+                                            "{{ url_for('static', filename='image/mon_voisin_artisan_logo.png') }}"
+                                    }
+                                );
+
+
+                            notification.onclick =
+                                function() {
+
+                                    window.focus();
+
+                                    {% if session.get("user_type") == "artisan" %}
+
+                                    window.location.href =
+                                        "{{ url_for('messages') }}";
+
+                                    {% elif session.get("user_type") == "particulier" %}
+
+                                    window.location.href =
+                                        "{{ url_for('mes_demandes', messages=1) }}";
+
+                                    {% endif %}
+
+                                };
+
+                        }
+
+                    }
+
+
+                    dernierNombreMessages =
+                        nombreMessages;
+
+                })
+                .catch(error => {
+
+                    console.log(
+                        "Erreur notifications :",
+                        error
+                    );
+
+                });
+
+        }
+
+
+        // Demande la permission automatiquement
+        demanderPermissionNotification();
+
+
+        // Active le son dès la première interaction
+        document.addEventListener(
+            "click",
+            activerSon,
+            { once: true }
+        );
+
+
+        // Première vérification immédiate
+        verifierNotifications();
+
+
+        // Vérification régulière
+        setInterval(
+            verifierNotifications,
+            10000
+        );
+
     </script>
 
 
