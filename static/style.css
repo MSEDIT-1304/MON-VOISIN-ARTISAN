@@ -573,30 +573,3 @@ input[type="radio"] {
         padding: 10px 12px;
     }
 }
-/* ==========================================================
-   MOBILE - MES DEMANDES / MESSAGES RECUS
-   ========================================================== */
-
-@media screen and (max-width: 768px) {
-
-    .page-container:has(.cards .section) .cards {
-        width: 100%;
-        margin-left: 0;
-        margin-right: 0;
-    }
-
-    .page-container:has(.cards .section) .card {
-        width: 100%;
-        max-width: 100%;
-        margin-left: 0;
-        margin-right: 0;
-    }
-
-    .page-container:has(.cards .section) .section {
-        width: 100%;
-        max-width: 100%;
-        margin-left: 0;
-        margin-right: 0;
-    }
-
-}
