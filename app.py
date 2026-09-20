@@ -2325,6 +2325,31 @@ def artisan():
             demande
         )
 
+    # ------------------------------------------------------
+    # MARQUER LES DEMANDES COMME VUES
+    # ------------------------------------------------------
+
+    conn = get_connection()
+
+    for demande in demandes_filtrees:
+
+        conn.execute(
+            """
+            INSERT OR IGNORE INTO artisan_demandes_vues
+            (artisan_id, demande_id)
+            VALUES (?, ?)
+            """,
+            (
+                artisan_user["id"],
+                demande["id"]
+            )
+        )
+
+    conn.commit()
+    conn.close()
+
+    return render_template(
+
     return render_template(
         "artisan.html",
         artisan=artisan_user,
