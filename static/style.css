@@ -592,4 +592,67 @@ input[type="radio"] {
     }
 
 }
+/* ==========================================================
+   MES DEMANDES / MESSAGES RECUS - PARTICULIER
+   ========================================================== */
 
+/* PC : cadres centrés et empilés */
+@media screen and (min-width: 769px) {
+
+    .demandes-particulier {
+        display: grid;
+        grid-template-columns: 1fr;
+        justify-items: center;
+        width: 100%;
+        margin: 0 auto;
+    }
+
+    .demandes-particulier > .card {
+        width: 800px;
+        max-width: 100%;
+        margin: 20px auto;
+        box-sizing: border-box;
+    }
+
+}
+
+
+/* MOBILE : aucun débordement des messages */
+@media screen and (max-width: 768px) {
+
+    .demandes-particulier {
+        display: block;
+        width: 100%;
+        max-width: 100%;
+        margin: 0 auto;
+        box-sizing: border-box;
+    }
+
+    .demandes-particulier > .card {
+        width: 100%;
+        max-width: 100%;
+        margin: 15px 0;
+        box-sizing: border-box;
+        overflow: hidden;
+    }
+
+    .demandes-particulier .message-particulier {
+        display: block;
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        box-sizing: border-box;
+        overflow: hidden;
+    }
+
+    .demandes-particulier .message-particulier p {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        box-sizing: border-box;
+        overflow-wrap: anywhere;
+        word-break: break-word;
+        white-space: pre-wrap;
+    }
+
+}
