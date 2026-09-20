@@ -13,7 +13,6 @@ from flask import (
     flash
 )
 
-
 import os
 import re
 import math
