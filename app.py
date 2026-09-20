@@ -1894,7 +1894,6 @@ def supprimer_demande_artisan(demande_id):
             url_for("connexion")
         )
 
-    # Pour l'instant, on vérifie simplement que la demande existe.
     conn = get_connection()
 
     demande_item = conn.execute(
@@ -1906,18 +1905,32 @@ def supprimer_demande_artisan(demande_id):
         (demande_id,)
     ).fetchone()
 
-    conn.close()
-
     if not demande_item:
+        conn.close()
         flash("Cette demande n'existe pas.")
         return redirect(url_for("artisan"))
 
-    # La suppression définitive sera remplacée par un masquage
-    # propre à l'artisan lors de l'étape suivante.
+    conn.execute(
+        """
+        INSERT OR IGNORE INTO artisan_demandes_supprimees
+        (
+            artisan_id,
+            demande_id
+        )
+        VALUES (?, ?)
+        """,
+        (
+            artisan_id,
+            demande_id
+        )
+    )
+
+    conn.commit()
+    conn.close()
+
     flash("Demande retirée de votre liste.")
 
     return redirect(url_for("artisan"))
-
 
 # ==========================================================
 # SUPPRIMER UN MESSAGE
