@@ -1200,10 +1200,10 @@ def inject_unread_messages():
 
         conn.close()
 
-        return {
-            "unread_messages": unread_messages,
-            "unread_demandes": unread_demandes
-        }
+    return {
+        "unread_messages": unread_messages,
+        "unread_demandes": unread_demandes
+    }
     
 def logout_user():
 
