@@ -2348,7 +2348,6 @@ def artisan():
     conn.commit()
     conn.close()
 
-    return render_template(
 
     return render_template(
         "artisan.html",
