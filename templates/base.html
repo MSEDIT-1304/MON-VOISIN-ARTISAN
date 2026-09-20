@@ -70,9 +70,6 @@
 
                     <a href="{{ url_for('artisan') }}">
                         Mes demandes
-                        {% if artisan_new_demandes > 0 %}
-                            <span class="message-badge">{{ artisan_new_demandes }}</span>
-                        {% endif %}
                     </a>
                 
                     <a href="{{ url_for('messages') }}">
@@ -168,9 +165,6 @@
 
                 <a href="{{ url_for('artisan') }}">
                     Mes demandes
-                    {% if artisan_new_demandes > 0 %}
-                        <span class="message-badge">{{ artisan_new_demandes }}</span>
-                    {% endif %}
                 </a>
 
             <a href="{{ url_for('messages') }}">
