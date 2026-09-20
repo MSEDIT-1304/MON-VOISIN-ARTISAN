@@ -818,7 +818,7 @@ def get_postal_coordinates(code_postal, ville=None):
             "https://geo.api.gouv.fr/communes",
             params={
                 "codePostal": code_postal,
-                "fields": "centre",
+                "fields": "nom,centre",
                 "format": "json"
             },
             timeout=5
