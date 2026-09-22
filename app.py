@@ -1216,6 +1216,61 @@ def logout_user():
     session.pop("email", None)
 
 # ==========================================================
+# ADMINISTRATION
+# ==========================================================
+
+@app.route(
+    "/admin",
+    methods=["GET", "POST"]
+)
+def admin():
+
+    if request.method == "GET":
+        return render_template(
+            "admin.html"
+        )
+
+    login = request.form.get(
+        "login",
+        ""
+    ).strip()
+
+    password = request.form.get(
+        "password",
+        ""
+    ).strip()
+
+    if (
+        login != ADMIN_LOGIN
+        or password != ADMIN_PASSWORD
+    ):
+        flash(
+            "Identifiants administrateur incorrects."
+        )
+        return redirect(
+            url_for("admin")
+        )
+
+    session["admin_logged"] = True
+
+    return redirect(
+        url_for("admin_dashboard")
+    )
+
+
+@app.route("/admin/dashboard")
+def admin_dashboard():
+
+    if not session.get("admin_logged"):
+        return redirect(
+            url_for("admin")
+        )
+
+    return render_template(
+        "admin.html"
+    )
+
+# ==========================================================
 # ACCUEIL
 # ==========================================================
 
@@ -4260,7 +4315,60 @@ def enregistrer_rc_pro():
         url_for("profil")
     )
 
-    
+# ==========================================================
+# TÉLÉCHARGER L'ATTESTATION RC PRO
+# ==========================================================
+
+@app.route(
+    "/profil/rc-pro/telecharger"
+)
+def telecharger_rc_pro():
+
+    if not artisan_logged():
+        return redirect(
+            url_for("connexion")
+        )
+
+    artisan_user = get_current_user()
+
+    if not artisan_user:
+        return redirect(
+            url_for("connexion")
+        )
+
+    conn = get_connection()
+
+    document = conn.execute(
+        """
+        SELECT
+            rc_pro,
+            rc_pro_nom,
+            rc_pro_mimetype
+        FROM artisans
+        WHERE id = ?
+        """,
+        (
+            artisan_user["id"],
+        )
+    ).fetchone()
+
+    conn.close()
+
+    if not document or not document["rc_pro"]:
+        flash(
+            "Aucune attestation RC PRO enregistrée."
+        )
+        return redirect(
+            url_for("profil")
+        )
+
+    return send_file(
+        BytesIO(document["rc_pro"]),
+        as_attachment=True,
+        download_name=document["rc_pro_nom"] or "attestation_rc_pro",
+        mimetype=document["rc_pro_mimetype"] or "application/octet-stream"
+    )
+
 # ==========================================================
 # GÉNÉRATION PDF - DEVIS
 # ==========================================================
