@@ -1294,6 +1294,91 @@ def admin_dashboard():
     )
 
 # ==========================================================
+# ADMIN - VOIR ATTESTATION RC PRO
+# ==========================================================
+
+@app.route(
+    "/admin/rc-pro/<int:artisan_id>"
+)
+def admin_rc_pro(artisan_id):
+
+    if not session.get("admin_logged"):
+        return redirect(
+            url_for("admin")
+        )
+
+    conn = get_connection()
+
+    document = conn.execute(
+        """
+        SELECT
+            rc_pro,
+            rc_pro_nom,
+            rc_pro_mimetype
+        FROM artisans
+        WHERE id = ?
+        """,
+        (
+            artisan_id,
+        )
+    ).fetchone()
+
+    conn.close()
+
+    if not document or not document["rc_pro"]:
+        flash(
+            "Aucune attestation RC PRO disponible."
+        )
+        return redirect(
+            url_for("admin_dashboard")
+        )
+
+    return send_file(
+        BytesIO(document["rc_pro"]),
+        as_attachment=False,
+        download_name=document["rc_pro_nom"] or "attestation_rc_pro",
+        mimetype=document["rc_pro_mimetype"] or "application/octet-stream"
+    )
+
+# ==========================================================
+# ADMIN - VALIDER ATTESTATION RC PRO
+# ==========================================================
+
+@app.route(
+    "/admin/rc-pro/<int:artisan_id>/valider",
+    methods=["POST"]
+)
+def admin_valider_rc_pro(artisan_id):
+
+    if not session.get("admin_logged"):
+        return redirect(
+            url_for("admin")
+        )
+
+    conn = get_connection()
+
+    conn.execute(
+        """
+        UPDATE artisans
+        SET rc_pro_verifie = 1
+        WHERE id = ?
+        """,
+        (
+            artisan_id,
+        )
+    )
+
+    conn.commit()
+    conn.close()
+
+    flash(
+        "L'attestation RC PRO a été validée."
+    )
+
+    return redirect(
+        url_for("admin_dashboard")
+    )
+# ==========================================================
 # ACCUEIL
 # ==========================================================
 
