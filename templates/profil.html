@@ -282,6 +282,41 @@
     </div>
 {% endif %}
 
+<!-- ATTESTATION RC PRO -->
+
+{% if user_type == "artisan" %}
+
+<div class="section">
+
+    <h2>Attestation RC PRO</h2>
+
+    <p>
+        Ajoutez votre attestation d'assurance responsabilité civile professionnelle.
+    </p>
+
+    <form
+        method="POST"
+        action="/profil/rc-pro"
+        enctype="multipart/form-data"
+    >
+
+        <input
+            type="file"
+            id="rc_pro"
+            name="rc_pro"
+            accept=".pdf,.jpg,.jpeg,.png"
+            required
+        >
+
+        <button type="submit" class="btn">
+            Enregistrer mon attestation RC PRO
+        </button>
+
+    </form>
+
+</div>
+
+{% endif %}
 
 <!-- PHOTOS DES RÉALISATIONS -->
 
