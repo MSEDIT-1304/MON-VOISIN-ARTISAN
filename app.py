@@ -1266,8 +1266,31 @@ def admin_dashboard():
             url_for("admin")
         )
 
+    conn = get_connection()
+
+    artisans = conn.execute(
+        """
+        SELECT
+            id,
+            entreprise,
+            responsable,
+            email,
+            telephone,
+            siret,
+            ville,
+            rc_pro,
+            rc_pro_nom,
+            rc_pro_verifie
+        FROM artisans
+        ORDER BY id DESC
+        """
+    ).fetchall()
+
+    conn.close()
+
     return render_template(
-        "admin.html"
+        "admin.html",
+        artisans=artisans
     )
 
 # ==========================================================
