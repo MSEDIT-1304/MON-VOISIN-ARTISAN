@@ -225,8 +225,17 @@
 
                                     Fichier :
                                     {{ artisan["rc_pro_nom"] or "Attestation enregistrée" }}
-
+                                
                                 </p>
+                                
+                                <a
+                                    href="/admin/rc-pro/{{ artisan['id'] }}"
+                                    target="_blank"
+                                >
+                                    <button type="button">
+                                        Voir l'attestation RC PRO
+                                    </button>
+                                </a>
 
                                 {% if artisan["rc_pro_verifie"] %}
 
