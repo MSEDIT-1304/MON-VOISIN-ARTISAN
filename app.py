@@ -374,7 +374,11 @@ def init_database():
             ("photo_profil", "BLOB"),
             ("description_photo1", "TEXT"),
             ("description_photo2", "TEXT"),
-            ("description_photo3", "TEXT")
+            ("description_photo3", "TEXT"),
+            ("rc_pro", "BLOB"),
+            ("rc_pro_nom", "TEXT"),
+            ("rc_pro_mimetype", "TEXT"),
+            ("rc_pro_verifie", "INTEGER DEFAULT 0")
         ]
         
         for colonne, definition in colonnes_artisan:
