@@ -242,15 +242,25 @@
                                     <p class="statut verifie">
                                         ✔ Attestation vérifiée
                                     </p>
-
+                                
                                 {% else %}
-
+                                
                                     <p class="statut">
                                         ⏳ Attestation à vérifier
                                     </p>
-
+                                
+                                    <form
+                                        method="POST"
+                                        action="/admin/rc-pro/{{ artisan['id'] }}/valider"
+                                    >
+                                
+                                        <button type="submit">
+                                            Valider l'attestation RC PRO
+                                        </button>
+                                
+                                    </form>
+                                
                                 {% endif %}
-
                             {% else %}
 
                                 <p class="statut non-fourni">
