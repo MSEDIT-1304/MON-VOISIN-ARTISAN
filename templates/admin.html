@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Administration - Mon Voisin Artisan</title>
+
+    <style>
+
+        body {
+            margin: 0;
+            padding: 40px 20px;
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+            color: #222;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: auto;
+        }
+
+        h1 {
+            margin-bottom: 30px;
+        }
+
+        .connexion,
+        .dashboard {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+        }
+
+        .connexion {
+            max-width: 450px;
+            margin: 60px auto;
+        }
+
+        .champ {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 7px;
+            font-weight: bold;
+        }
+
+        input {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+        }
+
+        button {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 6px;
+            background: #222;
+            color: white;
+            cursor: pointer;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        .artisan {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .artisan h2 {
+            margin-top: 0;
+        }
+
+        .rc-pro {
+            margin-top: 15px;
+            padding: 15px;
+            background: #f7f7f7;
+            border-radius: 6px;
+        }
+
+        .statut {
+            font-weight: bold;
+        }
+
+        .non-fourni {
+            color: #b00020;
+        }
+
+        .fourni {
+            color: #666;
+        }
+
+        .verifie {
+            color: #168000;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    {% if not session.get("admin_logged") %}
+
+        <div class="connexion">
+
+            <h1>Administration</h1>
+
+            <form
+                method="POST"
+                action="/admin"
+            >
+
+                <div class="champ">
+
+                    <label for="login">
+                        Identifiant
+                    </label>
+
+                    <input
+                        type="text"
+                        id="login"
+                        name="login"
+                        required
+                    >
+
+                </div>
+
+                <div class="champ">
+
+                    <label for="password">
+                        Mot de passe
+                    </label>
+
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        required
+                    >
+
+                </div>
+
+                <button type="submit">
+                    Se connecter
+                </button>
+
+            </form>
+
+        </div>
+
+    {% else %}
+
+        <div class="dashboard">
+
+            <h1>
+                Administration
+            </h1>
+
+            <h2>
+                Artisans inscrits
+            </h2>
+
+            {% if artisans %}
+
+                {% for artisan in artisans %}
+
+                    <div class="artisan">
+
+                        <h2>
+                            {{ artisan["entreprise"] }}
+                        </h2>
+
+                        <p>
+                            <strong>Responsable :</strong>
+                            {{ artisan["responsable"] or "Non renseigné" }}
+                        </p>
+
+                        <p>
+                            <strong>Email :</strong>
+                            {{ artisan["email"] }}
+                        </p>
+
+                        <p>
+                            <strong>Téléphone :</strong>
+                            {{ artisan["telephone"] or "Non renseigné" }}
+                        </p>
+
+                        <p>
+                            <strong>SIRET :</strong>
+                            {{ artisan["siret"] or "Non renseigné" }}
+                        </p>
+
+                        <p>
+                            <strong>Ville :</strong>
+                            {{ artisan["ville"] or "Non renseignée" }}
+                        </p>
+
+                        <div class="rc-pro">
+
+                            <strong>
+                                Attestation RC PRO
+                            </strong>
+
+                            {% if artisan["rc_pro"] %}
+
+                                <p class="statut fourni">
+
+                                    Fichier :
+                                    {{ artisan["rc_pro_nom"] or "Attestation enregistrée" }}
+
+                                </p>
+
+                                {% if artisan["rc_pro_verifie"] %}
+
+                                    <p class="statut verifie">
+                                        ✔ Attestation vérifiée
+                                    </p>
+
+                                {% else %}
+
+                                    <p class="statut">
+                                        ⏳ Attestation à vérifier
+                                    </p>
+
+                                {% endif %}
+
+                            {% else %}
+
+                                <p class="statut non-fourni">
+                                    ✘ Aucune attestation RC PRO
+                                </p>
+
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+                {% endfor %}
+
+            {% else %}
+
+                <p>
+                    Aucun artisan inscrit.
+                </p>
+
+            {% endif %}
+
+        </div>
+
+    {% endif %}
+
+</div>
+
+</body>
+
+</html>
