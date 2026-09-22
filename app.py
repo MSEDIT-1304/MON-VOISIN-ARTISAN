@@ -4175,6 +4175,91 @@ def afficher_photo_profil(artisan_id=None):
         mimetype=mimetype
     )
 
+# ==========================================================
+# ATTESTATION RC PRO
+# ==========================================================
+
+@app.route(
+    "/profil/rc-pro",
+    methods=["POST"]
+)
+def enregistrer_rc_pro():
+
+    if not artisan_logged():
+        return redirect(
+            url_for("connexion")
+        )
+
+    artisan_user = get_current_user()
+
+    if not artisan_user:
+        return redirect(
+            url_for("connexion")
+        )
+
+    fichier = request.files.get(
+        "rc_pro"
+    )
+
+    if not fichier or not fichier.filename:
+        flash(
+            "Veuillez sélectionner votre attestation RC PRO."
+        )
+        return redirect(
+            url_for("profil")
+        )
+
+    extension = fichier.filename.rsplit(
+        ".",
+        1
+    )[-1].lower()
+
+    if extension not in [
+        "pdf",
+        "jpg",
+        "jpeg",
+        "png"
+    ]:
+        flash(
+            "Format non accepté. Utilisez PDF, JPG, JPEG ou PNG."
+        )
+        return redirect(
+            url_for("profil")
+        )
+
+    document = fichier.read()
+
+    conn = get_connection()
+
+    conn.execute(
+        """
+        UPDATE artisans
+        SET
+            rc_pro = ?,
+            rc_pro_nom = ?,
+            rc_pro_mimetype = ?,
+            rc_pro_verifie = 0
+        WHERE id = ?
+        """,
+        (
+            document,
+            fichier.filename,
+            fichier.mimetype,
+            artisan_user["id"]
+        )
+    )
+
+    conn.commit()
+    conn.close()
+
+    flash(
+        "Votre attestation RC PRO a été enregistrée."
+    )
+
+    return redirect(
+        url_for("profil")
+    )
+
     
 # ==========================================================
 # GÉNÉRATION PDF - DEVIS
