@@ -4523,6 +4523,24 @@ def enregistrer_rc_pro():
         )
 
     conn.commit()
+
+    verification = conn.execute(
+        """
+        SELECT id, length(rc_pro) AS taille, rc_pro_nom
+        FROM artisans
+        WHERE id = ?
+        """,
+        (artisan_user["id"],)
+    ).fetchone()
+
+    print(
+        "=== RC PRO UPLOAD ===",
+        "DATABASE =", DATABASE,
+        "ID =", artisan_user["id"],
+        "TAILLE =", verification["taille"] if verification else None,
+        "NOM =", verification["rc_pro_nom"] if verification else None
+    )
+
     conn.close()
 
     envoyer_notification_rc_pro(
