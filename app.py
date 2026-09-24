@@ -1348,16 +1348,10 @@ def admin_dashboard():
 
     conn.close()
 
-    response = render_template(
+    return render_template(
         "admin.html",
         artisans=artisans
     )
-
-    response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
-    response.headers["Pragma"] = "no-cache"
-    response.headers["Expires"] = "0"
-
-    return response
 
 # ==========================================================
 # ADMIN - VOIR ATTESTATION RC PRO
