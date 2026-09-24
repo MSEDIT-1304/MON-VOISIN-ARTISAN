@@ -4503,13 +4503,13 @@ def enregistrer_rc_pro():
             rc_pro_nom = ?,
             rc_pro_mimetype = ?,
             rc_pro_verifie = 0
-        WHERE id = ?
+        WHERE email = ?
         """,
         (
             document,
             fichier.filename,
             fichier.mimetype,
-            artisan_user["id"]
+            artisan_user["email"]
         )
     )
 
