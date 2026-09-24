@@ -243,6 +243,17 @@
                                         ✔ Attestation vérifiée
                                     </p>
                                 
+                                    <form
+                                        method="POST"
+                                        action="/admin/rc-pro/{{ artisan['id'] }}/refuser"
+                                    >
+                                
+                                        <button type="submit">
+                                            Refuser l'attestation RC PRO
+                                        </button>
+                                
+                                    </form>
+                                
                                 {% else %}
                                 
                                     <p class="statut">
