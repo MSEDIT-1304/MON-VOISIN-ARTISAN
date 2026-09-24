@@ -1279,6 +1279,12 @@ def logout_user():
 def admin():
 
     if request.method == "GET":
+
+        if session.get("admin_logged"):
+            return redirect(
+                url_for("admin_dashboard")
+            )
+
         return render_template(
             "admin.html"
         )
