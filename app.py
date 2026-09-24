@@ -13,7 +13,6 @@ from flask import (
     flash
 )
 
-
 import os
 import re
 import math
@@ -1280,12 +1279,6 @@ def logout_user():
 def admin():
 
     if request.method == "GET":
-
-        if session.get("admin_logged"):
-            return redirect(
-                url_for("admin_dashboard")
-            )
-
         return render_template(
             "admin.html"
         )
@@ -4495,7 +4488,7 @@ def enregistrer_rc_pro():
 
     conn = get_connection()
 
-    resultat = conn.execute(
+    conn.execute(
         """
         UPDATE artisans
         SET
@@ -4513,34 +4506,7 @@ def enregistrer_rc_pro():
         )
     )
 
-    if resultat.rowcount != 1:
-        conn.close()
-        flash(
-            "Impossible d'enregistrer votre attestation RC PRO."
-        )
-        return redirect(
-            url_for("profil")
-        )
-
     conn.commit()
-
-    verification = conn.execute(
-        """
-        SELECT id, length(rc_pro) AS taille, rc_pro_nom
-        FROM artisans
-        WHERE id = ?
-        """,
-        (artisan_user["id"],)
-    ).fetchone()
-
-    print(
-        "=== RC PRO UPLOAD ===",
-        "DATABASE =", DATABASE,
-        "ID =", artisan_user["id"],
-        "TAILLE =", verification["taille"] if verification else None,
-        "NOM =", verification["rc_pro_nom"] if verification else None
-    )
-
     conn.close()
 
     envoyer_notification_rc_pro(
