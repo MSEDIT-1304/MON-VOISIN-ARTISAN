@@ -1378,6 +1378,47 @@ def admin_valider_rc_pro(artisan_id):
     return redirect(
         url_for("admin_dashboard")
     )
+
+# ==========================================================
+# ADMIN - REFUSER ATTESTATION RC PRO
+# ==========================================================
+
+@app.route(
+    "/admin/rc-pro/<int:artisan_id>/refuser",
+    methods=["POST"]
+)
+def admin_refuser_rc_pro(artisan_id):
+
+    if not session.get("admin_logged"):
+        return redirect(
+            url_for("admin")
+        )
+
+    conn = get_connection()
+
+    conn.execute(
+        """
+        UPDATE artisans
+        SET rc_pro_verifie = 0
+        WHERE id = ?
+        """,
+        (
+            artisan_id,
+        )
+    )
+
+    conn.commit()
+    conn.close()
+
+    flash(
+        "L'attestation RC PRO a été refusée."
+    )
+
+    return redirect(
+        url_for("admin_dashboard")
+    )
+
+
 # ==========================================================
 # ACCUEIL
 # ==========================================================
