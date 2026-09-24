@@ -237,7 +237,7 @@
                                     </button>
                                 </a>
 
-                                {% if artisan["rc_pro_verifie"] %}
+                                {% if artisan["rc_pro_verifie"] == 1 %}
 
                                     <p class="statut verifie">
                                         ✔ Attestation vérifiée
@@ -250,6 +250,23 @@
                                 
                                         <button type="submit">
                                             Refuser l'attestation RC PRO
+                                        </button>
+                                
+                                    </form>
+                                
+                                {% elif artisan["rc_pro_verifie"] == 2 %}
+                                
+                                    <p class="statut non-fourni">
+                                        ✘ Attestation refusée
+                                    </p>
+                                
+                                    <form
+                                        method="POST"
+                                        action="/admin/rc-pro/{{ artisan['id'] }}/valider"
+                                    >
+                                
+                                        <button type="submit">
+                                            Valider l'attestation RC PRO
                                         </button>
                                 
                                     </form>
