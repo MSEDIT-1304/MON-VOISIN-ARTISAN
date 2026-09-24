@@ -1399,7 +1399,7 @@ def admin_refuser_rc_pro(artisan_id):
     conn.execute(
         """
         UPDATE artisans
-        SET rc_pro_verifie = 0
+        SET rc_pro_verifie = 2
         WHERE id = ?
         """,
         (
