@@ -1316,6 +1316,16 @@ def admin():
     )
 
 
+@app.route("/admin/deconnexion")
+def admin_deconnexion():
+
+    session.pop("admin_logged", None)
+
+    return redirect(
+        url_for("admin")
+    )
+
+
 @app.route("/admin/dashboard")
 def admin_dashboard():
 
