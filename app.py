@@ -4495,7 +4495,7 @@ def enregistrer_rc_pro():
 
     conn = get_connection()
 
-    conn.execute(
+    resultat = conn.execute(
         """
         UPDATE artisans
         SET
@@ -4503,15 +4503,24 @@ def enregistrer_rc_pro():
             rc_pro_nom = ?,
             rc_pro_mimetype = ?,
             rc_pro_verifie = 0
-        WHERE email = ?
+        WHERE id = ?
         """,
         (
             document,
             fichier.filename,
             fichier.mimetype,
-            artisan_user["email"]
+            artisan_user["id"]
         )
     )
+
+    if resultat.rowcount != 1:
+        conn.close()
+        flash(
+            "Impossible d'enregistrer votre attestation RC PRO."
+        )
+        return redirect(
+            url_for("profil")
+        )
 
     conn.commit()
     conn.close()
