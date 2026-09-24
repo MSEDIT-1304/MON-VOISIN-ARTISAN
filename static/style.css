@@ -189,7 +189,15 @@ p {
     border: 1px solid #C7CED6;
     border-radius: 10px;
 }
-
+.page-container > .logo {
+    width: 100%;
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+    background: #FFFFFF;
+    border: 1px solid #C7CED6;
+    border-radius: 10px;
+}
 .cards .card {
     max-width: none;
 }
