@@ -4501,9 +4501,20 @@ def enregistrer_rc_pro():
 
     document = fichier.read()
 
+    if not document:
+        flash(
+            "Le fichier RC PRO est vide ou n'a pas pu être lu."
+        )
+        return redirect(
+            url_for("profil")
+        )
+
     conn = get_connection()
 
-    conn.execute(
+    # IMPORTANT : on utilise l'adresse e-mail du compte artisan.
+    # C'est le même principe que la version qui enregistrait correctement
+    # le document avant l'ajout de la notification.
+    resultat = conn.execute(
         """
         UPDATE artisans
         SET
@@ -4511,52 +4522,72 @@ def enregistrer_rc_pro():
             rc_pro_nom = ?,
             rc_pro_mimetype = ?,
             rc_pro_verifie = 0
-        WHERE id = ?
+        WHERE email = ?
         """,
         (
             document,
             fichier.filename,
             fichier.mimetype,
-            artisan_user["id"]
+            artisan_user["email"]
         )
     )
 
-    # Vérifie que la ligne artisan existe réellement avant de valider.
-    if conn.execute("SELECT 1 FROM artisans WHERE id = ?", (artisan_user["id"],)).fetchone() is None:
+    if resultat.rowcount != 1:
         conn.rollback()
         conn.close()
-        flash("Impossible d'enregistrer votre attestation RC PRO.")
-        return redirect(url_for("profil"))
+        flash(
+            "Impossible d'enregistrer votre attestation RC PRO."
+        )
+        return redirect(
+            url_for("profil")
+        )
 
     conn.commit()
 
-    # Vérification immédiate APRÈS COMMIT : le document doit être présent
-    # en base avant toute tentative d'envoi de notification.
+    # On relit le document APRÈS le commit.
+    # La notification ne sera envoyée que si le fichier est réellement
+    # présent dans la base de données.
     verification = conn.execute(
         """
         SELECT
+            id,
+            email,
+            entreprise,
+            responsable,
+            telephone,
             length(rc_pro) AS taille,
             rc_pro_nom,
             rc_pro_mimetype
         FROM artisans
-        WHERE id = ?
+        WHERE email = ?
         """,
-        (artisan_user["id"],)
+        (
+            artisan_user["email"],
+        )
     ).fetchone()
-
-    if not verification or not verification["taille"]:
-        conn.rollback()
-        conn.close()
-        flash("L'attestation RC PRO n'a pas pu être enregistrée.")
-        return redirect(url_for("profil"))
 
     conn.close()
 
-    # La notification ne doit jamais empêcher l'enregistrement du document.
-    try:
-        envoyer_notification_rc_pro(artisan_user)
-    except Exception:
-        pass
+    if not verification or not verification["taille"]:
+        flash(
+            "L'attestation RC PRO n'a pas pu être enregistrée."
+        )
+        return redirect(
+            url_for("profil")
+        )
+
+    # On envoie le mail avec les données fraîchement relues en base.
+    # Une panne du mail ne doit JAMAIS supprimer ou annuler le document.
+    notification_ok = envoyer_notification_rc_pro(
+        verification
+    )
+
+    if not notification_ok:
+        print(
+            "RC_PRO_NOTIFICATION_ECHEC",
+            "ARTISAN_ID=", verification["id"],
+            "EMAIL=", verification["email"]
+        )
 
     flash(
         "Votre attestation RC PRO a été enregistrée."
