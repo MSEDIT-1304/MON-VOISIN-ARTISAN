@@ -22,8 +22,6 @@ from io import BytesIO
 import pandas as pd
 import requests
 import bcrypt
-import smtplib
-from email.message import EmailMessage
 
 from datetime import datetime, timedelta
 from functools import lru_cache
@@ -93,12 +91,7 @@ SECRET_KEY = os.environ.get(
     "SECRET_KEY",
     "mon-voisin-artisan-secret-key"
 )
-# ==========================================================
-# EMAIL RC PRO
-# ==========================================================
 
-GMAIL_ADDRESS = "studio.web.applications@gmail.com"
-GMAIL_APP_PASSWORD = "ziojclzgemefewrz"
 
 # ==========================================================
 # APPLICATION FLASK
@@ -620,56 +613,8 @@ def send_to_make(email, price, trial):
     except Exception:
 
         return False
-# ==========================================================
-# ENVOI EMAIL - NOUVELLE ATTESTATION RC PRO
-# ==========================================================
 
-def envoyer_notification_rc_pro(artisan):
-
-    message = EmailMessage()
-
-    message["From"] = GMAIL_ADDRESS
-    message["To"] = GMAIL_ADDRESS
-    message["Subject"] = "Nouvelle attestation RC PRO déposée"
-
-    message.set_content(
-        f"""Un artisan vient de déposer une nouvelle attestation RC PRO.
-
-Entreprise : {artisan["entreprise"] or ""}
-Responsable : {artisan["responsable"] or ""}
-Email : {artisan["email"] or ""}
-Téléphone : {artisan["telephone"] or ""}
-
-L'attestation est disponible dans l'administration de Mon Voisin Artisan.
-
-Aucune pièce jointe n'est envoyée dans cet email.
-"""
-    )
-
-    try:
-
-        with smtplib.SMTP_SSL(
-            "smtp.gmail.com",
-            465,
-            timeout=15
-        ) as serveur:
-
-            serveur.login(
-                GMAIL_ADDRESS,
-                GMAIL_APP_PASSWORD
-            )
-
-            serveur.send_message(message)
-
-        print("RC_PRO_EMAIL_OK")
-        return True
-
-    except Exception as e:
-
-        print("RC_PRO_EMAIL_ERREUR:", repr(e))
-        return False
-
-# ==========================================================
+  # ==========================================================
 # MOTS DE PASSE
 # ==========================================================
 
@@ -1281,15 +1226,10 @@ def logout_user():
 def admin():
 
     if request.method == "GET":
-
-        if session.get("admin_logged"):
-            return redirect(
-                url_for("admin_dashboard")
-            )
-    
         return render_template(
             "admin.html"
         )
+
     login = request.form.get(
         "login",
         ""
@@ -1315,16 +1255,6 @@ def admin():
 
     return redirect(
         url_for("admin_dashboard")
-    )
-
-
-@app.route("/admin/deconnexion")
-def admin_deconnexion():
-
-    session.pop("admin_logged", None)
-
-    return redirect(
-        url_for("admin")
     )
 
 
@@ -1712,7 +1642,7 @@ def inscription_artisan():
             rayon,
             created_at
         )
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """,
         (
             email,
@@ -4501,7 +4431,6 @@ def enregistrer_rc_pro():
             url_for("profil")
         )
 
-    # RESTAURATION DU FONCTIONNEMENT QUI ENREGISTRAIT LE RC PRO
     document = fichier.read()
 
     conn = get_connection()
@@ -4526,12 +4455,6 @@ def enregistrer_rc_pro():
 
     conn.commit()
     conn.close()
-
-    # La notification est envoyée APRÈS l'enregistrement.
-    # Elle ne doit jamais intervenir dans l'enregistrement du document.
-    envoyer_notification_rc_pro(
-        artisan_user
-    )
 
     flash(
         "Votre attestation RC PRO a été enregistrée."
