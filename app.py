@@ -4486,9 +4486,16 @@ def enregistrer_rc_pro():
 
     document = fichier.read()
 
+    print(
+        "RC_PRO_AVANT_BDD",
+        "ID=", artisan_user["id"],
+        "NOM=", fichier.filename,
+        "TAILLE=", len(document)
+    )
+    
     conn = get_connection()
-
-    conn.execute(
+    
+    resultat = conn.execute(
         """
         UPDATE artisans
         SET
@@ -4507,6 +4514,30 @@ def enregistrer_rc_pro():
     )
 
     conn.commit()
+
+    verification = conn.execute(
+        """
+        SELECT
+            id,
+            length(rc_pro) AS taille,
+            rc_pro_nom,
+            rc_pro_mimetype
+        FROM artisans
+        WHERE id = ?
+        """,
+        (
+            artisan_user["id"],
+        )
+    ).fetchone()
+
+    print(
+        "RC_PRO_APRES_BDD",
+        "ID=", verification["id"] if verification else None,
+        "TAILLE=", verification["taille"] if verification else None,
+        "NOM=", verification["rc_pro_nom"] if verification else None,
+        "ROWCOUNT=", resultat.rowcount
+    )
+
     conn.close()
 
     envoyer_notification_rc_pro(
