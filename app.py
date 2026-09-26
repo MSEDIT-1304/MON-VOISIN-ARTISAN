@@ -1279,10 +1279,15 @@ def logout_user():
 def admin():
 
     if request.method == "GET":
+
+        if session.get("admin_logged"):
+            return redirect(
+                url_for("admin_dashboard")
+            )
+    
         return render_template(
             "admin.html"
         )
-
     login = request.form.get(
         "login",
         ""
@@ -1308,6 +1313,16 @@ def admin():
 
     return redirect(
         url_for("admin_dashboard")
+    )
+
+
+@app.route("/admin/deconnexion")
+def admin_deconnexion():
+
+    session.pop("admin_logged", None)
+
+    return redirect(
+        url_for("admin")
     )
 
 
@@ -4507,8 +4522,30 @@ def enregistrer_rc_pro():
     )
 
     conn.commit()
-    conn.close()
 
+    verification = conn.execute(
+        """
+        SELECT
+            id,
+            length(rc_pro) AS taille,
+            rc_pro_nom
+        FROM artisans
+        WHERE id = ?
+        """,
+        (
+            artisan_user["id"],
+        )
+    ).fetchone()
+    
+    print(
+        "RC_PRO_VERIFICATION",
+        "ID=", artisan_user["id"],
+        "TAILLE=", verification["taille"] if verification else None,
+        "NOM=", verification["rc_pro_nom"] if verification else None
+    )
+    
+    conn.close()
+    
     envoyer_notification_rc_pro(
         artisan_user
     )
