@@ -1642,7 +1642,7 @@ def inscription_artisan():
             rayon,
             created_at
         )
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """,
         (
             email,
@@ -1762,6 +1762,10 @@ def inscription_particulier():
         return redirect(
             url_for("inscription")
         )
+
+
+
+
 
     hashed_password = hash_password(
         password
