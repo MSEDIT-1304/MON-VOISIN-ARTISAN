@@ -4471,95 +4471,67 @@ def enregistrer_rc_pro():
             url_for("connexion")
         )
 
-    fichier = request.files.get("rc_pro")
+    fichier = request.files.get(
+        "rc_pro"
+    )
 
-    if fichier is None or not fichier.filename:
+    if not fichier or not fichier.filename:
         flash(
             "Veuillez sélectionner votre attestation RC PRO."
         )
-        return redirect(url_for("profil"))
+        return redirect(
+            url_for("profil")
+        )
 
-    extension = fichier.filename.rsplit(".", 1)[-1].lower() if "." in fichier.filename else ""
+    extension = fichier.filename.rsplit(
+        ".",
+        1
+    )[-1].lower()
 
-    if extension not in ["pdf", "jpg", "jpeg", "png"]:
+    if extension not in [
+        "pdf",
+        "jpg",
+        "jpeg",
+        "png"
+    ]:
         flash(
             "Format non accepté. Utilisez PDF, JPG, JPEG ou PNG."
         )
-        return redirect(url_for("profil"))
-
-    # IMPORTANT : on lit le fichier depuis le début.
-    try:
-        fichier.stream.seek(0)
-    except Exception:
-        pass
-
-    document = fichier.read()
-
-    if not document:
-        flash(
-            "Le fichier RC PRO reçu est vide. Veuillez sélectionner à nouveau le document."
+        return redirect(
+            url_for("profil")
         )
-        return redirect(url_for("profil"))
+
+    # RESTAURATION DU FONCTIONNEMENT QUI ENREGISTRAIT LE RC PRO
+    document = fichier.read()
 
     conn = get_connection()
 
-    try:
-        # Enregistrement par ID : c'est la clé utilisée par toute l'administration.
-        conn.execute(
-            """
-            UPDATE artisans
-            SET
-                rc_pro = ?,
-                rc_pro_nom = ?,
-                rc_pro_mimetype = ?,
-                rc_pro_verifie = 0
-            WHERE id = ?
-            """,
-            (
-                document,
-                fichier.filename,
-                fichier.mimetype or "application/octet-stream",
-                artisan_user["id"]
-            )
+    conn.execute(
+        """
+        UPDATE artisans
+        SET
+            rc_pro = ?,
+            rc_pro_nom = ?,
+            rc_pro_mimetype = ?,
+            rc_pro_verifie = 0
+        WHERE id = ?
+        """,
+        (
+            document,
+            fichier.filename,
+            fichier.mimetype,
+            artisan_user["id"]
         )
+    )
 
-        conn.commit()
+    conn.commit()
+    conn.close()
 
-        # Vérification réelle après commit : le document doit être en base
-        # avant de tenter l'envoi de la notification.
-        verification = conn.execute(
-            """
-            SELECT
-                id,
-                length(rc_pro) AS taille,
-                rc_pro_nom
-            FROM artisans
-            WHERE id = ?
-            """,
-            (artisan_user["id"],)
-        ).fetchone()
-
-        taille = verification["taille"] if verification else 0
-
-        print(
-            "RC_PRO_ENREGISTREE",
-            "ID=", artisan_user["id"],
-            "TAILLE=", taille,
-            "NOM=", verification["rc_pro_nom"] if verification else None
-        )
-
-        if not verification or not taille or taille <= 0:
-            flash(
-                "Le document RC PRO n'a pas pu être enregistré. Aucun email n'a été envoyé."
-            )
-            return redirect(url_for("profil"))
-
-    finally:
-        conn.close()
-
-    # Le document est maintenant définitivement enregistré.
-    # Une panne de mail ne doit jamais annuler ni masquer l'enregistrement.
-    envoyer_notification_rc_pro(artisan_user)
+    # La notification est envoyée APRÈS l'enregistrement.
+    # Elle ne doit jamais intervenir dans l'enregistrement du document.
+    envoyer_notification_rc_pro(
+        artisan_user
+    )
 
     flash(
         "Votre attestation RC PRO a été enregistrée."
