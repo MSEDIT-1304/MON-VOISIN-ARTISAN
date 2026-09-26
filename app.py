@@ -112,7 +112,7 @@ app.secret_key = SECRET_KEY
 # MODE MAINTENANCE
 # ==========================================================
 
-MAINTENANCE = True
+MAINTENANCE = False
 
 if MAINTENANCE:
 
