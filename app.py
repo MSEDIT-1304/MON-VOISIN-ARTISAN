@@ -385,7 +385,8 @@ def init_database():
             ("rc_pro", "BLOB"),
             ("rc_pro_nom", "TEXT"),
             ("rc_pro_mimetype", "TEXT"),
-            ("rc_pro_verifie", "INTEGER DEFAULT 0")
+            ("rc_pro_verifie", "INTEGER DEFAULT 0"),
+            ("fiche_admin_visible", "INTEGER DEFAULT 1")
         ]
         
         for colonne, definition in colonnes_artisan:
@@ -1335,6 +1336,7 @@ def admin_dashboard():
             rc_pro_nom,
             rc_pro_verifie
         FROM artisans
+        WHERE fiche_admin_visible = 1
         ORDER BY id DESC
         """
     ).fetchall()
@@ -1380,7 +1382,8 @@ def admin_supprimer_artisan(artisan_id):
 
     conn.execute(
         """
-        DELETE FROM artisans
+        UPDATE artisans
+        SET fiche_admin_visible = 0
         WHERE id = ?
         """,
         (artisan_id,)
@@ -1389,7 +1392,7 @@ def admin_supprimer_artisan(artisan_id):
     conn.commit()
     conn.close()
 
-    flash("La fiche artisan a été supprimée.")
+    flash("La fiche artisan a été retirée de l'administration.")
 
     return redirect(
         url_for("admin_dashboard")
