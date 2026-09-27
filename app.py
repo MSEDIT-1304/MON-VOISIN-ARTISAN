@@ -1398,8 +1398,6 @@ def admin_supprimer_artisan(artisan_id):
     conn.commit()
     conn.close()
 
-    flash("La fiche artisan a été retirée de l'administration.")
-
     return redirect(
         url_for("admin_dashboard")
     )
