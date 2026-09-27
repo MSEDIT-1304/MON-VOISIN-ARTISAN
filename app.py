@@ -551,7 +551,7 @@ def check_artisan_access(email):
     )
 
     if pd.isna(expire_date):
-        return "expired"
+        return "error"
 
     # Date actuelle
     now = pd.Timestamp.now().normalize()
