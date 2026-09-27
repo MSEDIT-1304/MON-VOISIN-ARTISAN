@@ -1345,7 +1345,55 @@ def admin_dashboard():
         "admin.html",
         artisans=artisans
     )
+# ==========================================================
+# ADMIN - SUPPRIMER UNE FICHE ARTISAN
+# ==========================================================
 
+@app.route(
+    "/admin/artisan/<int:artisan_id>/supprimer",
+    methods=["POST"]
+)
+def admin_supprimer_artisan(artisan_id):
+
+    if not session.get("admin_logged"):
+        return redirect(
+            url_for("admin")
+        )
+
+    conn = get_connection()
+
+    artisan = conn.execute(
+        """
+        SELECT id
+        FROM artisans
+        WHERE id = ?
+        """,
+        (artisan_id,)
+    ).fetchone()
+
+    if not artisan:
+        conn.close()
+        flash("Cette fiche artisan n'existe pas.")
+        return redirect(
+            url_for("admin_dashboard")
+        )
+
+    conn.execute(
+        """
+        DELETE FROM artisans
+        WHERE id = ?
+        """,
+        (artisan_id,)
+    )
+
+    conn.commit()
+    conn.close()
+
+    flash("La fiche artisan a été supprimée.")
+
+    return redirect(
+        url_for("admin_dashboard")
+    )
 # ==========================================================
 # ADMIN - VOIR ATTESTATION RC PRO
 # ==========================================================
