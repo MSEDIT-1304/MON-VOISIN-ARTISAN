@@ -558,14 +558,20 @@ def check_artisan_access(email):
 
     # Accès encore valable
     if expire_date >= now:
-
         trial = str(
             user.iloc[0]["trial"]
         ).strip().upper()
-
+    
         if trial == "TRUE":
             return "trial"
-
+    
+        price = str(
+            user.iloc[0]["price"]
+        ).strip()
+    
+        if not price or price in ("0", "0.0", "0.00"):
+            return "error"
+    
         return "paid"
 
     # Accès expiré
