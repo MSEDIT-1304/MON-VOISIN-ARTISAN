@@ -298,7 +298,21 @@
                             {% endif %}
 
                         </div>
+                        </div>
 
+                        <form
+                            method="POST"
+                            action="/admin/artisan/{{ artisan['id'] }}/supprimer"
+                            onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette fiche artisan ?');"
+                        >
+                            <button type="submit">
+                                Supprimer la fiche
+                            </button>
+                        </form>
+
+                    </div>
+
+                {% endfor %}
                     </div>
 
                 {% endfor %}
