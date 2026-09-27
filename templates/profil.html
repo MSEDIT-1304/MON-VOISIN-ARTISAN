@@ -470,6 +470,20 @@
         Se déconnecter
     </a>
 
+    <form
+        method="POST"
+        action="/supprimer-compte"
+        onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est définitive.');"
+        style="display: inline;"
+    >
+        <button
+            type="submit"
+            class="btn"
+        >
+            Supprimer mon compte
+        </button>
+    </form>
+
 </div>
 
 {% endblock %}
