@@ -1785,7 +1785,7 @@ def inscription_artisan():
 
     flash(
         "Votre compte artisan a été créé. "
-        "Veuillez vous reconnecter et activer vos 7 jours gratuits."
+        "Veuillez vous reconnecter et activer vos 15 jours gratuits."
     )
 
     return redirect(
@@ -2773,7 +2773,7 @@ def artisan():
     if access == "trial_expired":
 
         flash(
-            "Votre essai gratuit de 7 jours est terminé."
+            "Votre essai gratuit de 15 jours est terminé."
         )
 
         return render_template(
