@@ -69,7 +69,14 @@
 
 <div class="form">
 
-    <h2>Informations de l'entreprise</h2>
+    <h2>
+        Informations de l'entreprise
+        {% if user['rc_pro_verifie'] == 1 %}
+            <span style="color: green; font-size: 16px; margin-left: 15px;">
+                ✔ Attestation RC PRO validée
+            </span>
+        {% endif %}
+    </h2>
 
     <form method="POST" action="/profil/artisan">
 
