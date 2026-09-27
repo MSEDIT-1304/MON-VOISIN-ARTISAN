@@ -2112,6 +2112,163 @@ def deconnexion():
     )
 
 # ==========================================================
+# SUPPRIMER SON COMPTE
+# ==========================================================
+
+@app.route("/supprimer-compte", methods=["POST"])
+def supprimer_compte():
+
+    if not session.get("user_id") or not session.get("user_type"):
+        return redirect(url_for("connexion"))
+
+    user_id = session.get("user_id")
+    user_type = session.get("user_type")
+
+    conn = get_connection()
+
+    try:
+
+        # --------------------------------------------------
+        # PARTICULIER
+        # --------------------------------------------------
+        if user_type == "particulier":
+
+            demandes = conn.execute(
+                """
+                SELECT id
+                FROM demandes
+                WHERE particulier_id = ?
+                """,
+                (user_id,)
+            ).fetchall()
+
+            demande_ids = [
+                demande["id"]
+                for demande in demandes
+            ]
+
+            for demande_id in demande_ids:
+
+                conn.execute(
+                    """
+                    DELETE FROM reponses
+                    WHERE demande_id = ?
+                    """,
+                    (demande_id,)
+                )
+
+                conn.execute(
+                    """
+                    DELETE FROM artisan_demandes_vues
+                    WHERE demande_id = ?
+                    """,
+                    (demande_id,)
+                )
+
+                conn.execute(
+                    """
+                    DELETE FROM artisan_demandes_supprimees
+                    WHERE demande_id = ?
+                    """,
+                    (demande_id,)
+                )
+
+            conn.execute(
+                """
+                DELETE FROM demandes
+                WHERE particulier_id = ?
+                """,
+                (user_id,)
+            )
+
+            conn.execute(
+                """
+                DELETE FROM reponses
+                WHERE particulier_id = ?
+                """,
+                (user_id,)
+            )
+
+            conn.execute(
+                """
+                DELETE FROM particuliers
+                WHERE id = ?
+                """,
+                (user_id,)
+            )
+
+        # --------------------------------------------------
+        # ARTISAN
+        # --------------------------------------------------
+        elif user_type == "artisan":
+
+            conn.execute(
+                """
+                DELETE FROM reponses
+                WHERE artisan_id = ?
+                """,
+                (user_id,)
+            )
+
+            conn.execute(
+                """
+                DELETE FROM artisan_demandes_supprimees
+                WHERE artisan_id = ?
+                """,
+                (user_id,)
+            )
+
+            conn.execute(
+                """
+                DELETE FROM artisan_demandes_vues
+                WHERE artisan_id = ?
+                """,
+                (user_id,)
+            )
+
+            conn.execute(
+                """
+                DELETE FROM factures
+                WHERE artisan_id = ?
+                """,
+                (user_id,)
+            )
+
+            conn.execute(
+                """
+                DELETE FROM devis
+                WHERE artisan_id = ?
+                """,
+                (user_id,)
+            )
+
+            conn.execute(
+                """
+                DELETE FROM artisans
+                WHERE id = ?
+                """,
+                (user_id,)
+            )
+
+        else:
+            conn.close()
+            return redirect(url_for("connexion"))
+
+        conn.commit()
+
+    except Exception:
+        conn.rollback()
+        conn.close()
+        raise
+
+    conn.close()
+
+    logout_user()
+
+    return redirect(
+        url_for("home")
+    )
+# ==========================================================
 # SUPPRIMER UNE DEMANDE - PARTICULIER
 # ==========================================================
 
