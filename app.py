@@ -2711,6 +2711,9 @@ def profil_artisan_public(artisan_id):
     conn.close()
 
     if not artisan:
+        flash(
+            "Le profil de cet artisan est introuvable."
+        )
         return redirect(
             url_for("mes_demandes")
         )
@@ -2719,7 +2722,6 @@ def profil_artisan_public(artisan_id):
         "profil_artisan_public.html",
         artisan=artisan
     )
-
 
 
 # ==========================================================
