@@ -3176,7 +3176,7 @@ def messages_recus():
                 artisans.entreprise AS artisan_entreprise
             FROM reponses
             LEFT JOIN artisans
-                ON reponses.artisan_id = artisans.id
+                ON CAST(reponses.artisan_id AS INTEGER) = artisans.id
             WHERE reponses.demande_id = ?
             ORDER BY reponses.id ASC
             """,
