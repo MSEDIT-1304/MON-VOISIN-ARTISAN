@@ -18,6 +18,7 @@ import re
 import math
 import sqlite3
 from io import BytesIO
+from PIL import Image
 
 import pandas as pd
 import requests
@@ -4579,7 +4580,43 @@ def afficher_photo_profil(artisan_id=None):
                 url_for("profil")
             )
 
-        image = photo.read()
+        image_originale = Image.open(photo)
+
+        image_originale = image_originale.convert("RGBA")
+        
+        image_originale.thumbnail(
+            (192, 192),
+            Image.Resampling.LANCZOS
+        )
+        
+        logo = Image.new(
+            "RGBA",
+            (192, 192),
+            (255, 255, 255, 0)
+        )
+        
+        position_x = (
+            192 - image_originale.width
+        ) // 2
+        
+        position_y = (
+            192 - image_originale.height
+        ) // 2
+        
+        logo.paste(
+            image_originale,
+            (position_x, position_y),
+            image_originale
+        )
+        
+        buffer = BytesIO()
+        
+        logo.save(
+            buffer,
+            format="PNG"
+        )
+        
+        image = buffer.getvalue()
 
         conn = get_connection()
 
