@@ -27,8 +27,11 @@
             à votre recherche.
         </p>
 
-        <form method="POST" action="/inscription/particulier">
-
+        <form
+            method="POST"
+            action="/inscription/particulier"
+            onsubmit="return demanderPermissionNotificationAvantInscription(this);"
+        >
             <label for="nom">Nom</label>
             <input
                 type="text"
@@ -113,7 +116,8 @@
 
         <form
             method="POST"
-            action="/inscription/artisan"
+            action="/inscription/particulier"
+            onsubmit="return demanderPermissionNotificationAvantInscription(this);"
         >
 
             <label for="entreprise">Nom de l'entreprise</label>
@@ -283,4 +287,34 @@
 
 </div>
 
+<script>
+
+async function demanderPermissionNotificationAvantInscription(form) {
+
+    if (
+        "Notification" in window &&
+        Notification.permission === "default"
+    ) {
+
+        try {
+
+            await Notification.requestPermission();
+
+        } catch (error) {
+
+            console.log(
+                "Autorisation des notifications non disponible."
+            );
+
+        }
+
+    }
+
+    form.submit();
+
+    return false;
+
+}
+
+</script>
 {% endblock %}
