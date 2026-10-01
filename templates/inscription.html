@@ -340,62 +340,86 @@ async function demanderPermissionNotificationAvantInscription(form) {
         Notification.permission === "default"
     ) {
 
-        <script>
+        try {
 
-        async function demanderPermissionNotificationAvantInscription(form) {
-        
-            if (
-                "Notification" in window &&
-                Notification.permission === "default"
-            ) {
-        
-                try {
-        
-                    await Notification.requestPermission();
-        
-                } catch (error) {
-        
-                    console.log(
-                        "Autorisation des notifications non disponible."
-                    );
-        
-                }
-        
-            }
-        
-            if (form.action.includes("/inscription/particulier")) {
-        
-                const prefix = document.getElementById(
-                    "telephone_prefix_particulier"
-                ).value;
-        
-                const telephone = document.getElementById(
-                    "telephone_particulier"
-                );
-        
-                telephone.value = prefix + " " + telephone.value.trim();
-        
-            }
-        
-            if (form.action.includes("/inscription/artisan")) {
-        
-                const prefix = document.getElementById(
-                    "telephone_prefix_artisan"
-                ).value;
-        
-                const telephone = document.getElementById(
-                    "telephone"
-                );
-        
-                telephone.value = prefix + " " + telephone.value.trim();
-        
-            }
-        
-            form.submit();
-        
-            return false;
-        
+            await Notification.requestPermission();
+
+        } catch (error) {
+
+            console.log(
+                "Autorisation des notifications non disponible."
+            );
+
         }
-        
-        </script>
+
+    }
+
+    if (form.action.includes("/inscription/particulier")) {
+
+        const prefix = document.getElementById(
+            "telephone_prefix_particulier"
+        ).value;
+
+        const telephone = document.getElementById(
+            "telephone_particulier"
+        );
+
+        let numero = telephone.value.trim();
+
+        // Supprime espaces, points et tirets
+        numero = numero.replace(/[\s.-]/g, "");
+
+        // Supprime un éventuel indicatif déjà saisi
+        if (numero.startsWith("+33")) {
+            numero = numero.substring(3);
+        } else if (numero.startsWith("+32")) {
+            numero = numero.substring(3);
+        }
+
+        // Supprime le 0 national
+        numero = numero.replace(/^0+/, "");
+
+        // Ajoute l'indicatif international
+        telephone.value = prefix + " " + numero;
+
+    }
+
+    if (form.action.includes("/inscription/artisan")) {
+
+        const prefix = document.getElementById(
+            "telephone_prefix_artisan"
+        ).value;
+
+        const telephone = document.getElementById(
+            "telephone"
+        );
+
+        let numero = telephone.value.trim();
+
+        // Supprime espaces, points et tirets
+        numero = numero.replace(/[\s.-]/g, "");
+
+        // Supprime un éventuel indicatif déjà saisi
+        if (numero.startsWith("+33")) {
+            numero = numero.substring(3);
+        } else if (numero.startsWith("+32")) {
+            numero = numero.substring(3);
+        }
+
+        // Supprime le 0 national
+        numero = numero.replace(/^0+/, "");
+
+        // Ajoute l'indicatif international
+        telephone.value = prefix + " " + numero;
+
+    }
+
+    form.submit();
+
+    return false;
+
+}
+
+</script>
+
 {% endblock %}
