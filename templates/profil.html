@@ -73,7 +73,7 @@
                 id="telephone"
                 name="telephone"
                 style="flex:1;"
-                value="{% if user['telephone'].startswith('+32') %}{{ user['telephone'][3:] | trim | lstrip('0') }}{% elif user['telephone'].startswith('+33') %}{{ user['telephone'][3:] | trim | lstrip('0') }}{% else %}{{ user['telephone'] | trim | lstrip('0') }}{% endif %}"
+                value="{{ user['telephone'] or '' }}"
                 placeholder="Ex. 7 44 42 74 01"
                 required
             >
@@ -180,7 +180,7 @@
                 id="telephone"
                 name="telephone"
                 style="flex:1;"
-                value="{% if user['telephone'].startswith('+32') %}{{ user['telephone'][3:] | trim | lstrip('0') }}{% elif user['telephone'].startswith('+33') %}{{ user['telephone'][3:] | trim | lstrip('0') }}{% else %}{{ user['telephone'] | trim | lstrip('0') }}{% endif %}"
+                value="{{ user['telephone'] or '' }}"
                 placeholder="Ex. 7 44 42 74 01"
                 required
             >
