@@ -155,7 +155,7 @@ if MAINTENANCE:
             </p>
 
             <p>
-                Nous effectuons actuellement les dernières améliorations.
+                En maintenance pour préparer le lancement officiel de Mon Voisin Artisan en Belgique.
             </p>
 
             <p>
