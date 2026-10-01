@@ -48,13 +48,35 @@
                 required
             >
 
-            <label for="telephone_particulier">Téléphone</label>
-            <input
-                type="tel"
-                id="telephone_particulier"
-                name="telephone"
+            <label for="pays_particulier">Pays</label>
+            <select
+                id="pays_particulier"
+                name="pays"
                 required
             >
+                <option value="France">France</option>
+                <option value="Belgique">Belgique</option>
+            </select>
+            
+            <label for="telephone_particulier">Téléphone</label>
+            <div style="display:flex; gap:8px;">
+                <select
+                    id="telephone_prefix_particulier"
+                    style="width:90px;"
+                    required
+                >
+                    <option value="+33">+33</option>
+                    <option value="+32">+32</option>
+                </select>
+            
+                <input
+                    type="tel"
+                    id="telephone_particulier"
+                    name="telephone"
+                    style="flex:1;"
+                    required
+                >
+            </div>
 
             <label for="password_particulier">Mot de passe</label>
 
@@ -145,14 +167,36 @@
                 required
             >
 
-            <label for="telephone">Téléphone</label>
-            <input
-                type="tel"
-                id="telephone"
-                name="telephone"
-                value="{{ form_data.get('telephone', '') if form_data else '' }}"
+            <label for="pays_artisan">Pays</label>
+            <select
+                id="pays_artisan"
+                name="pays"
                 required
             >
+                <option value="France">France</option>
+                <option value="Belgique">Belgique</option>
+            </select>
+            
+            <label for="telephone">Téléphone</label>
+            <div style="display:flex; gap:8px;">
+                <select
+                    id="telephone_prefix_artisan"
+                    style="width:90px;"
+                    required
+                >
+                    <option value="+33">+33</option>
+                    <option value="+32">+32</option>
+                </select>
+            
+                <input
+                    type="tel"
+                    id="telephone"
+                    name="telephone"
+                    style="flex:1;"
+                    value="{{ form_data.get('telephone', '') if form_data else '' }}"
+                    required
+                >
+            </div>
 
             <label for="password_artisan">Mot de passe</label>
 
@@ -296,25 +340,62 @@ async function demanderPermissionNotificationAvantInscription(form) {
         Notification.permission === "default"
     ) {
 
-        try {
+        <script>
 
-            await Notification.requestPermission();
-
-        } catch (error) {
-
-            console.log(
-                "Autorisation des notifications non disponible."
-            );
-
+        async function demanderPermissionNotificationAvantInscription(form) {
+        
+            if (
+                "Notification" in window &&
+                Notification.permission === "default"
+            ) {
+        
+                try {
+        
+                    await Notification.requestPermission();
+        
+                } catch (error) {
+        
+                    console.log(
+                        "Autorisation des notifications non disponible."
+                    );
+        
+                }
+        
+            }
+        
+            if (form.action.includes("/inscription/particulier")) {
+        
+                const prefix = document.getElementById(
+                    "telephone_prefix_particulier"
+                ).value;
+        
+                const telephone = document.getElementById(
+                    "telephone_particulier"
+                );
+        
+                telephone.value = prefix + " " + telephone.value.trim();
+        
+            }
+        
+            if (form.action.includes("/inscription/artisan")) {
+        
+                const prefix = document.getElementById(
+                    "telephone_prefix_artisan"
+                ).value;
+        
+                const telephone = document.getElementById(
+                    "telephone"
+                );
+        
+                telephone.value = prefix + " " + telephone.value.trim();
+        
+            }
+        
+            form.submit();
+        
+            return false;
+        
         }
-
-    }
-
-    form.submit();
-
-    return false;
-
-}
-
-</script>
+        
+        </script>
 {% endblock %}
