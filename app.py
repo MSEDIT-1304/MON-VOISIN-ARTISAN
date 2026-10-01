@@ -750,8 +750,7 @@ ACTIVITES = {
         "Peinture extérieure",
         "Tapissage",
         "Enduit",
-        "Rénovation murs",
-        "Plafonds"
+        "Peinture plafonds"
     ],
 
     "Parquet": [
@@ -782,10 +781,10 @@ ACTIVITES = {
     "Menuiserie": [
         "Menuiserie intérieure",
         "Menuiserie extérieure",
-        "Portes",
-        "Fenêtres",
-        "Escalier",
-        "Meubles sur mesure"
+        "Réparation portes",
+        "Réparation fenêtres",
+        "Réparation escalier",
+        "Fabrication meubles sur mesure"
     ],
 
     "Couverture / Toiture": [
@@ -827,8 +826,19 @@ ACTIVITES = {
 
     "Rénovation": [
         "Rénovation intérieure",
+        "Pose de cloisons",
+        "Pose fenêtres",
+        "Rénovation des murs",
+        "Rénovation des sols",
         "Rénovation extérieure",
         "Rénovation complète"
+    ],
+
+    "A domicile": [
+        "Coiffeur(se) homme",
+        "Coiffeur(se) femme",
+        "Coiffeur(se) enfant",
+        "Podologue"
     ]
 }
 
