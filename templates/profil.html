@@ -36,15 +36,49 @@
             required
         >
 
-        <label for="telephone">Téléphone</label>
+        <label for="pays_particulier">Pays</label>
 
-        <input
-            type="tel"
-            id="telephone"
-            name="telephone"
-            value="{{ user['telephone'] }}"
+        <select
+            id="pays_particulier"
+            name="pays"
             required
         >
+            <option value="France" {% if (user['pays'] or 'France') == 'France' %}selected{% endif %}>
+                France
+            </option>
+            <option value="Belgique" {% if user['pays'] == 'Belgique' %}selected{% endif %}>
+                Belgique
+            </option>
+        </select>
+        
+        <label for="telephone">Téléphone</label>
+        
+        <div style="display:flex; gap:8px;">
+        
+            <select
+                id="telephone_prefix_particulier"
+                style="width:90px;"
+                required
+            >
+                <option value="+33" {% if user['telephone'].startswith('+32') == false %}selected{% endif %}>
+                    +33
+                </option>
+                <option value="+32" {% if user['telephone'].startswith('+32') %}selected{% endif %}>
+                    +32
+                </option>
+            </select>
+        
+            <input
+                type="tel"
+                id="telephone"
+                name="telephone"
+                style="flex:1;"
+                value="{% if user['telephone'].startswith('+32') %}{{ user['telephone'][3:] | trim | lstrip('0') }}{% elif user['telephone'].startswith('+33') %}{{ user['telephone'][3:] | trim | lstrip('0') }}{% else %}{{ user['telephone'] | trim | lstrip('0') }}{% endif %}"
+                placeholder="Ex. 7 44 42 74 01"
+                required
+            >
+        
+        </div>
 
         <label for="code_postal">Code postal</label>
 
@@ -109,15 +143,49 @@
             required
         >
 
-        <label for="telephone">Téléphone</label>
+        <label for="pays_artisan">Pays</label>
 
-        <input
-            type="tel"
-            id="telephone"
-            name="telephone"
-            value="{{ user['telephone'] }}"
+        <select
+            id="pays_artisan"
+            name="pays"
             required
         >
+            <option value="France" {% if (user['pays'] or 'France') == 'France' %}selected{% endif %}>
+                France
+            </option>
+            <option value="Belgique" {% if user['pays'] == 'Belgique' %}selected{% endif %}>
+                Belgique
+            </option>
+        </select>
+        
+        <label for="telephone">Téléphone</label>
+        
+        <div style="display:flex; gap:8px;">
+        
+            <select
+                id="telephone_prefix_artisan"
+                style="width:90px;"
+                required
+            >
+                <option value="+33" {% if user['telephone'].startswith('+32') == false %}selected{% endif %}>
+                    +33
+                </option>
+                <option value="+32" {% if user['telephone'].startswith('+32') %}selected{% endif %}>
+                    +32
+                </option>
+            </select>
+        
+            <input
+                type="tel"
+                id="telephone"
+                name="telephone"
+                style="flex:1;"
+                value="{% if user['telephone'].startswith('+32') %}{{ user['telephone'][3:] | trim | lstrip('0') }}{% elif user['telephone'].startswith('+33') %}{{ user['telephone'][3:] | trim | lstrip('0') }}{% else %}{{ user['telephone'] | trim | lstrip('0') }}{% endif %}"
+                placeholder="Ex. 7 44 42 74 01"
+                required
+            >
+        
+        </div>
 
         <label for="adresse">Adresse</label>
 
@@ -153,7 +221,7 @@
             id="siret"
             name="siret"
             value="{{ user['siret'] or '' }}"
-            placeholder="Ex. 12345678900000"
+            placeholder="SIRET français ou BCE belge"
         >
 
         <label for="tva">N° de TVA intracommunautaire</label>
@@ -486,4 +554,47 @@
 
 </div>
 
+<script>
+
+document.querySelectorAll(
+    "form[action='/profil/particulier'], form[action='/profil/artisan']"
+).forEach(function(form) {
+
+    form.addEventListener("submit", function() {
+
+        const prefix = form.querySelector(
+            "[id^='telephone_prefix_']"
+        );
+
+        const telephone = form.querySelector(
+            "input[name='telephone']"
+        );
+
+        if (!prefix || !telephone) {
+            return;
+        }
+
+        let numero = telephone.value.trim();
+
+        // Supprime espaces, points et tirets
+        numero = numero.replace(/[\s.-]/g, "");
+
+        // Supprime un éventuel indicatif déjà saisi
+        if (numero.startsWith("+33")) {
+            numero = numero.substring(3);
+        } else if (numero.startsWith("+32")) {
+            numero = numero.substring(3);
+        }
+
+        // Supprime le 0 national
+        numero = numero.replace(/^0+/, "");
+
+        // Enregistre avec l'indicatif international
+        telephone.value = prefix.value + " " + numero;
+
+    });
+
+});
+
+</script>
 {% endblock %}
