@@ -1074,14 +1074,12 @@ def get_belgian_postal_coordinates(
 
     try:
 
+        # Recherche belge d'abord avec le code postal.
+        # La ville peut être une localité et ne correspond
+        # pas forcément au nom de la commune administrative.
         params = {
             "postCode": code_postal
         }
-
-        if ville:
-            params["municipalityName"] = str(
-                ville
-            ).strip()
 
         response = requests.get(
             "https://best.pr.fedservices.be/api/opendata/best/v1/belgianAddress/v2/addresses",
