@@ -2053,7 +2053,7 @@ def inscription_particulier():
             pays,
             created_at
         )
-        VALUES (?, ?, ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
         """,
         (
             email,
@@ -3222,7 +3222,7 @@ def demande():
             description,
             created_at
         )
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
         """,
         (
             particulier_id,
