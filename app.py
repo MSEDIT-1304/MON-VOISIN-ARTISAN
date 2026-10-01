@@ -113,7 +113,7 @@ app.secret_key = SECRET_KEY
 # MODE MAINTENANCE
 # ==========================================================
 
-MAINTENANCE = True
+MAINTENANCE = False
 
 if MAINTENANCE:
 
@@ -204,6 +204,7 @@ def init_database():
             adresse TEXT,
             code_postal TEXT,
             ville TEXT,
+            pays TEXT DEFAULT 'France',
             photo TEXT,
             description TEXT,
             activites TEXT,
@@ -237,6 +238,7 @@ def init_database():
             nom TEXT,
             telephone TEXT,
             code_postal TEXT,
+            pays TEXT DEFAULT 'France',
             created_at TEXT
         )
     """)
@@ -254,6 +256,7 @@ def init_database():
             region TEXT NOT NULL,
             code_postal TEXT,
             ville TEXT,
+            pays TEXT DEFAULT 'France',
             description TEXT NOT NULL,
             photo1 TEXT,
             photo2 TEXT,
@@ -377,6 +380,7 @@ def init_database():
         except sqlite3.OperationalError:
             pass
         colonnes_artisan = [
+            ("pays", "TEXT DEFAULT 'France'"),
             ("siret", "TEXT"),
             ("tva", "TEXT"),
             ("photo_profil", "BLOB"),
@@ -397,6 +401,22 @@ def init_database():
                 )
             except sqlite3.OperationalError:
                 pass
+
+        # Ajout du pays des particuliers
+        try:
+            cursor.execute(
+                "ALTER TABLE particuliers ADD COLUMN pays TEXT DEFAULT 'France'"
+            )
+        except sqlite3.OperationalError:
+            pass
+    
+        # Ajout du pays des demandes
+        try:
+            cursor.execute(
+                "ALTER TABLE demandes ADD COLUMN pays TEXT DEFAULT 'France'"
+            )
+        except sqlite3.OperationalError:
+            pass
     # Les anciennes réponses étaient nécessairement écrites
     # par un artisan.
     cursor.execute("""
@@ -1027,7 +1047,96 @@ def get_postal_coordinates(code_postal, ville=None):
 
     except Exception:
         return None
+def normaliser_pays(pays):
 
+    pays = str(pays or "").strip().lower()
+
+    if pays in (
+        "belgique",
+        "be",
+        "belgium"
+    ):
+        return "Belgique"
+
+    return "France"
+@lru_cache(maxsize=512)
+def get_belgian_postal_coordinates(
+    code_postal,
+    ville=None
+):
+
+    code_postal = str(
+        code_postal or ""
+    ).strip()
+
+    if not code_postal:
+        return None
+
+    try:
+
+        params = {
+            "postCode": code_postal
+        }
+
+        if ville:
+            params["municipalityName"] = str(
+                ville
+            ).strip()
+
+        response = requests.get(
+            "https://best.pr.fedservices.be/api/opendata/best/v1/belgianAddress/v2/addresses",
+            params=params,
+            timeout=5
+        )
+
+        response.raise_for_status()
+
+        data = response.json()
+
+        addresses = data.get(
+            "items",
+            []
+        )
+
+        for address in addresses:
+
+            position = address.get(
+                "addressPosition"
+            )
+
+            if not position:
+                continue
+
+            wgs84 = position.get(
+                "wgs84"
+            )
+
+            if not wgs84:
+                continue
+
+            latitude = wgs84.get(
+                "lat"
+            )
+
+            longitude = wgs84.get(
+                "long"
+            )
+
+            if (
+                latitude is not None
+                and longitude is not None
+            ):
+
+                return (
+                    float(longitude),
+                    float(latitude)
+                )
+
+        return None
+
+    except Exception:
+
+        return None
 def parse_rayon_km(rayon):
     if rayon is None:
         return None
@@ -1047,18 +1156,38 @@ def distance_km(
     code_postal_1,
     code_postal_2,
     ville_1=None,
-    ville_2=None
+    ville_2=None,
+    pays_1="France",
+    pays_2="France"
 ):
 
-    coord1 = get_postal_coordinates(
-        code_postal_1,
-        ville_1
-    )
+    if normaliser_pays(pays_1) == "Belgique":
 
-    coord2 = get_postal_coordinates(
-        code_postal_2,
-        ville_2
-    )
+        coord1 = get_belgian_postal_coordinates(
+            code_postal_1,
+            ville_1
+        )
+
+    else:
+
+        coord1 = get_postal_coordinates(
+            code_postal_1,
+            ville_1
+        )
+
+    if normaliser_pays(pays_2) == "Belgique":
+
+        coord2 = get_belgian_postal_coordinates(
+            code_postal_2,
+            ville_2
+        )
+
+    else:
+
+        coord2 = get_postal_coordinates(
+            code_postal_2,
+            ville_2
+        )
 
     if not coord1 or not coord2:
         return None
@@ -1088,6 +1217,13 @@ def distance_km(
 def demande_dans_rayon(artisan, demande):
     artisan_cp = str(artisan["code_postal"] or "").strip()
     demande_cp = str(demande["code_postal"] or "").strip()
+    artisan_pays = normaliser_pays(
+        artisan["pays"]
+    )
+
+    demande_pays = normaliser_pays(
+        demande["pays"]
+    )
     rayon_km = parse_rayon_km(artisan["rayon"])
 
     if not artisan_cp or not demande_cp or rayon_km is None or rayon_km <= 0:
@@ -1097,9 +1233,15 @@ def demande_dans_rayon(artisan, demande):
         artisan_cp,
         demande_cp,
         artisan["ville"],
-        demande["ville"]
+        demande["ville"],
+        artisan_pays,
+        demande_pays
     )
     if distance is None:
+
+        if artisan_pays != demande_pays:
+            return False
+
         return artisan_cp == demande_cp
 
     return distance <= rayon_km
@@ -1576,7 +1718,12 @@ def inscription_artisan():
     email = clean_email(
         request.form.get("email", "")
     )
-
+    pays = normaliser_pays(
+        request.form.get(
+            "pays",
+            "France"
+        )
+    )
     password = request.form.get(
         "password",
         ""
@@ -1655,6 +1802,7 @@ def inscription_artisan():
         "adresse": adresse,
         "code_postal": code_postal,
         "ville": ville,
+        "pays": pays,
         "description": description,
         "rayon": rayon
     }
@@ -1754,6 +1902,7 @@ def inscription_artisan():
             adresse,
             code_postal,
             ville,
+            pays,
             description,
             activites,
             sous_categories,
@@ -1761,7 +1910,7 @@ def inscription_artisan():
             rayon,
             created_at
         )
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """,
         (
             email,
@@ -1774,6 +1923,7 @@ def inscription_artisan():
             adresse,
             code_postal,
             ville,
+            pays,
             description,
             save_list(activites),
             save_list(sous_categories),
@@ -1811,6 +1961,12 @@ def inscription_particulier():
 
     email = clean_email(
         request.form.get("email", "")
+    )
+    pays = normaliser_pays(
+        request.form.get(
+            "pays",
+            "France"
+        )
     )
 
     password = request.form.get(
@@ -1894,6 +2050,7 @@ def inscription_particulier():
             nom,
             telephone,
             code_postal,
+            pays,
             created_at
         )
         VALUES (?, ?, ?, ?, ?, ?)
@@ -1904,6 +2061,7 @@ def inscription_particulier():
             nom,
             telephone,
             code_postal,
+            pays,
             now_string()
         )
     )
@@ -3041,6 +3199,13 @@ def demande():
     particulier_id = session.get(
         "user_id"
     )
+    particulier = get_current_user()
+
+    pays = normaliser_pays(
+        particulier["pays"]
+        if particulier
+        else "France"
+    )
 
     conn = get_connection()
 
@@ -3053,6 +3218,7 @@ def demande():
             region,
             code_postal,
             ville,
+            pays,
             description,
             created_at
         )
@@ -3065,6 +3231,7 @@ def demande():
             "",
             code_postal,
             ville,
+            pays,
             description,
             now_string()
         )
@@ -4109,6 +4276,7 @@ def modifier_profil_artisan():
             entreprise = ?,
             responsable = ?,
             telephone = ?,
+            pays = ?,
             adresse = ?,
             siret = ?,
             tva = ?,
@@ -4127,6 +4295,12 @@ def modifier_profil_artisan():
             entreprise,
             responsable,
             telephone,
+            normaliser_pays(
+                request.form.get(
+                    "pays",
+                    artisan_user["pays"] or "France"
+                )
+            ),
             adresse,
             siret,
             tva,
@@ -4252,13 +4426,20 @@ def modifier_profil_particulier():
         SET
             email = ?,
             nom = ?,
-            telephone = ?
+            telephone = ?,
+            pays = ?
         WHERE id = ?
         """,
         (
             email,
             nom,
             telephone,
+            normaliser_pays(
+                request.form.get(
+                    "pays",
+                    particulier["pays"] or "France"
+                )
+            ),
             particulier["id"]
         )
     )
