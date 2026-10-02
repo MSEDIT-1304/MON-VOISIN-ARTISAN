@@ -821,7 +821,8 @@ ACTIVITES = {
     ],
 
     "Déménagement": [
-        "Déménagement"
+        "Déménagement",
+        "Transport"
     
     ],
 
