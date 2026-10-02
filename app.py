@@ -1187,7 +1187,7 @@ def get_belgian_postal_coordinates(
         pass
 
     return None
-
+def parse_rayon_km(rayon):
     value = str(rayon).strip().replace(",", ".")
 
     if not re.fullmatch(r"\d+(?:\.\d+)?", value):
