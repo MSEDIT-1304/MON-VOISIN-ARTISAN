@@ -581,6 +581,11 @@ input[type="radio"] {
     .message {
         padding: 10px 12px;
     }
+   /* ALIGNEMENT DES ACTIVITÉS ET SOUS-CATÉGORIES SUR MOBILE */
+
+    .card form label:has(input[type="checkbox"]) {
+        text-align: left;
+    }
 }
 
 /* CENTRAGE MES DEMANDES / MESSAGES RECUS SUR MOBILE */
