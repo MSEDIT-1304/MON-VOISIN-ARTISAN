@@ -868,8 +868,7 @@ ACTIVITES = {
         "Coiffeur(se) enfant",
         "coiffure/tresses",
         "Pose d'ongles",
-        "Manucure",
-        
+        "Manucure"        
         
     ],
 
