@@ -755,6 +755,11 @@ ACTIVITES = {
         "Mise aux normes"
     ],
 
+    "Déménagement": [
+        "Déménagement",
+    
+    ],
+
     "Jardin": [
         "Tonte",
         "Débroussaillage",
@@ -762,6 +767,11 @@ ACTIVITES = {
         "Élagage",
         "Entretien espaces verts",
         "Abattage",
+        "Pose de clôture",
+        "Réparation de clôture",
+        "Grillage",
+        "Portail",
+        "Palissade",
         "Création de jardin"
     ],
 
@@ -815,14 +825,6 @@ ACTIVITES = {
         "Étanchéité"
     ],
 
-    "Clôture": [
-        "Pose de clôture",
-        "Réparation de clôture",
-        "Grillage",
-        "Portail",
-        "Palissade"
-    ],
-
     "Nettoyage": [
         "Nettoyage intérieur",
         "Nettoyage extérieur",
@@ -857,8 +859,8 @@ ACTIVITES = {
     "A domicile": [
         "Coiffeur(se) homme",
         "Coiffeur(se) femme",
-        "Coiffeur(se) enfant",
-        "Podologue"
+        "Coiffeur(se) enfant"
+        
     ]
 }
 
