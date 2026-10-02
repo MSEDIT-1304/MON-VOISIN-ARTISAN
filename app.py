@@ -874,7 +874,7 @@ ACTIVITES = {
 
     "A distance / Soins du corps": [
         "Coach nutritionnel",
-        "Rééquilibrage alimentaire,
+        "Rééquilibrage alimentaire",
         "Coach sportif"   
     ]
 }
