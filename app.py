@@ -113,7 +113,7 @@ app.secret_key = SECRET_KEY
 # MODE MAINTENANCE
 # ==========================================================
 
-MAINTENANCE = True
+MAINTENANCE = False
 
 if MAINTENANCE:
 
@@ -1069,14 +1069,19 @@ def get_belgian_postal_coordinates(
         code_postal or ""
     ).strip()
 
+    ville = str(
+        ville or ""
+    ).strip()
+
     if not code_postal:
         return None
 
+    # ======================================================
+    # 1. BESt-Address officiel belge
+    # ======================================================
+
     try:
 
-        # Recherche belge d'abord avec le code postal.
-        # La ville peut être une localité et ne correspond
-        # pas forcément au nom de la commune administrative.
         params = {
             "postCode": code_postal
         }
@@ -1130,14 +1135,58 @@ def get_belgian_postal_coordinates(
                     float(latitude)
                 )
 
-        return None
+    except Exception:
+
+        pass
+
+    # ======================================================
+    # 2. SECOURS : recherche par code postal + ville
+    # ======================================================
+
+    try:
+
+        params = {
+            "q": f"{code_postal} {ville} Belgique",
+            "format": "jsonv2",
+            "limit": 1,
+            "countrycodes": "be"
+        }
+
+        headers = {
+            "User-Agent": "Mon-Voisin-Artisan/1.0"
+        }
+
+        response = requests.get(
+            "https://nominatim.openstreetmap.org/search",
+            params=params,
+            headers=headers,
+            timeout=5
+        )
+
+        response.raise_for_status()
+
+        results = response.json()
+
+        if results:
+
+            latitude = results[0].get("lat")
+            longitude = results[0].get("lon")
+
+            if (
+                latitude is not None
+                and longitude is not None
+            ):
+
+                return (
+                    float(longitude),
+                    float(latitude)
+                )
 
     except Exception:
 
-        return None
-def parse_rayon_km(rayon):
-    if rayon is None:
-        return None
+        pass
+
+    return None
 
     value = str(rayon).strip().replace(",", ".")
 
