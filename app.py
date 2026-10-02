@@ -871,6 +871,12 @@ ACTIVITES = {
         "Manucure",
         
         
+    ],
+
+    "A distance / Soins du corps": [
+        "Coach nutritionnel",
+        "Rééquilibrage alimentaire,
+        "Coach sportif"   
     ]
 }
 
