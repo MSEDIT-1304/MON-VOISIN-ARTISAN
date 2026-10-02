@@ -248,87 +248,63 @@
                                 
                                 </p>
                                 
-                                <a
-                                    href="/admin/rc-pro/{{ artisan['id'] }}"
-                                    target="_blank"
-                                >
-                                    <button type="button">
-                                        Voir l'attestation RC PRO
-                                    </button>
-                                </a>
+                                <div class="actions-admin">
 
-                                {% if artisan["rc_pro_verifie"] == 1 %}
+                                    <a
+                                        href="/admin/rc-pro/{{ artisan['id'] }}"
+                                        target="_blank"
+                                    >
+                                        <button type="button">
+                                            Voir l'attestation RC PRO
+                                        </button>
+                                    </a>
 
-                                    <p class="statut verifie">
-                                        ✔ Attestation vérifiée
-                                    </p>
-                                
+                                    {% if artisan["rc_pro_verifie"] == 1 %}
+
+                                        <form
+                                            method="POST"
+                                            action="/admin/rc-pro/{{ artisan['id'] }}/refuser"
+                                        >
+                                            <button type="submit">
+                                                Refuser l'attestation RC PRO
+                                            </button>
+                                        </form>
+
+                                    {% elif artisan["rc_pro_verifie"] == 2 %}
+
+                                        <form
+                                            method="POST"
+                                            action="/admin/rc-pro/{{ artisan['id'] }}/valider"
+                                        >
+                                            <button type="submit">
+                                                Valider l'attestation RC PRO
+                                            </button>
+                                        </form>
+
+                                    {% else %}
+
+                                        <form
+                                            method="POST"
+                                            action="/admin/rc-pro/{{ artisan['id'] }}/valider"
+                                        >
+                                            <button type="submit">
+                                                Valider l'attestation RC PRO
+                                            </button>
+                                        </form>
+
+                                    {% endif %}
+
                                     <form
                                         method="POST"
-                                        action="/admin/rc-pro/{{ artisan['id'] }}/refuser"
+                                        action="/admin/artisan/{{ artisan['id'] }}/supprimer"
+                                        onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette fiche artisan ?');"
                                     >
-                                
                                         <button type="submit">
-                                            Refuser l'attestation RC PRO
+                                            Supprimer la fiche
                                         </button>
-                                
                                     </form>
-                                
-                                {% elif artisan["rc_pro_verifie"] == 2 %}
-                                
-                                    <p class="statut non-fourni">
-                                        ✘ Attestation refusée
-                                    </p>
-                                
-                                    <form
-                                        method="POST"
-                                        action="/admin/rc-pro/{{ artisan['id'] }}/valider"
-                                    >
-                                
-                                        <button type="submit">
-                                            Valider l'attestation RC PRO
-                                        </button>
-                                
-                                    </form>
-                                
-                                {% else %}
-                                
-                                    <p class="statut">
-                                        ⏳ Attestation à vérifier
-                                    </p>
-                                
-                                    <form
-                                        method="POST"
-                                        action="/admin/rc-pro/{{ artisan['id'] }}/valider"
-                                    >
-                                
-                                        <button type="submit">
-                                            Valider l'attestation RC PRO
-                                        </button>
-                                
-                                    </form>
-                                
-                                {% endif %}
-                            {% else %}
 
-                                <p class="statut non-fourni">
-                                    ✘ Aucune attestation RC PRO
-                                </p>
-
-                            {% endif %}
-
-                        </div>
-                        
-                        <form
-                            method="POST"
-                            action="/admin/artisan/{{ artisan['id'] }}/supprimer"
-                            onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette fiche artisan ?');"
-                        >
-                            <button type="submit">
-                                Supprimer la fiche
-                            </button>
-                        </form>
-
+                                </div>
                     </div>
 
                 {% endfor %}
