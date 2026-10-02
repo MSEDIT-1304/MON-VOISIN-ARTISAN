@@ -755,11 +755,6 @@ ACTIVITES = {
         "Mise aux normes"
     ],
 
-    "Déménagement": [
-        "Déménagement",
-    
-    ],
-
     "Jardin": [
         "Tonte",
         "Débroussaillage",
@@ -825,6 +820,16 @@ ACTIVITES = {
         "Étanchéité"
     ],
 
+    "Déménagement": [
+        "Déménagement"
+    
+    ],
+
+    "Ramonage": [
+        "Cheminées"
+    
+    ],
+
     "Nettoyage": [
         "Nettoyage intérieur",
         "Nettoyage extérieur",
@@ -859,7 +864,11 @@ ACTIVITES = {
     "A domicile": [
         "Coiffeur(se) homme",
         "Coiffeur(se) femme",
-        "Coiffeur(se) enfant"
+        "Coiffeur(se) enfant",
+        "coiffure/tresses",
+        "Pose d'ongles",
+        "Manucure",
+        
         
     ]
 }
