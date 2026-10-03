@@ -753,6 +753,8 @@ ACTIVITES = {
         "Tableau électrique",
         "Prises et interrupteurs",
         "Éclairage",
+        "Pose de panneaux photovoltaïques",
+        "Pose borne électrique pour voiture",
         "Mise aux normes"
     ],
 
