@@ -831,7 +831,8 @@ ACTIVITES = {
     ],
 
     "Ramonage": [
-        "Cheminées"
+        "Cheminées et conduits",
+        "Entretien poêle"
     
     ],
 
