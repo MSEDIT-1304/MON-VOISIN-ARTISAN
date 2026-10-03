@@ -871,6 +871,8 @@ ACTIVITES = {
         "Coiffure/tresses africaines",
         "Coiffure/lissage",
         "Coiffure pour mariage",
+        "Esthéticienne",
+        "Massages relaxants",
         "Manucure/Pose d'ongles"                    
         
     ],
@@ -878,7 +880,8 @@ ACTIVITES = {
     "A distance / Soins du corps": [
         "Coach nutritionnel",
         "Rééquilibrage alimentaire",
-        "Coach sportif"   
+        "Coach sportif"
+        
     ]
 }
 
