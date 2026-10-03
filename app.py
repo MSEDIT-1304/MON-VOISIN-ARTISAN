@@ -743,6 +743,7 @@ ACTIVITES = {
         "Chaudière",
         "Pompe à chaleur",
         "Radiateur",
+        "Technicien chauffage",
         "Entretien chauffage"
     ],
 
@@ -866,9 +867,11 @@ ACTIVITES = {
         "Coiffeur(se) homme",
         "Coiffeur(se) femme",
         "Coiffeur(se) enfant",
-        "coiffure/tresses",
-        "Pose d'ongles",
-        "Manucure"        
+        "Coiffure/tresses",
+        "Coiffure/tresses africaines",
+        "Coiffure/lissage",
+        "Coiffure pour mariage",
+        "Manucure/Pose d'ongles"                    
         
     ],
 
