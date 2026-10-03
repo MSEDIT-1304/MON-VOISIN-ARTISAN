@@ -863,7 +863,7 @@ ACTIVITES = {
         "Rénovation complète"
     ],
 
-    "A domicile": [
+    "Services à domicile": [
         "Coiffeur(se) homme",
         "Coiffeur(se) femme",
         "Coiffeur(se) enfant",
@@ -877,7 +877,7 @@ ACTIVITES = {
         
     ],
 
-    "A distance / Soins du corps": [
+    "Services à distance / Soins du corps": [
         "Coach nutritionnel",
         "Rééquilibrage alimentaire",
         "Coach sportif"
