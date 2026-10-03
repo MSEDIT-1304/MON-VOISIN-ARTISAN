@@ -816,7 +816,10 @@ ACTIVITES = {
     "Couverture / Toiture": [
         "Réparation toiture",
         "Pose de toiture",
-        "Nettoyage toiture",
+        "Nettoyage et démoussage toiture",
+        "Remplacement de tuiles",
+        "Réparation fuites",
+        "Zinguerie",
         "Gouttières",
         "Étanchéité"
     ],
