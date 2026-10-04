@@ -6,7 +6,7 @@ Devis - Mon Voisin Artisan
 
 {% block content %}
 
-<h1>Créer un devis</h1>
+<h1 style="font-size: 16px;">Créer un devis</h1>
 
 <div class="section">
 {% if artisan["photo_profil"] %}
@@ -20,7 +20,7 @@ Devis - Mon Voisin Artisan
 {% endif %}
     <form method="POST" onsubmit="setTimeout(() => this.reset(), 300);">
 
-        <h2>Mes coordonnées</h2>
+        <h2 style="font-size: 16px;">Mes coordonnées</h2>
 
         <p>
             <strong>{{ artisan["entreprise"] }}</strong>
@@ -42,7 +42,7 @@ Devis - Mon Voisin Artisan
             TVA intracommunautaire : {{ artisan["tva"] or "Non renseignée" }}
         </p>
         
-        <h2>Informations du client</h2>
+        <h2 style="font-size: 16px;">Informations du client</h2>
 
         <label for="client_nom">Nom / Entreprise</label>
         <input
@@ -96,7 +96,7 @@ Devis - Mon Voisin Artisan
             value="{{ request.form.get('client_telephone', '') }}"
         >
 
-        <h2>Informations du devis</h2>
+        <h2 style="font-size: 16px;">Informations du devis</h2>
 
         <label for="numero">Numéro du devis</label>
         <input
@@ -135,7 +135,7 @@ Devis - Mon Voisin Artisan
             required
         >
 
-        <h2>Travaux / Prestations</h2>
+        <h2 style="font-size: 16px;">Travaux / Prestations</h2>
 
         <div class="devis-ligne">
             <label for="description1">Prestation 1</label>
@@ -309,7 +309,7 @@ Devis - Mon Voisin Artisan
         <option value="12.5">
         <option value="20">
     </datalist>
-        <h2>Récapitulatif</h2>
+        <h2 style="font-size: 16px;">Récapitulatif</h2>
 
         <p>
             <strong>Total HT :</strong>
