@@ -213,9 +213,9 @@ button,
     background: #7E8790;
     color: #FFFFFF;
     border: none;
-    padding: 12px 25px;
-    border-radius: 8px;
-    font-size: 15px;
+    padding: 8px 16px;
+    border-radius: 7px;
+    font-size: 13px;
     font-weight: bold;
     cursor: pointer;
 }
