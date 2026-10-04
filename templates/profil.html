@@ -4,7 +4,7 @@
 
 {% block content %}
 
-<h1>Mon profil</h1>
+<h1 style="font-size: 16px;">Mon profil</h1>
 
 
 {% if user_type == "particulier" %}
@@ -12,7 +12,7 @@
 
 <div class="form">
 
-    <h2>Mes informations</h2>
+    <h2 style="font-size: 16px;">Mes informations</h2>
 
     <form method="POST" action="/profil/particulier">
 
@@ -103,7 +103,7 @@
 
 <div class="form">
 
-    <h2>
+    <h2 style="font-size: 16px;">
         Informations de l'entreprise
         {% if user['rc_pro_verifie'] == 1 %}
             <span style="color: green; font-size: 16px; margin-left: 15px;">
@@ -243,7 +243,7 @@
         >{{ user['description'] }}</textarea>
 
 
-        <h2>Activités proposées</h2>
+        <h2 style="font-size: 16px;">Activités proposées</h2>
 
         {% for activite, sous_categories in activites.items() %}
 
@@ -320,7 +320,7 @@
 
     <div class="logo">
 
-        <h2>Logo</h2>
+        <h2 style="font-size: 16px;">Logo</h2>
 
         <p>
             Ajoutez le logo de votre entreprise.
@@ -363,7 +363,7 @@
 
 <div class="section">
 
-    <h2>Attestation RC PRO</h2>
+    <h2 style="font-size: 16px;">Attestation RC PRO</h2>
 
     <p>
         Ajoutez votre attestation d'assurance responsabilité civile professionnelle.
@@ -397,7 +397,7 @@
 
 <div class="profile-photos">
 
-    <h2>Mes réalisations</h2>
+    <h2 style="font-size: 16px;">Mes réalisations</h2>
 
     <p>
         Ajoutez jusqu'à 3 photos de vos réalisations.
