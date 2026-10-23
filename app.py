@@ -74,7 +74,7 @@ WEBHOOK_URL = "https://hook.eu1.make.com/942mf8fk2jehv637xc3s0tsjsxrad0gu"
 TRIAL_LINK = "https://buy.stripe.com/eVq7sM9YK9RH1HJeek9fW0l"
 
 # Stripe - 1 MOIS : 12.50 € HT / 15 € TTC
-STRIPE_LINK = https://buy.stripe.com/3cI4gAdaWgg54TV3zG9fW0D
+STRIPE_LINK = "https://buy.stripe.com/3cI4gAdaWgg54TV3zG9fW0D"
 
 # ==========================================================
 # ACCÈS ADMIN ARTISAN
