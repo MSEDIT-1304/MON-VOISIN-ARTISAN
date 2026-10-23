@@ -73,8 +73,8 @@ WEBHOOK_URL = "https://hook.eu1.make.com/942mf8fk2jehv637xc3s0tsjsxrad0gu"
 # Stripe - ESSAI GRATUIT 15 JOURS
 TRIAL_LINK = "https://buy.stripe.com/eVq7sM9YK9RH1HJeek9fW0l"
 
-# Stripe - 1 MOIS : 20 € HT / 24 € TTC
-STRIPE_LINK = "https://buy.stripe.com/dRm7sM8UG9RH1HJc6c9fW0m"
+# Stripe - 1 MOIS : 12.50 € HT / 15 € TTC
+STRIPE_LINK = https://buy.stripe.com/3cI4gAdaWgg54TV3zG9fW0D
 
 # ==========================================================
 # ACCÈS ADMIN ARTISAN
@@ -85,9 +85,9 @@ ADMIN_PASSWORD = "Ms130417"
 
 
 # Tarifs
-TRIAL_DAYS = 7
-PRICE_HT = 20
-PRICE_TTC = 24
+TRIAL_DAYS = 15
+PRICE_HT = 12.50
+PRICE_TTC = 15
 
 # Clé de session
 SECRET_KEY = os.environ.get(
