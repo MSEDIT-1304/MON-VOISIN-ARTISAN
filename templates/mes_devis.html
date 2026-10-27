@@ -43,6 +43,16 @@
                     >
                         Générer et télécharger la facture
                     </a>
+                    <form
+                        action="{{ url_for('supprimer_devis', devis_id=d['id']) }}"
+                        method="POST"
+                        style="display: inline;"
+                        onsubmit="return confirm('Voulez-vous vraiment supprimer ce devis ?');"
+                    >
+                        <button type="submit" class="btn">
+                            Supprimer le devis
+                        </button>
+                    </form>
                 
                 </div>
 
