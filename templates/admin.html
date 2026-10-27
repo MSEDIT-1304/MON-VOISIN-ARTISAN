@@ -195,6 +195,31 @@ button {
     padding: 7px;
     font-size: 11px;
 }
+/* Informations artisan sur une seule ligne */
+.artisan p {
+    display: inline-block;
+    margin: 4px 12px 4px 0;
+    font-size: 11px;
+    vertical-align: top;
+}
+
+.artisan h2 {
+    font-size: 16px;
+    margin-bottom: 6px;
+}
+
+.artisan {
+    padding: 8px;
+    margin-bottom: 6px;
+}
+
+/* Garder l'affichage lisible sur mobile */
+@media (max-width: 900px) {
+    .artisan p {
+        display: block;
+        margin: 5px 0;
+    }
+}
     </style>
 
 </head>
