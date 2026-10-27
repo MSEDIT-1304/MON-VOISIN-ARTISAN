@@ -220,6 +220,45 @@ button {
         margin: 5px 0;
     }
 }
+
+/* Présentation uniforme des fiches artisans */
+.artisan {
+    width: 100%;
+    box-sizing: border-box;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 10px;
+    margin: 0 0 10px 0;
+}
+
+.infos-artisan {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 16px;
+    margin-bottom: 8px;
+    font-size: 11px;
+}
+
+.infos-artisan span {
+    display: inline-block;
+}
+
+.rc-pro {
+    width: 100%;
+    box-sizing: border-box;
+    margin-top: 6px;
+    padding: 7px;
+    background: #f7f7f7;
+    border-radius: 5px;
+}
+
+@media (max-width: 900px) {
+    .infos-artisan {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
+}
     </style>
 
 </head>
@@ -291,98 +330,44 @@ button {
 
             {% if artisans %}
 
-                {% for artisan in artisans %}
-
+                                {% for artisan in artisans %}
                     <div class="artisan">
 
-                        <h2>
-                            {{ artisan["entreprise"] }}
-                        </h2>
+                        <h2>{{ artisan["entreprise"] }}</h2>
 
-                        <p>
-                            <strong>Responsable :</strong>
-                            {{ artisan["responsable"] or "Non renseigné" }}
-                        </p>
-
-                        <p>
-                            <strong>Email :</strong>
-                            {{ artisan["email"] }}
-                        </p>
-
-                        <p>
-                            <strong>Téléphone :</strong>
-                            {{ artisan["telephone"] or "Non renseigné" }}
-                        </p>
-
-                        <p>
-                            <strong>SIRET :</strong>
-                            {{ artisan["siret"] or "Non renseigné" }}
-                        </p>
-
-                        <p>
-                            <strong>Ville :</strong>
-                            {{ artisan["ville"] or "Non renseignée" }}
-                        </p>
+                        <div class="infos-artisan">
+                            <span><strong>Responsable :</strong> {{ artisan["responsable"] or "Non renseigné" }}</span>
+                            <span><strong>Email :</strong> {{ artisan["email"] }}</span>
+                            <span><strong>Téléphone :</strong> {{ artisan["telephone"] or "Non renseigné" }}</span>
+                            <span><strong>SIRET :</strong> {{ artisan["siret"] or "Non renseigné" }}</span>
+                            <span><strong>Ville :</strong> {{ artisan["ville"] or "Non renseignée" }}</span>
+                        </div>
 
                         <div class="rc-pro">
-
-                            <strong>
-                                Attestation RC PRO
-                            </strong>
+                            <strong>Attestation RC PRO</strong>
 
                             {% if artisan["rc_pro"] %}
-
                                 <p class="statut fourni">
-
-                                    Fichier :
-                                    {{ artisan["rc_pro_nom"] or "Attestation enregistrée" }}
-                                
+                                    Fichier : {{ artisan["rc_pro_nom"] or "Attestation enregistrée" }}
                                 </p>
-                                
-                                <div class="actions-admin">
 
-                                    <a
-                                        href="/admin/rc-pro/{{ artisan['id'] }}"
-                                        target="_blank"
-                                    >
-                                        <button type="button">
-                                            Voir l'attestation RC PRO
-                                        </button>
+                                <div class="actions-admin">
+                                    <a href="/admin/rc-pro/{{ artisan['id'] }}" target="_blank">
+                                        <button type="button">Voir l'attestation RC PRO</button>
                                     </a>
 
                                     {% if artisan["rc_pro_verifie"] == 1 %}
-
-                                        <form
-                                            method="POST"
-                                            action="/admin/rc-pro/{{ artisan['id'] }}/refuser"
-                                        >
-                                            <button type="submit">
-                                                Refuser l'attestation RC PRO
-                                            </button>
+                                        <form method="POST" action="/admin/rc-pro/{{ artisan['id'] }}/refuser">
+                                            <button type="submit">Refuser l'attestation RC PRO</button>
                                         </form>
-
                                     {% elif artisan["rc_pro_verifie"] == 2 %}
-
-                                        <form
-                                            method="POST"
-                                            action="/admin/rc-pro/{{ artisan['id'] }}/valider"
-                                        >
-                                            <button type="submit">
-                                                Valider l'attestation RC PRO
-                                            </button>
+                                        <form method="POST" action="/admin/rc-pro/{{ artisan['id'] }}/valider">
+                                            <button type="submit">Valider l'attestation RC PRO</button>
                                         </form>
-
                                     {% else %}
-
-                                        <form
-                                            method="POST"
-                                            action="/admin/rc-pro/{{ artisan['id'] }}/valider"
-                                        >
-                                            <button type="submit">
-                                                Valider l'attestation RC PRO
-                                            </button>
+                                        <form method="POST" action="/admin/rc-pro/{{ artisan['id'] }}/valider">
+                                            <button type="submit">Valider l'attestation RC PRO</button>
                                         </form>
-
                                     {% endif %}
 
                                     <form
@@ -390,14 +375,14 @@ button {
                                         action="/admin/artisan/{{ artisan['id'] }}/supprimer"
                                         onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette fiche artisan ?');"
                                     >
-                                        <button type="submit">
-                                            Supprimer la fiche
-                                        </button>
+                                        <button type="submit">Supprimer la fiche</button>
                                     </form>
-
                                 </div>
+                            {% else %}
+                                <p class="statut fourni">Aucune attestation fournie.</p>
+                            {% endif %}
                         </div>
-                        {% endif %}
+
                     </div>
                 {% endfor %}
                     
