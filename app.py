@@ -696,6 +696,80 @@ Aucune pièce jointe n'est envoyée dans cet email.
         return False
 
 # ==========================================================
+# EMAIL - NOTIFICATION NOUVELLE DEMANDE AUX ARTISANS
+# ==========================================================
+
+def envoyer_email_nouvelle_demande_aux_artisans(demande_item):
+
+    conn = get_connection()
+
+    try:
+        artisans = conn.execute(
+            "SELECT * FROM artisans"
+        ).fetchall()
+    finally:
+        conn.close()
+
+    for artisan in artisans:
+        try:
+            activites = load_list(artisan["activites"])
+            sous_categories = load_list(artisan["sous_categories"])
+
+            if demande_item["activite"] not in activites:
+                continue
+
+            if (
+                sous_categories
+                and demande_item["sous_categorie"]
+                and demande_item["sous_categorie"] not in sous_categories
+            ):
+                continue
+
+            if not demande_dans_rayon(artisan, demande_item):
+                continue
+
+            email_artisan = (artisan["email"] or "").strip()
+
+            if not email_artisan:
+                continue
+
+            message = EmailMessage()
+            message["From"] = GMAIL_ADDRESS
+            message["To"] = email_artisan
+            message["Subject"] = "Nouvelle demande - Mon Voisin Artisan"
+
+            message.set_content(
+                """Bonjour,
+
+Vous avez une nouvelle demande dans Mon Voisin Artisan.
+
+Connectez-vous à votre compte pour la consulter et y répondre.
+
+L'équipe Mon Voisin Artisan
+"""
+            )
+
+            try:
+                with smtplib.SMTP_SSL(
+                    "smtp.gmail.com",
+                    465,
+                    timeout=15
+                ) as serveur:
+                    serveur.login(
+                        GMAIL_ADDRESS,
+                        GMAIL_APP_PASSWORD
+                    )
+                    serveur.send_message(message)
+
+            except Exception:
+                continue
+
+        except Exception:
+            continue
+
+
+
+# ==========================================================
 # MOTS DE PASSE
 # ==========================================================
 
@@ -3320,12 +3394,29 @@ def demande():
             now_string()
         )
     )
+    
+    demande_id = conn.execute(
+        "SELECT last_insert_rowid()"
+    ).fetchone()[0]
+
     conn.commit()
+
+    demande_item = conn.execute(
+        "SELECT * FROM demandes WHERE id = ?",
+        (demande_id,)
+    ).fetchone()
+
     conn.close()
+
+    if demande_item:
+        envoyer_email_nouvelle_demande_aux_artisans(
+            demande_item
+        )
 
     flash(
         "Votre demande a été publiée."
     )
+
 
     return redirect(
         url_for("demande")
