@@ -3689,14 +3689,16 @@ def repondre_artisan(demande_id):
     # VÉRIFICATION DE L'ARTISAN
     # ------------------------------------------------------
 
+    
     artisan = conn.execute(
         """
-        SELECT id
+        SELECT id, email, entreprise
         FROM artisans
         WHERE id = ?
         """,
         (artisan_id,)
     ).fetchone()
+
 
     if not artisan:
 
@@ -3780,12 +3782,50 @@ def repondre_artisan(demande_id):
             fichier.mimetype if fichier and fichier.filename else None
         )
     )
+    
     conn.commit()
     conn.close()
+
+    # ------------------------------------------------------
+    # EMAIL À L'ARTISAN : NOUVEAU MESSAGE DU PARTICULIER
+    # ------------------------------------------------------
+
+    try:
+        if artisan and artisan["email"]:
+            email_message = EmailMessage()
+            email_message["From"] = GMAIL_ADDRESS
+            email_message["To"] = artisan["email"].strip()
+            email_message["Subject"] = "Nouveau message - Mon Voisin Artisan"
+
+            email_message.set_content(
+                """Bonjour,
+
+Vous avez reçu un nouveau message dans Mon Voisin Artisan.
+
+Connectez-vous à votre compte pour le consulter.
+
+L'équipe Mon Voisin Artisan
+"""
+            )
+
+            with smtplib.SMTP_SSL(
+                "smtp.gmail.com",
+                465,
+                timeout=15
+            ) as serveur:
+                serveur.login(
+                    GMAIL_ADDRESS,
+                    GMAIL_APP_PASSWORD
+                )
+                serveur.send_message(email_message)
+
+    except Exception:
+        pass
 
     flash(
         "Votre message a été envoyé."
     )
+
 
     return redirect(
         url_for(
@@ -4223,12 +4263,63 @@ def repondre_demande(demande_id):
         )
     )
 
+    
+    # ------------------------------------------------------
+    # RÉCUPÉRATION DE L'EMAIL DU PARTICULIER
+    # ------------------------------------------------------
+
+    particulier = conn.execute(
+        """
+        SELECT email
+        FROM particuliers
+        WHERE id = ?
+        """,
+        (demande_item["particulier_id"],)
+    ).fetchone()
+
     conn.commit()
     conn.close()
+
+    # ------------------------------------------------------
+    # EMAIL AU PARTICULIER : NOUVELLE RÉPONSE DE L'ARTISAN
+    # ------------------------------------------------------
+
+    try:
+        if particulier and particulier["email"]:
+            email_message = EmailMessage()
+            email_message["From"] = GMAIL_ADDRESS
+            email_message["To"] = particulier["email"].strip()
+            email_message["Subject"] = "Nouvelle réponse à votre demande - Mon Voisin Artisan"
+
+            email_message.set_content(
+                """Bonjour,
+
+Un artisan vient de répondre à votre demande sur Mon Voisin Artisan.
+
+Connectez-vous à votre compte pour consulter son message.
+
+L'équipe Mon Voisin Artisan
+"""
+            )
+
+            with smtplib.SMTP_SSL(
+                "smtp.gmail.com",
+                465,
+                timeout=15
+            ) as serveur:
+                serveur.login(
+                    GMAIL_ADDRESS,
+                    GMAIL_APP_PASSWORD
+                )
+                serveur.send_message(email_message)
+
+    except Exception:
+        pass
 
     flash(
         "Votre réponse a été enregistrée."
     )
+
 
     return redirect(
         url_for(
